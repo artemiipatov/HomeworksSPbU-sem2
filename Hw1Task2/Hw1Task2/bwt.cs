@@ -1,19 +1,14 @@
-﻿using System;
-
-Console.WriteLine("Input string: ");
-string str = Console.ReadLine();
-string transformedString = Transformation.BWT(str);
-Console.WriteLine(transformedString);
-Console.WriteLine(Transformation.BWTinverse(transformedString));
-
+namespace Bwt;
+using System;
 // class with two public methods for burrows-wheeler transformation
 static class Transformation
 {
-    public static string BWT(string str)
+    public static int asciiSize = 256;
+    public static string Bwt(string str)
     {
-        str += '$';
+        str += '\0';
         string[] suffixes = GetSuffixes(str);
-        sort(suffixes);
+        Sort(suffixes);
         string result = "";
         for (int i = 0; i < suffixes.Length; i++)
         {
@@ -25,7 +20,7 @@ static class Transformation
 
     private static string[] GetSuffixes(string str)
     {
-        string[] suffixes = new string[str.Length];
+        var suffixes = new string[str.Length];
         for (int i = 0; i < str.Length; i++)
         {
             suffixes[i] = str.Substring(i);
@@ -33,7 +28,7 @@ static class Transformation
         return suffixes;
     }
 
-    private static void sort(string[] suffixes)
+    private static void Sort(string[] suffixes)
     {
         for (int index = 1; index < suffixes.Length; index++)
         {
@@ -46,22 +41,22 @@ static class Transformation
         }
     }
 
-    public static string BWTinverse(string str)
+    public static string BwtInverse(string str)
     {
         string sortedString = GetSortedString(str);
         int[] numbers = GetNumbers(str, sortedString);
         string sequence = GetOriginalString(str, sortedString, numbers);
-        return sequence.Remove(sequence.IndexOf('$'), 1);
+        return sequence.Remove(sequence.IndexOf('\0'), 1);
     }
 
     private static string GetSortedString(string str)
     {
-        int[] assistantArray = new int[128];
+        var assistantArray = new int[asciiSize];
         foreach (var ch in str)
         {
             ++assistantArray[ch];
         }
-        char[] sortedArray = new char[str.Length];
+        var sortedArray = new char[str.Length];
         int pos = 0;
         for (int i = 0; i < assistantArray.Length; ++i)
         {
@@ -76,8 +71,8 @@ static class Transformation
 
     private static int[] GetNumbers(string str, string sortedString)
     {
-        int[] frequencies = new int[128];
-        int[] numbers = new int[str.Length];
+        var frequencies = new int[asciiSize];
+        var numbers = new int[str.Length];
         for (int i = 0; i < str.Length; ++i)
         {
             numbers[i] = sortedString.IndexOf(str[i]) + frequencies[(int)str[i]];
@@ -89,7 +84,7 @@ static class Transformation
     private static string GetOriginalString(string str, string sortedString, int[] numbers)
     {
         string result = "";
-        int pos = str.IndexOf('$');
+        int pos = str.IndexOf('\0');
         for (int i = 0; i < str.Length; ++i)
         {
             result += str[pos];
