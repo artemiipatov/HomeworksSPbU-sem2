@@ -3,50 +3,47 @@ using System;
 // class with two public methods for burrows-wheeler transformation
 static class Transformation
 {
-    public static int asciiSize = 256;
-    public static string Bwt(string str)
+    private readonly static int asciiSize = 128; // change
+
+    public static (string transformedString, int index) Bwt(string str)
     {
-        str += '\0';
-        string[] suffixes = GetSuffixes(str);
-        Sort(suffixes);
-        string result = "";
-        for (int i = 0; i < suffixes.Length; i++)
+        string[] rotations = GetRotations(str);
+        Sort(rotations);
+        var transformedString = "";
+        foreach(var rotation in rotations)
         {
-            int index = str.Length - suffixes[i].Length - 1;
-            result += str[index < 0 ? str.Length - 1 : index];
+            transformedString += rotation[rotation.Length - 1];
         }
-        return result;
+        return (transformedString, Array.IndexOf(rotations, str));
     }
 
-    private static string[] GetSuffixes(string str)
+    private static string[] GetRotations(string str)
     {
-        var suffixes = new string[str.Length];
+        var rotations = new string[str.Length];
         for (int i = 0; i < str.Length; i++)
         {
-            suffixes[i] = str.Substring(i);
+            rotations[i] = str.Substring(i) + str.Substring(0, i);
         }
-        return suffixes;
+        return rotations;
     }
-
-    private static void Sort(string[] suffixes)
+    private static void Sort(string[] rotations)
     {
-        for (int index = 1; index < suffixes.Length; index++)
+        for (int index = 1; index < rotations.Length; index++)
         {
             int i = index;
-            while (i > 0 && String.Compare(suffixes[i], suffixes[i-1]) < 0)
+            while (i > 0 && String.Compare(rotations[i], rotations[i - 1], StringComparison.Ordinal) < 0)
             {
-                (suffixes[i - 1], suffixes[i]) = (suffixes[i], suffixes[i - 1]);
+                (rotations[i - 1], rotations[i]) = (rotations[i], rotations[i - 1]);
                 --i;
             }
         }
     }
 
-    public static string BwtInverse(string str)
+    public static string BwtInverse(string str, int index)
     {
         string sortedString = GetSortedString(str);
         int[] numbers = GetNumbers(str, sortedString);
-        string sequence = GetOriginalString(str, sortedString, numbers);
-        return sequence.Remove(sequence.IndexOf('\0'), 1);
+        return GetOriginalString(str, index, numbers);
     }
 
     private static string GetSortedString(string str)
@@ -54,7 +51,7 @@ static class Transformation
         var assistantArray = new int[asciiSize];
         foreach (var ch in str)
         {
-            ++assistantArray[ch];
+            ++assistantArray[((int)ch)];
         }
         var sortedArray = new char[str.Length];
         int pos = 0;
@@ -75,20 +72,19 @@ static class Transformation
         var numbers = new int[str.Length];
         for (int i = 0; i < str.Length; ++i)
         {
-            numbers[i] = sortedString.IndexOf(str[i]) + frequencies[(int)str[i]];
-            ++frequencies[(int)str[i]]; 
+            numbers[i] = sortedString.IndexOf(str[i]) + frequencies[((int)str[i])];
+            ++frequencies[((int)str[i])]; 
         }
         return numbers;
     }
-
-    private static string GetOriginalString(string str, string sortedString, int[] numbers)
+    
+    private static string GetOriginalString(string str, int pos, int[] numbers)
     {
         string result = "";
-        int pos = str.IndexOf('\0');
         for (int i = 0; i < str.Length; ++i)
         {
-            result += str[pos];
-            pos = Array.IndexOf(numbers, pos);
+            result = str[pos] + result;
+            pos = numbers[pos];
         }
         return result;
     }
