@@ -1,27 +1,25 @@
 namespace Hw2Task1;
 
-public class Trie
+public class Trie : ITrie
 {
     private class Node
     {
-        public char? Symbol { get; set; }
         public Dictionary<char, Node> Next { get; set; }
 
         public bool Terminal { get; set; } = false;
         public Node(char? symbol)
         {
-            this.Symbol = symbol;
             this.Next = new Dictionary<char, Node>();
         }
     }
     private Node root = new Node(null);
 
-    public int Size { get; set; } = 0;
+    private int Size { get; set; } = 0;
 
-    public bool AddItem(String element)
+    public bool AddItem(string element)
     {
-        Node currentNode = root;
-        for (int i = 0; i < element.Length; i++)
+        var currentNode = root;
+        for (var i = 0; i < element.Length; i++)
         {
             if (currentNode.Next.ContainsKey(element[i]))
             {
@@ -33,7 +31,7 @@ public class Trie
             }
             else
             {
-                Node newNode = new Node(element[i]);
+                var newNode = new Node(element[i]);
                 currentNode.Next.Add(element[i], newNode);
                 if (i == element.Length - 1)
                 {
@@ -49,12 +47,12 @@ public class Trie
         return false;
     }
 
-    private bool RemoveRecursive(String element, int symbolIndex, Node pos, bool canDelete)
+    private static bool RemoveRecursive(string element, int symbolIndex, Node pos, ref bool canDelete)
     {
         if (symbolIndex < element.Length)
         {
             if (!pos.Next.ContainsKey(element[symbolIndex])
-                || !RemoveRecursive(element, symbolIndex + 1, pos.Next[element[symbolIndex]], canDelete))
+                || !RemoveRecursive(element, symbolIndex + 1, pos.Next[element[symbolIndex]], ref canDelete))
             {
                 return false;
             }
@@ -86,9 +84,10 @@ public class Trie
         return true;
     }
 
-    public bool Remove(String element)
+    public bool Remove(string element)
     {
-        if (RemoveRecursive(element, 0, root, true))
+        var canDelete = true;
+        if (RemoveRecursive(element, 0, root, ref canDelete))
         {
             --Size;
             return true;
@@ -96,7 +95,7 @@ public class Trie
         return false;
     }
 
-    public bool Contains(String element)
+    public bool Contains(string element)
     {
         var currentNode = root;
         for (var i = 0; i < element.Length; i++)
@@ -110,7 +109,7 @@ public class Trie
         return true;
     }
 
-    private int HowManyStartsWithPrefixRecursive(Node pos)
+    private static int HowManyStartsWithPrefixRecursive(Node pos)
     {
         var counter = 0;
         if (pos.Terminal)
@@ -126,7 +125,7 @@ public class Trie
         return counter;
     }
 
-    public int HowManyStartsWithPrefix(String prefix)
+    public int HowManyStartsWithPrefix(string prefix)
     {
         var currentNode = root;
         for (var i = 0; i < prefix.Length; i++)

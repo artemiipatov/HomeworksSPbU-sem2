@@ -11,15 +11,17 @@ public class Tests
     {
         testTrie = new Trie();
     }
-    
-    [Test] // smoke testing
-    public void TrieShouldNotContainItemsAfterAddAndRemove() // Здесь можно сразу проверять, удаляется ли одна строки после удаления другой строки, начинающейся с того же префикса
+
+    [Test]
+    public void TrieShouldNotContainItemsAfterAddAndRemove()
     {
         testTrie.AddItem("test");
         testTrie.AddItem("testtest");
         testTrie.AddItem("test123");
         testTrie.Remove("test");
+        Assert.IsTrue(testTrie.Contains("testtest") && testTrie.Contains("test123") && !testTrie.Contains("test"));
         testTrie.Remove("testtest");
+        Assert.IsTrue(testTrie.Contains("test123"));
         testTrie.Remove("test123");
         Assert.IsFalse(testTrie.Contains("test") || testTrie.Contains("testtest") || testTrie.Contains("test123"));
     }
@@ -70,5 +72,13 @@ public class Tests
         Assert.IsTrue(testTrie.Contains("item"));
         Assert.IsTrue(testTrie.Contains("string"));
         Assert.IsFalse(testTrie.Contains("object"));
+    }
+
+    [Test]
+    public void AllMethodsShouldSuccessfullyDealWithEmptyTrie()
+    {
+        Assert.IsFalse(testTrie.Remove("item"));
+        Assert.IsFalse(testTrie.Contains("string"));
+        Assert.Zero(testTrie.HowManyStartsWithPrefix("object"));
     }
 }
