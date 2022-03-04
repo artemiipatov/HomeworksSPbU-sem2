@@ -1,5 +1,8 @@
 namespace Hw2Task1;
 
+/// <summary>
+/// Prefix tree containing strings
+/// </summary>
 public class Trie : ITrie
 {
     private class Node
@@ -16,6 +19,11 @@ public class Trie : ITrie
 
     private int Size { get; set; } = 0;
 
+    /// <summary>
+    /// Adds item to prefix tree
+    /// </summary>
+    /// <param name="element"></param>
+    /// <returns></returns>
     public bool AddItem(string element)
     {
         var currentNode = root;
@@ -84,6 +92,11 @@ public class Trie : ITrie
         return true;
     }
 
+    /// <summary>
+    /// Removes item from prefix tree
+    /// </summary>
+    /// <param name="element"></param>
+    /// <returns></returns>
     public bool Remove(string element)
     {
         var canDelete = true;
@@ -95,6 +108,11 @@ public class Trie : ITrie
         return false;
     }
 
+    /// <summary>
+    /// Checks if item is in prefix tree. Returns true if it is in tree, false if it is not
+    /// </summary>
+    /// <param name="element"></param>
+    /// <returns></returns>
     public bool Contains(string element)
     {
         var currentNode = root;
@@ -125,6 +143,11 @@ public class Trie : ITrie
         return counter;
     }
 
+    /// <summary>
+    /// Returns number of strings in prefix tree which start with given prefix
+    /// </summary>
+    /// <param name="prefix"></param>
+    /// <returns></returns>
     public int HowManyStartsWithPrefix(string prefix)
     {
         var currentNode = root;

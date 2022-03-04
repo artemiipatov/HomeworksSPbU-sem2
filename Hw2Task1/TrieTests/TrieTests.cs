@@ -3,6 +3,9 @@ using Hw2Task1;
 
 namespace TrieTests;
 
+/// <summary>
+/// Module tests for trie 
+/// </summary>
 public class Tests
 {
     private Trie testTrie = new Trie();
