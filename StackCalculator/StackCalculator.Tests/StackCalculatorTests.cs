@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Data;
 using NUnit.Framework;
 
 namespace StackCalculatorTests;
@@ -13,7 +11,7 @@ public class Tests
     }
 
     [Test]
-    public void EvaluationResultShouldBeCorrect()
+    public void EvaluationResultShouldBeCorrectInCommonCases()
     {
         Assert.AreEqual(59.5, StackCalculator.Evaluate("100 2 + 51 / 4 / 59 +"));
         Assert.AreEqual(0.25, StackCalculator.Evaluate("32 2 / 2 / 2 / 2 / 2 / 2 / 2 /"));
@@ -23,11 +21,23 @@ public class Tests
     }
 
     [Test]
-    public void EvaluateShouldReturnNull()
+    public void EvaluationResultShouldBeCorrectInNegativeNumbersCase()
     {
-        Assert.IsNull(StackCalculator.Evaluate("100 0 /"));
+        Assert.AreEqual(-25, StackCalculator.Evaluate("-100 50 + -10 / -5 *"));
+        Assert.AreEqual(-51, StackCalculator.Evaluate("-90 -85 * -150 /"));
+    }
+
+    [Test]
+    public void EvaluateShouldReturnNullIfInputIsIncorrect()
+    {
         Assert.IsNull(StackCalculator.Evaluate("100 9510985"));
         Assert.IsNull(StackCalculator.Evaluate("+ - "));
         Assert.IsNull(StackCalculator.Evaluate(""));
+    }
+
+    [Test]
+    public void EvaluateShouldReturnNullAfterDividingByZero()
+    {
+        Assert.IsNull(StackCalculator.Evaluate("100 0 /"));
     }
 }

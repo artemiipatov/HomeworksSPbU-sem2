@@ -15,7 +15,7 @@ public static class StackCalculator
     /// <returns></returns>
     public static double? Evaluate(string expression)
     {
-        IStack stack = new ListBasedStack();
+        IStack stack = new ArrayBasedStack();
         var splitExp = expression.Split(' ');
         foreach (var t in splitExp)
         {
