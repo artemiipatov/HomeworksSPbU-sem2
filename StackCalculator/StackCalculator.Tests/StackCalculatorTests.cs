@@ -23,7 +23,7 @@ public class Tests
     [Test]
     public void EvaluationResultShouldBeCorrectInNegativeNumbersCase()
     {
-        Assert.AreEqual(-25, StackCalculator.Evaluate("-100 50 + -10 / -5 *"));
+        Assert.AreEqual(-75, StackCalculator.Evaluate("-100 50 - -10 / -5 *"));
         Assert.AreEqual(-51, StackCalculator.Evaluate("-90 -85 * -150 /"));
     }
 
@@ -33,6 +33,7 @@ public class Tests
         Assert.IsNull(StackCalculator.Evaluate("100 9510985"));
         Assert.IsNull(StackCalculator.Evaluate("+ - "));
         Assert.IsNull(StackCalculator.Evaluate(""));
+        Assert.IsNull(StackCalculator.Evaluate("abd 123 +"));
     }
 
     [Test]
