@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using NUnit.Framework;
 
 namespace StackCalculatorTests;
@@ -5,44 +7,49 @@ using StackCalculator;
 
 public class Tests
 {
-    private IStack _arrayBasedStack = new ArrayBasedStack();
-    private IStack _listBasedStack = new ListBasedStack();
     [SetUp]
     public void Setup()
     {
-        _arrayBasedStack = new ArrayBasedStack();
-        _listBasedStack = new ListBasedStack();
     }
 
-    [Test]
-    public void EvaluationResultShouldBeCorrectInCommonCases()
+    private static IEnumerable<IStack> CalcTestData
     {
-        Assert.AreEqual(59.5, StackCalculator.Evaluate("100 2 + 51 / 4 / 59 +", _arrayBasedStack));
-        Assert.AreEqual(0.25, StackCalculator.Evaluate("32 2 / 2 / 2 / 2 / 2 / 2 / 2 /", _arrayBasedStack));
-        Assert.AreEqual(157.5,StackCalculator.Evaluate("219 3 / 33 - 20 + 3 * 8 / 7 *", _arrayBasedStack));
-        Assert.AreEqual(-33965.261, StackCalculator.Evaluate("55 33 913 1030004 + 1000 / * -", _arrayBasedStack));
-        Assert.AreEqual(1000, StackCalculator.Evaluate("1000", _arrayBasedStack));
+        get
+        {
+            yield return new ListBasedStack();
+            yield return new ArrayBasedStack();
+        }
     }
 
-    [Test]
-    public void EvaluationResultShouldBeCorrectInNegativeNumbersCase()
+    [Test, TestCaseSource(nameof(CalcTestData))]
+    public void EvaluationResultShouldBeCorrectInCommonCases(IStack stack)
     {
-        Assert.AreEqual(-75, StackCalculator.Evaluate("-100 50 - -10 / -5 *", _arrayBasedStack));
-        Assert.AreEqual(-51, StackCalculator.Evaluate("-90 -85 * -150 /", _arrayBasedStack));
+        Assert.AreEqual(59.5, StackCalculator.Evaluate("100 2 + 51 / 4 / 59 +", stack));
+        Assert.AreEqual(0.25, StackCalculator.Evaluate("32 2 / 2 / 2 / 2 / 2 / 2 / 2 /", stack));
+        Assert.AreEqual(157.5,StackCalculator.Evaluate("219 3 / 33 - 20 + 3 * 8 / 7 *", stack));
+        Assert.AreEqual(-33965.261, StackCalculator.Evaluate("55 33 913 1030004 + 1000 / * -", stack));
+        Assert.AreEqual(1000, StackCalculator.Evaluate("1000", stack));
     }
 
-    [Test]
-    public void EvaluateShouldReturnNullIfInputIsIncorrect()
+    [Test, TestCaseSource(nameof(CalcTestData))]
+    public void EvaluationResultShouldBeCorrectInNegativeNumbersCase(IStack stack)
     {
-        Assert.IsNull(StackCalculator.Evaluate("100 9510985", _arrayBasedStack));
-        Assert.IsNull(StackCalculator.Evaluate("+ - ", _arrayBasedStack));
-        Assert.IsNull(StackCalculator.Evaluate("", _arrayBasedStack));
-        Assert.IsNull(StackCalculator.Evaluate("abd 123 +", _arrayBasedStack));
+        Assert.AreEqual(-75, StackCalculator.Evaluate("-100 50 - -10 / -5 *", stack));
+        Assert.AreEqual(-51, StackCalculator.Evaluate("-90 -85 * -150 /", stack));
     }
 
-    [Test]
-    public void EvaluateShouldReturnNullAfterDividingByZero()
+    [Test, TestCaseSource(nameof(CalcTestData))]
+    public void EvaluateShouldReturnNullIfInputIsIncorrect(IStack stack)
     {
-        Assert.IsNull(StackCalculator.Evaluate("100 0 /", _arrayBasedStack));
+        Assert.IsNull(StackCalculator.Evaluate("100 9510985", stack));
+        Assert.IsNull(StackCalculator.Evaluate("+ - ", stack));
+        Assert.IsNull(StackCalculator.Evaluate("", stack));
+        Assert.IsNull(StackCalculator.Evaluate("abd 123 +", stack));
+    }
+
+    [Test, TestCaseSource(nameof(CalcTestData))]
+    public void EvaluateShouldReturnNullAfterDividingByZero(IStack stack)
+    {
+        Assert.IsNull(StackCalculator.Evaluate("100 0 /", stack));
     }
 }
