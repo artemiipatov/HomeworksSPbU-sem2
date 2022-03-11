@@ -1,16 +1,28 @@
 namespace Bwt;
+
 using System;
+
 // class with two public methods for burrows-wheeler transformation
 static class Transformation
 {
-    private readonly static int asciiSize = 128; // change
+    private readonly static int unicodeSize = 65536;
 
-    public static (string transformedString, int index) Bwt(string str)
+    /// <summary>
+    /// forward burrows-wheeler transformation. Returns transformed string and index of the original string in the array of sorted rotations. 
+    /// </summary>
+    /// <param name="str"></param>
+    /// <returns></returns>
+    public static (string transformedString, int index) Bwt(string? str)
     {
+        if (str == null)
+        {
+            throw new NullReferenceException("Null argument has been given");
+        }
+        
         string[] rotations = GetRotations(str);
         Sort(rotations);
         var transformedString = "";
-        foreach(var rotation in rotations)
+        foreach (var rotation in rotations)
         {
             transformedString += rotation[rotation.Length - 1];
         }
@@ -26,6 +38,7 @@ static class Transformation
         }
         return rotations;
     }
+
     private static void Sort(string[] rotations)
     {
         for (int index = 1; index < rotations.Length; index++)
@@ -39,6 +52,12 @@ static class Transformation
         }
     }
 
+    /// <summary>
+    /// Inverse Burrows-Wheeler transformation. Returns original string.
+    /// </summary>
+    /// <param name="str"></param>
+    /// <param name="index"></param>
+    /// <returns></returns>
     public static string BwtInverse(string str, int index)
     {
         string sortedString = GetSortedString(str);
@@ -48,7 +67,7 @@ static class Transformation
 
     private static string GetSortedString(string str)
     {
-        var assistantArray = new int[asciiSize];
+        var assistantArray = new int[unicodeSize];
         foreach (var ch in str)
         {
             ++assistantArray[((int)ch)];
@@ -68,7 +87,7 @@ static class Transformation
 
     private static int[] GetNumbers(string str, string sortedString)
     {
-        var frequencies = new int[asciiSize];
+        var frequencies = new int[unicodeSize];
         var numbers = new int[str.Length];
         for (int i = 0; i < str.Length; ++i)
         {
