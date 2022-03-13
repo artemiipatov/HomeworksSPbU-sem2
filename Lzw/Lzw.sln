@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lzw", "Lzw\Lzw.csproj", "{0C75B6F0-FD17-4EE1-946D-16A763A2DEA2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trie", "Trie\Trie.csproj", "{2A04EACB-A68B-4EC1-92A7-AE46D521FF50}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bwt", "Bwt\Bwt.csproj", "{DBD448D1-EC80-4B6B-8FAE-AFC2DC72BF88}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +16,13 @@ Global
 		{0C75B6F0-FD17-4EE1-946D-16A763A2DEA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C75B6F0-FD17-4EE1-946D-16A763A2DEA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C75B6F0-FD17-4EE1-946D-16A763A2DEA2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A04EACB-A68B-4EC1-92A7-AE46D521FF50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A04EACB-A68B-4EC1-92A7-AE46D521FF50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A04EACB-A68B-4EC1-92A7-AE46D521FF50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A04EACB-A68B-4EC1-92A7-AE46D521FF50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBD448D1-EC80-4B6B-8FAE-AFC2DC72BF88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBD448D1-EC80-4B6B-8FAE-AFC2DC72BF88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBD448D1-EC80-4B6B-8FAE-AFC2DC72BF88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBD448D1-EC80-4B6B-8FAE-AFC2DC72BF88}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -131,9 +131,9 @@ using System;
 // После применения алгоритма зива лемпеля нужно будет удалять .transformed.txt
 
 // class with two public methods for burrows-wheeler transformation
-static class Transformation
+public static class Transformation
 {
-    private readonly static int UnicodeSize = 65536;
+    private static readonly int UnicodeSize = 65536;
 
     /// <summary>
     /// forward burrows-wheeler transformation. Returns transformed string and index of the original string in the array of sorted rotations. 
@@ -261,7 +261,7 @@ static class Transformation
 
     private static int[] GetNumbers(byte[] fileBytes, byte[] sortedBytes)
     {
-        var frequencies = new int[UnicodeSize];
+        var frequencies = new int[UnicodeSize]; // 1 байт, а не два -- надо поменять
         var numbers = new int[fileBytes.Length];
         for (int i = 0; i < fileBytes.Length; ++i)
         {
