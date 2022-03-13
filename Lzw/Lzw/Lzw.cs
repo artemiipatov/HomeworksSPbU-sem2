@@ -10,6 +10,7 @@ using Trie;
 
 public static class Lzw
 {
+    // Поправить: когда появляются 9-битные коды, то все коды должны состоять из 9 элементов, когда 10-битные -- из 10 и т. д.
     public static void Compress(string path)
     {
         Transformation.Bwt(path);

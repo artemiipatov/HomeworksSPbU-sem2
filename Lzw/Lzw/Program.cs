@@ -26,4 +26,4 @@
 // myBitArray.CopyTo(bytes, 0);
 // Console.WriteLine("Hello, world!");
 
-Lzw.Lzw.Compress("/home/strider/repos/HomeworksSPbU-sem2/Lzw/Lzw/slick.bin");
+Lzw.Lzw.Compress("/home/strider/repos/HomeworksSPbU-sem2/Lzw/Lzw/anotherText.txt");
