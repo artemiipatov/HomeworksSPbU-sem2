@@ -142,16 +142,23 @@ public static class Transformation
     /// <returns></returns>
     public static void Bwt(string path)
     {
-        byte[] fileBytes = File.ReadAllBytes(path);
-        byte[][] rotations = GetRotations(fileBytes);
-        Sort(rotations);
-
+        using var binReader = new BinaryReader(File.Open(path, FileMode.Open));
         using (var newFile = new BinaryWriter(File.Open("../../../.transformed", FileMode.Create)))
         {
-            newFile.Write(IndexOfByteArray(rotations, fileBytes));
-            foreach (var rotation in rotations)
+            while (true)
             {
-                newFile.Write(rotation[rotation.Length - 1]);
+                byte[] fileBytes = binReader.ReadBytes(8192);
+                if (fileBytes.Length == 0)
+                {
+                    break;
+                }
+                byte[][] rotations = GetRotations(fileBytes);
+                Sort(rotations);
+                newFile.Write(IndexOfByteArray(rotations, fileBytes));
+                foreach (var rotation in rotations)
+                {
+                    newFile.Write(rotation[^1]);
+                }
             }
         }
         File.SetAttributes("../../../.transformed", FileAttributes.Hidden);
@@ -211,18 +218,26 @@ public static class Transformation
         // using var file = new StreamReader(path);
         // var index = int.Parse(file.ReadLine());
         // var text = file.ReadToEnd();
-        using var file = new BinaryReader(File.Open(path, FileMode.Open));
-        var index = file.ReadInt32();
-        byte[] fileBytes = file.ReadBytes((int)file.BaseStream.Length - 4);
-        // for (int i = 0; i < file.Length; i++)
-        byte[] sortedBytes = new byte[fileBytes.Length];
-        sortedBytes = fileBytes.ToArray();
-        // string sortedBytes = GetSortedBytes(fileBytes);
-        Array.Sort(sortedBytes);
-        int[] numbers = GetNumbers(fileBytes, sortedBytes);
-        using (BinaryWriter outputFile = new BinaryWriter(File.Open("../../../originalText.txt", FileMode.Create)))
+        using var inputFile = new BinaryReader(File.Open(path, FileMode.Open));
+        using var outputFile = new BinaryWriter(File.Open("../../../" + GetNameOfFile(path), FileMode.Create));
+        while (true)
         {
-            outputFile.Write(GetOriginalString(fileBytes, index, numbers));
+            try
+            {
+                var index = inputFile.ReadInt32();
+                byte[] fileBytes = inputFile.ReadBytes(8192);
+                // for (int i = 0; i < file.Length; i++)
+                // byte[] sortedBytes = new byte[fileBytes.Length];
+                byte[] sortedBytes = fileBytes.ToArray();
+                // string sortedBytes = GetSortedBytes(fileBytes);
+                Array.Sort(sortedBytes);
+                int[] numbers = GetNumbers(fileBytes, sortedBytes);
+                outputFile.Write(GetOriginalString(fileBytes, index, numbers));
+            }
+            catch (EndOfStreamException)
+            {
+                break;
+            }
         }
     }
 
@@ -280,5 +295,17 @@ public static class Transformation
             pos = numbers[pos];
         }
         return result;
+    }
+    
+    private static string GetNameOfFile(string path)
+    {
+        int index = path.Length - 1;
+        string name = "";
+        while (!name.Contains("unzipped") && index != -1)
+        {
+            name = path[index] + name;
+            index -= 1;
+        }
+        return name;
     }
 }

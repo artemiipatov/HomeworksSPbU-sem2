@@ -17,7 +17,7 @@ public class Trie : ITrie
     }
     private Node root = new Node(null);
 
-    private int Size { get; set; } = 0;
+    public int Size { get; set; } = 0;
 
     /// <summary>
     /// Adds item to prefix tree
