@@ -164,7 +164,7 @@ public static class Lzw
                     bitArrayIndex = bitArrayIndexBeforeCycle - 1;
                 }
                 
-                while (bitArrayLength - bitArrayIndex >= numberOfBitsToRead)
+                while (bitArrayLength - 1 - bitArrayIndex >= numberOfBitsToRead)
                 {
                     // В этом блоке кода: только что считанные биты (количеством numberOfBitsToRead) преобразовали в интовые коды
                     int indexOfSequenceInDict = 0;
@@ -179,12 +179,21 @@ public static class Lzw
 
                     // bitArrayIndex = bitArrayIndex - numberOfBitsToRead;
 
-                    // последовательность битов с этим кодом кладем в файл
-                    outputFile.Write(sequences[indexOfSequenceInDict]);
-
-                    // Предыдущую последовательность, конкатенированную с первым байтом текущей последовательности нужно положить в словарь
-                    previousByteSequence[curIndexOfPreviousByteSequence] = sequences[indexOfSequenceInDict][0];
-                    sequences.Add(sequences.Count, previousByteSequence[0..(curIndexOfPreviousByteSequence + 1)]);
+                    if (indexOfSequenceInDict == sequences.Count)
+                    {
+                        previousByteSequence[curIndexOfPreviousByteSequence] = previousByteSequence[0];
+                        outputFile.Write(previousByteSequence[0..(curIndexOfPreviousByteSequence + 1)]);
+                        sequences.Add(sequences.Count, previousByteSequence[0..(curIndexOfPreviousByteSequence + 1)]);
+                    }
+                    else
+                    {
+                        // последовательность битов с этим кодом кладем в файл
+                        outputFile.Write(sequences[indexOfSequenceInDict]);
+                    
+                        // Предыдущую последовательность, конкатенированную с первым байтом текущей последовательности нужно положить в словарь
+                        previousByteSequence[curIndexOfPreviousByteSequence] = sequences[indexOfSequenceInDict][0];
+                        sequences.Add(sequences.Count, previousByteSequence[0..(curIndexOfPreviousByteSequence + 1)]);
+                    }
 
                     // После добавления в словарь нужно высчитать количество бит, которое нужно считывать.
                     if (sequences.Count >= powerOfTwo)
