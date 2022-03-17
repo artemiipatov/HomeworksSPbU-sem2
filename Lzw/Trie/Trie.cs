@@ -138,7 +138,7 @@ public class Trie : ITrie
             }
             if (i == sequence.Length - 1)
             {
-                return currentNode.Next[sequence[i]].Terminal == -1 ? -1 : currentNode.Next[sequence[i]].Terminal;
+                return currentNode.Next[sequence[i]].Terminal == -1 ? -1 : currentNode.Next[sequence[i]].Terminal; // Убрать лишнее
             }
             currentNode = currentNode.Next[sequence[i]];
         }

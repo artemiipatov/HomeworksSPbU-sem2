@@ -25,7 +25,7 @@ public static class Lzw
             byte[] readBytes = new byte[1024]; // Подумать насчет размера
             readBytes[0] = binFile.ReadByte();
             int byteArrayIndex = 1;
-            int bitArrayIndex = 63;
+            int bitArrayIndex = 63; // Скорее всего начинаться должно с 63
             int maxCodeLength = 8;
             int powerOfTwo = (int)Math.Pow(2, 8); // Поменять название переменной
             using BinaryWriter newBinFile = new BinaryWriter(File.Open("../../../" + GetNameOfFile(path) + ".zipped", FileMode.Create));
@@ -41,20 +41,22 @@ public static class Lzw
                         int codeOfByteSequence = sequences.GetNumber(readBytes[0..byteArrayIndex]);
                         readBytes[0] = readBytes[byteArrayIndex];
                         byteArrayIndex = 1;
+                        bitArrayIndex = bitArrayIndex - maxCodeLength + 1; // А здесь скорее всего отниматься должно не это
                         int bitArrayIndexBeforeCycle = bitArrayIndex;
                         while (codeOfByteSequence != 0)
                         {
                             // code.RightShift(1);
                             code[bitArrayIndex] = codeOfByteSequence % 2 == 1;
                             codeOfByteSequence /= 2;
-                            --bitArrayIndex;
+                            ++bitArrayIndex;
                         }
 
-                        if (bitArrayIndexBeforeCycle - bitArrayIndex  < maxCodeLength)
-                        {
-                            code.RightShift(maxCodeLength - (bitArrayIndexBeforeCycle - bitArrayIndex));
-                            bitArrayIndex -= (maxCodeLength - (bitArrayIndexBeforeCycle - bitArrayIndex));
-                        }
+                        bitArrayIndex = bitArrayIndexBeforeCycle - 1;
+                        // if (bitArrayIndexBeforeCycle - bitArrayIndex  < maxCodeLength)
+                        // {
+                        //     code.RightShift(maxCodeLength - (bitArrayIndexBeforeCycle - bitArrayIndex));
+                        //     bitArrayIndex -= (maxCodeLength - (bitArrayIndexBeforeCycle - bitArrayIndex));
+                        // }
                         while ((63 - bitArrayIndex) >= 8)
                         {
                             byte[] byteToFile = new byte[1];
@@ -67,12 +69,11 @@ public static class Lzw
                             newBinFile.Write(byteToFile);
                             code.LeftShift(8);
                             bitArrayIndex += 8;
-                            
-                            if (sequences.Size == powerOfTwo)
-                            {
-                                ++maxCodeLength;
-                                powerOfTwo = (int)Math.Pow(2, maxCodeLength);
-                            }
+                        }
+                        if (sequences.Size >= powerOfTwo)
+                        {
+                            ++maxCodeLength;
+                            powerOfTwo = (int)Math.Pow(2, maxCodeLength);
                         }
                     }
                     else
@@ -108,10 +109,10 @@ public static class Lzw
         // переменная для количества бит, которые нужно считывать на текущий момент (перевеодим в байты, округляем в большую сторону -- получаем количество
         // байт, которые нужно считать
         // Считываем какое-то количество байт, заполняем битовый массив этими байтами, после этого из битового массива берем столько, сколько нужно
-        int numberOfBitsToRead = 8;
-        int numberOfBytesToRead = 1;
-        int powerOfTwo = (int)Math.Pow(2, 8);
-        byte[] readBytes = new byte[1024];
+        int numberOfBitsToRead = 9;
+        int numberOfBytesToRead = 2;
+        int powerOfTwo = (int)Math.Pow(2, numberOfBitsToRead);
+        byte[] readBytes = new byte[1024]; // Размер поменять
         int bitArrayLength = 1024;
         BitArray code = new BitArray(bitArrayLength);
         int bitArrayIndex = code.Length - 1;
@@ -127,8 +128,22 @@ public static class Lzw
         byte[] previousByteSequence = new byte[1024]; // Возможно, его нужно просто объявить, а инициализировать никак не нужно,
                                                       // потому что можно просто присваивать разные значения в зависимости от текущей последовательности байтов
         previousByteSequence[0] = inputFile.ReadByte(); // Код первого считанного байта известен сразу, потому что первая последовательность байтов кодируется одним байтом
+        // int byteConvertedToInt = previousByteSequence[0];
+        // bitArrayIndex = bitArrayIndex - numberOfBitsToRead + 1;
+        // int bitArrayIndexBeforeCycle = bitArrayIndex;
+        // for (int j = 0; j < 8; j++)
+        // {
+        //     code[bitArrayIndex] = byteConvertedToInt % 2 == 1;
+        //     byteConvertedToInt /= 2;
+        //     ++bitArrayIndex;
+        // }
+
+        // bitArrayIndex = bitArrayIndexBeforeCycle - 1;
         int curIndexOfPreviousByteSequence = 1;
+        
         outputFile.Write(previousByteSequence[0]);
+        // Можно не записывать сразу этот байт в файл, а положить его сначала в code (не забыть уменьшить bitArrayIndex!), затем 
+        
         while (true)
         {
             try
@@ -137,48 +152,56 @@ public static class Lzw
                 for (int i = 0; i < numberOfBytesToRead; i++)
                 {
                     int readByte = inputFile.ReadByte();
-                    for (int j = 0; j < 8; j++)
+                    
+                    bitArrayIndex = bitArrayIndex   - 7;
+                    int bitArrayIndexBeforeCycle = bitArrayIndex;
+                    for (int _ = 0; _ < 8; _++)
                     {
-                        // code.RightShift(1);
                         code[bitArrayIndex] = readByte % 2 == 1;
                         readByte /= 2;
-                        --bitArrayIndex;
+                        ++bitArrayIndex;
                     }
+                    bitArrayIndex = bitArrayIndexBeforeCycle - 1;
                 }
                 
-                // В этом блоке кода: только что считанные биты (количеством numberOfBitsToRead) преобразовали в интовые коды
-                int indexOfSequenceInDict = 0;
-                for (int i = 0; i < numberOfBitsToRead; i++)
+                while (bitArrayLength - bitArrayIndex >= numberOfBitsToRead)
                 {
-                    indexOfSequenceInDict = indexOfSequenceInDict * 2 + (code[bitArrayLength - 1 - i] ? 1 : 0);
-                }
-                
-                // Убрали из массива уже преобразованные биты
-                code.LeftShift(numberOfBitsToRead);
-                bitArrayIndex += numberOfBitsToRead;
+                    // В этом блоке кода: только что считанные биты (количеством numberOfBitsToRead) преобразовали в интовые коды
+                    int indexOfSequenceInDict = 0;
+                    for (int i = 0; i < numberOfBitsToRead; i++)
+                    {
+                        indexOfSequenceInDict = indexOfSequenceInDict * 2 + (code[bitArrayLength - 1 - i] ? 1 : 0);
+                    }
 
-                // последовательлность битов с этим кодом кладем в файл
-                outputFile.Write(sequences[indexOfSequenceInDict]);
-                
-                // Предыдущую последовательность, конкатенированную с первым байтом текущей последовательности нужно положить в словарь
-                previousByteSequence[curIndexOfPreviousByteSequence] = sequences[indexOfSequenceInDict][0];
-                sequences.Add(sequences.Count, previousByteSequence[0..(curIndexOfPreviousByteSequence + 1)]);
-                
-                // После добавления в словарь нужно высчитать количетсво бит, которое нужно считывать.
-                if (sequences.Count >= powerOfTwo)
-                {
-                    ++numberOfBitsToRead;
-                    numberOfBytesToRead = (int) Math.Ceiling((double) numberOfBitsToRead / 8.0);
-                    powerOfTwo *= 2;
-                }
+                    // Убрали из массива уже преобразованные биты
+                    code.LeftShift(numberOfBitsToRead);
+                    bitArrayIndex += numberOfBitsToRead;
 
-                // кладем предыдущие байты в previousByteSequence (Пока что через цикл копируем побайтово, потом нужно как-то оптимизировать)
-                for (int i = 0; i < sequences[indexOfSequenceInDict].Length; i++)
-                {
-                    previousByteSequence[i] = sequences[indexOfSequenceInDict][i];
-                }
+                    // bitArrayIndex = bitArrayIndex - numberOfBitsToRead;
 
-                curIndexOfPreviousByteSequence = sequences[indexOfSequenceInDict].Length;
+                    // последовательность битов с этим кодом кладем в файл
+                    outputFile.Write(sequences[indexOfSequenceInDict]);
+
+                    // Предыдущую последовательность, конкатенированную с первым байтом текущей последовательности нужно положить в словарь
+                    previousByteSequence[curIndexOfPreviousByteSequence] = sequences[indexOfSequenceInDict][0];
+                    sequences.Add(sequences.Count, previousByteSequence[0..(curIndexOfPreviousByteSequence + 1)]);
+
+                    // После добавления в словарь нужно высчитать количество бит, которое нужно считывать.
+                    if (sequences.Count >= powerOfTwo)
+                    {
+                        ++numberOfBitsToRead;
+                        numberOfBytesToRead = (int) Math.Ceiling((double) numberOfBitsToRead / 8.0);
+                        powerOfTwo *= 2;
+                    }
+
+                    // кладем предыдущие байты в previousByteSequence (Пока что через цикл копируем побайтово, потом нужно как-то оптимизировать)
+                    for (int i = 0; i < sequences[indexOfSequenceInDict].Length; i++)
+                    {
+                        previousByteSequence[i] = sequences[indexOfSequenceInDict][i];
+                    }
+
+                    curIndexOfPreviousByteSequence = sequences[indexOfSequenceInDict].Length;
+                }
             }
             catch (EndOfStreamException)
             {
