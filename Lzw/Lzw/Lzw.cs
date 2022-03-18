@@ -176,11 +176,6 @@ public static class Lzw
                     bitArrayIndex += numberOfBitsToRead;
                     ++counter;
 
-                    if (counter == 497)
-                    {
-                        Console.WriteLine();
-                    }
-                    
                     // bitArrayIndex = bitArrayIndex - numberOfBitsToRead;
 
                     if (indexOfSequenceInDict == sequences.Count)
