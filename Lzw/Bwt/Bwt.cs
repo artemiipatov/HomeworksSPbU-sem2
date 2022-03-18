@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Text;
@@ -9,8 +10,33 @@ using System;
 // class with two public methods for burrows-wheeler transformation
 public static class Transformation
 {
-    private static readonly int UnicodeSize = 65536;
+    private class ByteArrayComparer : IComparer
+    {
+        int IComparer.Compare(object? obj1, object? obj2)
+        {
+            IEnumerable enumerable1 = obj1 as IEnumerable ?? throw new InvalidOperationException();
+            IEnumerable enumerable2 = obj2 as IEnumerable ?? throw new InvalidOperationException();
+            IEnumerator enumerator1 = enumerable1.GetEnumerator();
+            IEnumerator enumerator2 = enumerable2.GetEnumerator();
+            enumerator1.MoveNext();
+            enumerator2.MoveNext();
+            while (true)
+            {
+                if ((byte)enumerator1.Current != (byte)enumerator2.Current)
+                {
+                    return (byte)enumerator1.Current > (byte)enumerator2.Current ? 1 : -1;
+                }
 
+                if (!enumerator1.MoveNext() || !enumerator2.MoveNext())
+                {
+                    break;
+                }
+            }
+            return 0;
+        }
+    }
+    private static readonly int UnicodeSize = 65536;
+    private static readonly int BytesToRead = 8192; 
     /// <summary>
     /// forward burrows-wheeler transformation. Returns transformed string and index of the original string in the array of sorted rotations. 
     /// </summary>
@@ -23,13 +49,14 @@ public static class Transformation
         {
             while (true)
             {
-                byte[] fileBytes = binReader.ReadBytes(8192);
+                byte[] fileBytes = binReader.ReadBytes(BytesToRead);
                 if (fileBytes.Length == 0)
                 {
                     break;
                 }
                 byte[][] rotations = GetRotations(fileBytes);
-                Sort(rotations);
+                // Sort(rotations);
+                Array.Sort(rotations, new ByteArrayComparer());
                 newFile.Write(IndexOfByteArray(rotations, fileBytes));
                 foreach (var rotation in rotations)
                 {
@@ -57,7 +84,7 @@ public static class Transformation
         return rotations;
     }
 
-    private static void Sort(byte[][] rotations) // Заменить на merge sort
+    private static void Sort(byte[][] rotations)
     {
         for (int index = 1; index < rotations.Length; index++)
         {
@@ -98,7 +125,7 @@ public static class Transformation
             try
             {
                 var index = inputFile.ReadInt32();
-                byte[] fileBytes = inputFile.ReadBytes(8192);
+                byte[] fileBytes = inputFile.ReadBytes(BytesToRead);
                 byte[] sortedBytes = fileBytes.ToArray();
                 Array.Sort(sortedBytes);
                 int[] numbers = GetNumbers(fileBytes, sortedBytes);

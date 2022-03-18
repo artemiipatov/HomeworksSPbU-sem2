@@ -271,7 +271,6 @@ public static class Lzw
             name = path[index] + name;
             index -= 1;
         }
-        
         return name;
     }
 }
