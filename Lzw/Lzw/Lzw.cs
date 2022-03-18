@@ -140,7 +140,8 @@ public static class Lzw
         int curIndexOfPreviousByteSequence = 1;
         
         outputFile.Write(previousByteSequence[0]);
-        
+
+        int counter = 256;
         while (true)
         {
             try
@@ -173,7 +174,13 @@ public static class Lzw
                     // Убрали из массива уже преобразованные биты
                     code.LeftShift(numberOfBitsToRead);
                     bitArrayIndex += numberOfBitsToRead;
+                    ++counter;
 
+                    if (counter == 497)
+                    {
+                        Console.WriteLine();
+                    }
+                    
                     // bitArrayIndex = bitArrayIndex - numberOfBitsToRead;
 
                     if (indexOfSequenceInDict == sequences.Count)
@@ -193,7 +200,7 @@ public static class Lzw
                     }
 
                     // После добавления в словарь нужно высчитать количество бит, которое нужно считывать.
-                    if (sequences.Count >= powerOfTwo)
+                    if (counter >= powerOfTwo - 1) // testing
                     {
                         ++numberOfBitsToRead;
                         numberOfBytesToRead = (int) Math.Ceiling((double) numberOfBitsToRead / 8.0);
