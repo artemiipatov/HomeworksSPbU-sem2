@@ -29,7 +29,6 @@ public static class Lzw
             int maxCodeLength = 8;
             int powerOfTwo = (int)Math.Pow(2, 8); // Поменять название переменной
             using BinaryWriter newBinFile = new BinaryWriter(File.Open("../../../" + GetNameOfFile(path) + ".zipped", FileMode.Create));
-            
             while (true)
             {
                 try
@@ -51,11 +50,6 @@ public static class Lzw
                         }
 
                         bitArrayIndex = bitArrayIndexBeforeCycle - 1;
-                        // if (bitArrayIndexBeforeCycle - bitArrayIndex  < maxCodeLength)
-                        // {
-                        //     code.RightShift(maxCodeLength - (bitArrayIndexBeforeCycle - bitArrayIndex));
-                        //     bitArrayIndex -= (maxCodeLength - (bitArrayIndexBeforeCycle - bitArrayIndex));
-                        // }
                         while ((63 - bitArrayIndex) >= 8)
                         {
                             byte[] byteToFile = new byte[1];
@@ -82,7 +76,21 @@ public static class Lzw
                 }
                 catch (EndOfStreamException)
                 {
-                    if (bitArrayIndex != 63)
+                    if (byteArrayIndex >= 1)
+                    {
+                        int codeOfByteSequence = sequences.GetNumber(readBytes[0..byteArrayIndex]);
+                        bitArrayIndex = bitArrayIndex - maxCodeLength + 1;
+                        int bitArrayIndexBeforeCycle = bitArrayIndex;
+                        while (codeOfByteSequence != 0)
+                        {
+                            code[bitArrayIndex] = codeOfByteSequence % 2 == 1;
+                            codeOfByteSequence /= 2;
+                            ++bitArrayIndex;
+                        }
+
+                        bitArrayIndex = bitArrayIndexBeforeCycle - 1;
+                    }
+                    while (bitArrayIndex <= 63)
                     {
                         byte[] byteToFile = new byte[1];
                         BitArray oneByteArrayOfBits = new BitArray(8);
@@ -92,6 +100,8 @@ public static class Lzw
                         }
                         oneByteArrayOfBits.CopyTo(byteToFile, 0);
                         newBinFile.Write(byteToFile);
+                        code.LeftShift(8);
+                        bitArrayIndex += 8;
                     }
                     break;
                 }
@@ -126,17 +136,6 @@ public static class Lzw
         }
         byte[] previousByteSequence = new byte[1024];
         previousByteSequence[0] = inputFile.ReadByte(); // Код первого считанного байта известен сразу, потому что первая последовательность байтов кодируется одним байтом
-        // int byteConvertedToInt = previousByteSequence[0];
-        // bitArrayIndex = bitArrayIndex - numberOfBitsToRead + 1;
-        // int bitArrayIndexBeforeCycle = bitArrayIndex;
-        // for (int j = 0; j < 8; j++)
-        // {
-        //     code[bitArrayIndex] = byteConvertedToInt % 2 == 1;
-        //     byteConvertedToInt /= 2;
-        //     ++bitArrayIndex;
-        // }
-
-        // bitArrayIndex = bitArrayIndexBeforeCycle - 1;
         int curIndexOfPreviousByteSequence = 1;
         
         outputFile.Write(previousByteSequence[0]);
@@ -176,8 +175,6 @@ public static class Lzw
                     bitArrayIndex += numberOfBitsToRead;
                     ++counter;
 
-                    // bitArrayIndex = bitArrayIndex - numberOfBitsToRead;
-
                     if (indexOfSequenceInDict == sequences.Count)
                     {
                         previousByteSequence[curIndexOfPreviousByteSequence] = previousByteSequence[0];
@@ -195,7 +192,7 @@ public static class Lzw
                     }
 
                     // После добавления в словарь нужно высчитать количество бит, которое нужно считывать.
-                    if (counter >= powerOfTwo - 1) // testing
+                    if (counter >= powerOfTwo - 1)
                     {
                         ++numberOfBitsToRead;
                         numberOfBytesToRead = (int) Math.Ceiling((double) numberOfBitsToRead / 8.0);
