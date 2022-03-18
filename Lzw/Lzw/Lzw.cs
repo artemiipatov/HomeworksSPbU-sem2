@@ -213,6 +213,50 @@ public static class Lzw
             }
             catch (EndOfStreamException)
             {
+                while (bitArrayLength - 1 - bitArrayIndex >= numberOfBitsToRead)
+                {
+                    int indexOfSequenceInDict = 0;
+                    for (int i = 0; i < numberOfBitsToRead; i++)
+                    {
+                        indexOfSequenceInDict = indexOfSequenceInDict * 2 + (code[bitArrayLength - 1 - i] ? 1 : 0);
+                    }
+
+                    code.LeftShift(numberOfBitsToRead);
+                    bitArrayIndex += numberOfBitsToRead;
+                    ++counter;
+                    if (indexOfSequenceInDict == sequences.Count)
+                    {
+                        previousByteSequence[curIndexOfPreviousByteSequence] = previousByteSequence[0];
+                        outputFile.Write(previousByteSequence[0..(curIndexOfPreviousByteSequence + 1)]);
+                        sequences.Add(sequences.Count, previousByteSequence[0..(curIndexOfPreviousByteSequence + 1)]);
+                    }
+                    else
+                    {
+                        // последовательность битов с этим кодом кладем в файл
+                        outputFile.Write(sequences[indexOfSequenceInDict]);
+                    
+                        // Предыдущую последовательность, конкатенированную с первым байтом текущей последовательности нужно положить в словарь
+                        previousByteSequence[curIndexOfPreviousByteSequence] = sequences[indexOfSequenceInDict][0];
+                        sequences.Add(sequences.Count, previousByteSequence[0..(curIndexOfPreviousByteSequence + 1)]);
+                    }
+
+                    // После добавления в словарь нужно высчитать количество бит, которое нужно считывать.
+                    if (counter >= powerOfTwo - 1) // testing
+                    {
+                        ++numberOfBitsToRead;
+                        numberOfBytesToRead = (int) Math.Ceiling((double) numberOfBitsToRead / 8.0);
+                        powerOfTwo *= 2;
+                    }
+
+                    // кладем предыдущие байты в previousByteSequence (Пока что через цикл копируем побайтово, потом нужно как-то оптимизировать)
+                    for (int i = 0; i < sequences[indexOfSequenceInDict].Length; i++)
+                    {
+                        previousByteSequence[i] = sequences[indexOfSequenceInDict][i];
+                    }
+
+                    curIndexOfPreviousByteSequence = sequences[indexOfSequenceInDict].Length;
+
+                }
                 outputFile.Close();
                 Transformation.BwtInverse(pathToUnzippedFile);
                 File.Delete(pathToUnzippedFile);
