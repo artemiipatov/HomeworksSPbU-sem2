@@ -25,7 +25,7 @@ public static class Lzw
             byte[] readBytes = new byte[1024]; // Подумать насчет размера
             readBytes[0] = binFile.ReadByte();
             int byteArrayIndex = 1;
-            int bitArrayIndex = 63; // Скорее всего начинаться должно с 63
+            int bitArrayIndex = 63;
             int maxCodeLength = 8;
             int powerOfTwo = (int)Math.Pow(2, 8); // Поменять название переменной
             using BinaryWriter newBinFile = new BinaryWriter(File.Open("../../../" + GetNameOfFile(path) + ".zipped", FileMode.Create));
@@ -41,11 +41,10 @@ public static class Lzw
                         int codeOfByteSequence = sequences.GetNumber(readBytes[0..byteArrayIndex]);
                         readBytes[0] = readBytes[byteArrayIndex];
                         byteArrayIndex = 1;
-                        bitArrayIndex = bitArrayIndex - maxCodeLength + 1; // А здесь скорее всего отниматься должно не это
+                        bitArrayIndex = bitArrayIndex - maxCodeLength + 1;
                         int bitArrayIndexBeforeCycle = bitArrayIndex;
                         while (codeOfByteSequence != 0)
                         {
-                            // code.RightShift(1);
                             code[bitArrayIndex] = codeOfByteSequence % 2 == 1;
                             codeOfByteSequence /= 2;
                             ++bitArrayIndex;
@@ -98,7 +97,7 @@ public static class Lzw
                 }
             }
         }
-        // File.Delete("../../../.transformed");
+        File.Delete("../../../.transformed");
     }
 
     public static void Decompress(string path)
@@ -125,8 +124,7 @@ public static class Lzw
         {
             sequences.Add(i, new byte[] { (byte)i });
         }
-        byte[] previousByteSequence = new byte[1024]; // Возможно, его нужно просто объявить, а инициализировать никак не нужно,
-                                                      // потому что можно просто присваивать разные значения в зависимости от текущей последовательности байтов
+        byte[] previousByteSequence = new byte[1024];
         previousByteSequence[0] = inputFile.ReadByte(); // Код первого считанного байта известен сразу, потому что первая последовательность байтов кодируется одним байтом
         // int byteConvertedToInt = previousByteSequence[0];
         // bitArrayIndex = bitArrayIndex - numberOfBitsToRead + 1;
@@ -142,7 +140,6 @@ public static class Lzw
         int curIndexOfPreviousByteSequence = 1;
         
         outputFile.Write(previousByteSequence[0]);
-        // Можно не записывать сразу этот байт в файл, а положить его сначала в code (не забыть уменьшить bitArrayIndex!), затем 
         
         while (true)
         {
