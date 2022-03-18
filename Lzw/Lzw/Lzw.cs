@@ -214,9 +214,9 @@ public static class Lzw
             }
             catch (EndOfStreamException)
             {
-                // outputFile.Close();
-                // Transformation.BwtInverse(pathToUnzippedFile);
-                // File.Delete(pathToUnzippedFile);
+                outputFile.Close();
+                Transformation.BwtInverse(pathToUnzippedFile);
+                File.Delete(pathToUnzippedFile);
                 break;
             }
         }
