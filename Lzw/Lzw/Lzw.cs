@@ -20,7 +20,9 @@ public static class Lzw
         {
             sequences.AddItem(new byte[] { (byte)i });
         }
-        using (BinaryReader binFile = new BinaryReader(File.Open("../../../.transformed", FileMode.Open)))
+
+        string nameOfTransformedFile = "../../../" + GetNameOfFile(path) + ".transformed";
+        using (BinaryReader binFile = new BinaryReader(File.Open(nameOfTransformedFile, FileMode.Open)))
         {
             byte[] readBytes = new byte[1024]; // Подумать насчет размера
             readBytes[0] = binFile.ReadByte();
@@ -107,13 +109,13 @@ public static class Lzw
                 }
             }
         }
-        File.Delete("../../../.transformed");
+        File.Delete(nameOfTransformedFile);
     }
 
     public static void Decompress(string path)
     {
         using BinaryReader inputFile = new BinaryReader(File.Open(path, FileMode.Open));
-        var pathToUnzippedFile = ("../../../transformed.unzipped." + GetNameOfFile(path)).Split(".zipped")[0];
+        var pathToUnzippedFile = ("../../../unzipped." + GetNameOfFile(path)).Split(".zipped")[0];
         using BinaryWriter outputFile = new BinaryWriter(File.Open(pathToUnzippedFile, FileMode.Create));
         // переменная для количества бит, которые нужно считывать на текущий момент (перевеодим в байты, округляем в большую сторону -- получаем количество
         // байт, которые нужно считать
@@ -238,7 +240,7 @@ public static class Lzw
                     }
 
                     // После добавления в словарь нужно высчитать количество бит, которое нужно считывать.
-                    if (counter >= powerOfTwo - 1) // testing
+                    if (counter >= powerOfTwo - 1)
                     {
                         ++numberOfBitsToRead;
                         numberOfBytesToRead = (int) Math.Ceiling((double) numberOfBitsToRead / 8.0);
