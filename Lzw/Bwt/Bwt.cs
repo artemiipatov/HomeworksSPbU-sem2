@@ -12,12 +12,14 @@ public static class Transformation
 {
     private class ByteArrayComparer : IComparer
     {
+        [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH", MessageId = "type: System.Byte; size: 2108MB")]
         int IComparer.Compare(object? obj1, object? obj2)
         {
             IEnumerable enumerable1 = obj1 as IEnumerable ?? throw new InvalidOperationException();
             IEnumerable enumerable2 = obj2 as IEnumerable ?? throw new InvalidOperationException();
             IEnumerator enumerator1 = enumerable1.GetEnumerator();
             IEnumerator enumerator2 = enumerable2.GetEnumerator();
+            
             enumerator1.MoveNext();
             enumerator2.MoveNext();
             while (true)
@@ -35,36 +37,40 @@ public static class Transformation
             return 0;
         }
     }
-    private static readonly int UnicodeSize = 65536;
-    private static readonly int BytesToRead = 8192; 
+
+    private const int UnicodeSize = 65536;
+    private const int BytesToRead = 8192;
+
     /// <summary>
     /// forward burrows-wheeler transformation. Returns transformed string and index of the original string in the array of sorted rotations. 
     /// </summary>
     /// <param name="path"></param>
     /// <returns></returns>
+    [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH", MessageId = "type: System.Byte[]")]
+    [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH", MessageId = "type: System.Byte")]
     public static void Bwt(string path)
     {
         using var binReader = new BinaryReader(File.Open(path, FileMode.Open));
-        using (var newFile = new BinaryWriter(File.Open("../../../.transformed", FileMode.Create)))
+        string nameOfNewFile = "../../../" + GetNameOfFile(path) + ".transformed";
+        using var newFile = new BinaryWriter(File.Open(nameOfNewFile, FileMode.Create));
+        while (true)
         {
-            while (true)
+            byte[] fileBytes = binReader.ReadBytes(BytesToRead);
+            if (fileBytes.Length == 0)
             {
-                byte[] fileBytes = binReader.ReadBytes(BytesToRead);
-                if (fileBytes.Length == 0)
-                {
-                    break;
-                }
-                byte[][] rotations = GetRotations(fileBytes);
-                // Sort(rotations);
-                Array.Sort(rotations, new ByteArrayComparer());
-                newFile.Write(IndexOfByteArray(rotations, fileBytes));
-                foreach (var rotation in rotations)
-                {
-                    newFile.Write(rotation[^1]);
-                }
+                break;
+            }
+            byte[][] rotations = GetRotations(fileBytes);
+            // Sort(rotations);
+            Array.Sort(rotations, new ByteArrayComparer());
+            newFile.Write(IndexOfByteArray(rotations, fileBytes));
+            foreach (var rotation in rotations)
+            {
+                newFile.Write(rotation[^1]);
             }
         }
-        File.SetAttributes("../../../.transformed", FileAttributes.Hidden);
+
+        File.SetAttributes(nameOfNewFile, FileAttributes.Hidden);
     }
 
     private static byte[][] GetRotations(byte[] fileBytes)
@@ -84,18 +90,18 @@ public static class Transformation
         return rotations;
     }
 
-    private static void Sort(byte[][] rotations)
-    {
-        for (int index = 1; index < rotations.Length; index++)
-        {
-            int i = index;
-            while (i > 0 && ((IStructuralComparable) rotations[i]).CompareTo(rotations[i - 1], Comparer<byte>.Default) < 0)
-            {
-                (rotations[i - 1], rotations[i]) = (rotations[i], rotations[i - 1]);
-                --i;
-            }
-        }
-    }
+    // private static void Sort(byte[][] rotations)
+    // {
+    //     for (int index = 1; index < rotations.Length; index++)
+    //     {
+    //         int i = index;
+    //         while (i > 0 && ((IStructuralComparable) rotations[i]).CompareTo(rotations[i - 1], Comparer<byte>.Default) < 0)
+    //         {
+    //             (rotations[i - 1], rotations[i]) = (rotations[i], rotations[i - 1]);
+    //             --i;
+    //         }
+    //     }
+    // }
 
     private static int IndexOfByteArray(byte[][] sourceArray, byte[] byteArray)
     {
@@ -119,7 +125,8 @@ public static class Transformation
     public static void BwtInverse(string path)
     {
         using var inputFile = new BinaryReader(File.Open(path, FileMode.Open));
-        using var outputFile = new BinaryWriter(File.Open("../../../" + GetNameOfFile(path), FileMode.Create));
+        string nameOfNewFile = ("../../../" + "original." + GetNameOfFile(path)).Split(".transformed")[0];
+        using var outputFile = new BinaryWriter(File.Open(nameOfNewFile, FileMode.Create));
         while (true)
         {
             try
@@ -164,12 +171,20 @@ public static class Transformation
     private static string GetNameOfFile(string path)
     {
         int index = path.Length - 1;
-        string name = "";
-        while (!name.Contains("unzipped") && index != -1)
+        string name1 = "";
+        while (path[index] != '/' && index != -1)
         {
-            name = path[index] + name;
+            name1 = path[index] + name1;
             index -= 1;
         }
-        return name;
+
+        index = name1.Length - 1;
+        string name2 = "";
+        while (!name2.Contains("unzipped") && index != -1)
+        {
+            name2 = name1[index] + name2;
+            index -= 1;
+        }
+        return name2;
     }
 }

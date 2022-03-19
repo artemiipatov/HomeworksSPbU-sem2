@@ -2,6 +2,8 @@ namespace Trie;
 
 public interface ITrie
 {
+    int Size { get; }
+    
     bool AddItem(byte[] element);
 
     bool Remove(byte[] element);

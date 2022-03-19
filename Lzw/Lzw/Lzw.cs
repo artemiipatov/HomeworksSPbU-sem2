@@ -15,7 +15,7 @@ public static class Lzw
         Transformation.Bwt(path);
         BitArray code = new BitArray(64);
         // Создаем дерево
-        Trie sequences = new Trie();
+        ITrie sequences = new Trie();
         for (var i = 0; i < 256; i++)
         {
             sequences.AddItem(new byte[] { (byte)i });
