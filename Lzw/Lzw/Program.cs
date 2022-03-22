@@ -14,7 +14,7 @@ while (true)
                 Console.WriteLine("Wrong input data: null path");
                 return;
             }
-            Lzw.Lzw.Compress(path);
+            Console.WriteLine(Lzw.Lzw.Compress(path));
             break;
         }
         case "-u":

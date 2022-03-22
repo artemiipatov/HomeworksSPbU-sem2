@@ -10,7 +10,12 @@ using Trie;
 
 public static class Lzw
 {
-    public static void Compress(string path)
+    /// <summary>
+    /// Compressing function of lzw algorithm
+    /// </summary>d
+    /// <param name="path"></param>
+    /// <returns>Coefficient of compression</returns>
+    public static double Compress(string path)
     {
         Transformation.Bwt(path);
         BitArray code = new BitArray(64);
@@ -22,6 +27,7 @@ public static class Lzw
         }
 
         string nameOfTransformedFile = "../../../" + GetNameOfFile(path) + ".transformed";
+        string nameOfZippedFile = "../../../" + GetNameOfFile(path) + ".zipped";
         using (BinaryReader binFile = new BinaryReader(File.Open(nameOfTransformedFile, FileMode.Open)))
         {
             byte[] readBytes = new byte[1024]; // Подумать насчет размера
@@ -30,7 +36,7 @@ public static class Lzw
             int bitArrayIndex = 63;
             int maxCodeLength = 8;
             int powerOfTwo = (int)Math.Pow(2, 8); // Поменять название переменной
-            using BinaryWriter newBinFile = new BinaryWriter(File.Open("../../../" + GetNameOfFile(path) + ".zipped", FileMode.Create));
+            using BinaryWriter newBinFile = new BinaryWriter(File.Open(nameOfZippedFile, FileMode.Create));
             while (true)
             {
                 try
@@ -105,11 +111,14 @@ public static class Lzw
                         code.LeftShift(8);
                         bitArrayIndex += 8;
                     }
+
+                    double newFileSize = newBinFile.BaseStream.Length;
                     break;
                 }
             }
         }
         File.Delete(nameOfTransformedFile);
+        return (double) new FileInfo(path).Length / new FileInfo(nameOfZippedFile).Length;
     }
 
     public static void Decompress(string path)
@@ -123,7 +132,6 @@ public static class Lzw
         int numberOfBitsToRead = 9;
         int numberOfBytesToRead = 2;
         int powerOfTwo = (int)Math.Pow(2, numberOfBitsToRead);
-        byte[] readBytes = new byte[1024]; // Размер поменять
         int bitArrayLength = 1024;
         BitArray code = new BitArray(bitArrayLength);
         int bitArrayIndex = code.Length - 1;
@@ -152,7 +160,7 @@ public static class Lzw
                 {
                     int readByte = inputFile.ReadByte();
                     
-                    bitArrayIndex = bitArrayIndex   - 7;
+                    bitArrayIndex -= 7;
                     int bitArrayIndexBeforeCycle = bitArrayIndex;
                     for (int _ = 0; _ < 8; _++)
                     {
@@ -243,7 +251,6 @@ public static class Lzw
                     if (counter >= powerOfTwo - 1)
                     {
                         ++numberOfBitsToRead;
-                        numberOfBytesToRead = (int) Math.Ceiling((double) numberOfBitsToRead / 8.0);
                         powerOfTwo *= 2;
                     }
 
