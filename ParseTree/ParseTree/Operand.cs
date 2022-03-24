@@ -3,19 +3,13 @@ namespace ParseTree;
 public class Operand : INode
 {
     public int Value { get; set; }
-    public INode Parent { get; set; }
+    public INode? Parent { get; set; }
     public Operand(int value)
     {
         Value = value;
     }
 
-    public void Print()
-    {
-        Console.Write(Value + " ");
-    }
+    public void Print() => Console.Write(Value + " ");
 
-    public int Eval()
-    {
-        return Value;
-    }
+    public int Eval() => Value;
 }

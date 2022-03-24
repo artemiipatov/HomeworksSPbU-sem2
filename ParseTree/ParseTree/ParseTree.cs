@@ -1,111 +1,98 @@
-using System.Diagnostics;
-using System.Linq.Expressions;
-using System.Net;
-using System.Reflection.Emit;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.InteropServices;
-
 namespace ParseTree;
 
 public class ParseTree : IParseTree
 {
-    public enum NodeType
-    {
-        Operator,
-        Operand
-    }
-
-    private INode? root = null;
-    private INode? currentNode = null;
+    private INode? _root;
+    private INode? _currentNode;
     
-    public void AddNode(int value, NodeType operandOrOperator)
+    public void AddNode(int value, IParseTree.NodeType operandOrOperator)
     {
-        if (operandOrOperator == NodeType.Operator)
+        if (operandOrOperator == IParseTree.NodeType.Operator)
         {
             switch ((char)value)
             {
                 case ')':
                 {
-                    if (currentNode == null)
+                    if (_currentNode == null)
                     {
                         throw new Exception("Wrong input");
                     }
-                    currentNode = ((Operator)currentNode).Parent ?? currentNode;
+                    _currentNode = ((Operator)_currentNode).Parent ?? _currentNode;
                     break;
                 }
                 case '*':
                 {
-                    if (currentNode == null)
+                    if (_currentNode == null)
                     {
-                        root = new OperatorMultiply();
-                        currentNode = root;
+                        _root = new OperatorMultiply();
+                        _currentNode = _root;
                     }
-                    else if (((Operator)currentNode).LeftSon == null)
+                    else if (((Operator)_currentNode).LeftSon == null)
                     {
-                        ((Operator)currentNode).LeftSon = new OperatorMultiply() { Parent = currentNode };
-                        currentNode = ((Operator)currentNode).LeftSon;
+                        (((Operator)_currentNode!)).LeftSon = new OperatorMultiply() { Parent = _currentNode };
+                        _currentNode = ((Operator)_currentNode).LeftSon;
                     }
-                    else if (((Operator)currentNode).RightSon == null)
+                    else if (((Operator)_currentNode).RightSon == null)
                     {
-                        ((Operator)currentNode).RightSon = new OperatorMultiply() { Parent = currentNode };
-                        currentNode = ((Operator)currentNode).RightSon;
+                        (((Operator)_currentNode!)).RightSon = new OperatorMultiply() { Parent = _currentNode };
+                        _currentNode = ((Operator)_currentNode).RightSon;
                     }
                     break;
                 }
                 case '/':
                 {
-                    if (currentNode == null)
+                    if (_currentNode == null)
                     {
-                        root = new OperatorDivide();
-                        currentNode = root;
+                        _root = new OperatorDivide();
+                        _currentNode = _root;
                     }
-                    else if (((Operator)currentNode).LeftSon == null)
+                    else if (((Operator)_currentNode).LeftSon == null)
                     {
-                        ((Operator)currentNode).LeftSon = new OperatorDivide() { Parent = currentNode };
-                        currentNode = ((Operator)currentNode).LeftSon;
+                        (((Operator)_currentNode!)).LeftSon = new OperatorDivide() { Parent = _currentNode };
+                        _currentNode = ((Operator)_currentNode).LeftSon;
                     }
-                    else if (((Operator)currentNode).RightSon == null)
+                    else if (((Operator)_currentNode).RightSon == null)
                     {
-                        ((Operator)currentNode).RightSon = new OperatorDivide() { Parent = currentNode };
-                        currentNode = ((Operator)currentNode).RightSon;
+                        (((Operator)_currentNode!)).RightSon = new OperatorDivide() { Parent = _currentNode };
+                        _currentNode = ((Operator)_currentNode).RightSon;
                     }
                     break;
                 }
                 case '-':
                 {
-                    if (currentNode == null)
+                    if (_currentNode == null)
                     {
-                        root = new OperatorSubstract();
-                        currentNode = root;
+                        _root = new OperatorSubstract();
+                        _currentNode = _root;
                     }
-                    else if (((Operator)currentNode).LeftSon == null)
+                    else if (((Operator)_currentNode).LeftSon == null)
                     {
-                        ((Operator)currentNode).LeftSon = new OperatorSubstract() { Parent = currentNode };
-                        currentNode = ((Operator)currentNode).LeftSon;
+                        (((Operator)_currentNode!)).LeftSon = new OperatorSubstract() { Parent = _currentNode };
+                        _currentNode = ((Operator)_currentNode).LeftSon;
                     }
-                    else if (((Operator)currentNode).RightSon == null)
+                    else if (((Operator)_currentNode).RightSon == null)
                     {
-                        ((Operator)currentNode).RightSon = new OperatorSubstract() { Parent = currentNode };
-                        currentNode = ((Operator)currentNode).RightSon;
+                        (((Operator)_currentNode!)).RightSon = new OperatorSubstract() { Parent = _currentNode };
+                        _currentNode = ((Operator)_currentNode).RightSon;
                     }
                     break;
                 }
                 case '+':
                 {
-                    if (currentNode == null)
+                    if (_currentNode == null)
                     {
-                        root = new OperatorAdd();
-                        currentNode = root;
+                        _root = new OperatorAdd();
+                        _currentNode = _root;
                     }
-                    else if (((Operator)currentNode).LeftSon == null)
+                    else if (((Operator)_currentNode).LeftSon == null)
                     {
-                        ((Operator)currentNode).LeftSon = new OperatorAdd() { Parent = currentNode };
-                        currentNode = ((Operator)currentNode).LeftSon;
+                        (((Operator)_currentNode!)).LeftSon = new OperatorAdd() { Parent = _currentNode };
+                        _currentNode = ((Operator)_currentNode).LeftSon;
                     }
-                    else if (((Operator)currentNode).RightSon == null)
+                    else if (((Operator)_currentNode).RightSon == null)
                     {
-                        ((Operator)currentNode).RightSon = new OperatorAdd() { Parent = currentNode };
-                        currentNode = ((Operator)currentNode).RightSon;
+                        (((Operator)_currentNode!)).RightSon = new OperatorAdd() { Parent = _currentNode };
+                        _currentNode = ((Operator)_currentNode).RightSon;
                     }
                     break;
                 }
@@ -113,29 +100,28 @@ public class ParseTree : IParseTree
         }
         else
         {
-            if (currentNode == null)
+            if (_currentNode == null)
             {
                 throw new Exception("Wrong input");
             }
-            Operand newNode = new Operand(value) { Parent = currentNode };
-            if (((Operator)currentNode).LeftSon == null)
+            Operand newNode = new Operand(value) { Parent = _currentNode };
+            if (((Operator)_currentNode).LeftSon == null)
             {
-                ((Operator)currentNode).LeftSon = newNode;
+                (((Operator)_currentNode!)).LeftSon = newNode;
             }
-            else if (((Operator)currentNode).RightSon == null)
+            else if (((Operator)_currentNode).RightSon == null)
             {
-                ((Operator)currentNode).RightSon = newNode;
+                (((Operator)_currentNode!)).RightSon = newNode;
             }
             else
             {
-                throw new Exception("Wrong input"); // уточнить
+                throw new Exception("Wrong input");
             }
         }
     }
 
     public void Parse(string path)
     {
-        // Вместо того, чтобы считывать посимвольно из файла, можно считать сразу весь файл и при помощи итератора пробегать по строке
         string expression = File.ReadAllText(path);
         int iter = 0;
         while (iter < expression.Length)
@@ -156,7 +142,7 @@ public class ParseTree : IParseTree
                 {
                     if (iter + 1 == expression.Length || expression[iter + 1] == ' ' || expression[iter + 1] == ')')
                     {
-                        AddNode(expression[iter], NodeType.Operator);
+                        AddNode(expression[iter], IParseTree.NodeType.Operator);
                         ++iter;
                         continue;
                     }
@@ -170,7 +156,7 @@ public class ParseTree : IParseTree
                         number += expression[iter];
                         ++iter;
                     }
-                    AddNode(int.Parse(number), NodeType.Operand);
+                    AddNode(int.Parse(number), IParseTree.NodeType.Operand);
                     break;
                 }
             }
@@ -179,11 +165,9 @@ public class ParseTree : IParseTree
 
     public int Eval()
     {
-        return root.Eval();
+        if (_root != null) return _root.Eval();
+        throw new NullReferenceException("Evaluation of empty expression");
     }
 
-    public void Print()
-    {
-        root.Print();
-    }
+    public void Print() => _root?.Print();
 }
