@@ -1,4 +1,4 @@
-namespace MyList;
+namespace Lists;
 
 public class ListElement
 {

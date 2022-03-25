@@ -1,6 +1,6 @@
-namespace MyList;
+namespace Lists;
 
-public interface IMyList
+public interface ICommonList
 {
     int Length { get; set; }
 
@@ -9,4 +9,6 @@ public interface IMyList
     void Remove(int position);
 
     void ChangeValue(int position, int value);
+
+    int Get(int position);
 }
