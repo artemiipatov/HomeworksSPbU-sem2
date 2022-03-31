@@ -1,4 +1,5 @@
 ﻿using Routers;
 
-Graph mygraph = new Graph("/home/strider/repos/HomeworksSPbU-sem2/Routers/Routers/input.txt");
-mygraph.GenerateConfig("/home/strider/repos/HomeworksSPbU-sem2/Routers/Routers/output.txt");
+string inputFilePath = "/home/strider/repos/HomeworksSPbU-sem2/Routers/Routers/input.txt";
+string outputFilePath = "/home/strider/repos/HomeworksSPbU-sem2/Routers/Routers/output.txt";
+RoutersUtility.GenerateConfig(inputFilePath, outputFilePath);
