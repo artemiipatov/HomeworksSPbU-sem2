@@ -1,16 +1,15 @@
+using System.Collections.Immutable;
+
 namespace Routers;
 
 public class Graph
 {
-    static readonly int arrayLength = 7;
-    private int maxNodeNumber = 0;
-    public int[,] Matrix = new int[arrayLength, arrayLength];
+    static readonly int ArrayLength = 7;
+    private int _maxNodeNumber = 0;
     
-    private enum TypeOfValue
-    {
-        Weight,
-        NodeNumber
-    }
+    public int[,] Matrix = new int[ArrayLength, ArrayLength];
+    
+    private Dictionary<(int, int), int> _edges = new();
 
     public Graph(string inputFilePath)
     {
@@ -29,19 +28,20 @@ public class Graph
             }
             string[] splitLine = line.Split(" ");
             int startNode = int.Parse(splitLine[0].Split(":")[0]);
-            if (startNode > maxNodeNumber)
+            if (startNode > _maxNodeNumber)
             {
-                maxNodeNumber = startNode;
+                _maxNodeNumber = startNode;
             }
             for (var i = 1; i < splitLine.Length; i++)
             {
                 string[] splitSplitLine = splitLine[i].Split("(");
                 int finishNode = int.Parse(splitSplitLine[0]);
-                if (finishNode > maxNodeNumber)
+                if (finishNode > _maxNodeNumber)
                 {
-                    maxNodeNumber = finishNode;
+                    _maxNodeNumber = finishNode;
                 }
                 int weight = int.Parse(splitSplitLine[1].Split(")")[0]);
+                _edges.Add((startNode, finishNode), weight);
                 Matrix[startNode, finishNode] = weight;
                 Matrix[finishNode, startNode] = weight;
             }
@@ -50,28 +50,17 @@ public class Graph
 
     public void GenerateConfig(string outputFilePath)
     {
-        var edges = new SortedDictionary<int, (int, int)>(); // weigth (startingNodeNumber, finalNodeNumber)
-        for (int i = 0; i <= maxNodeNumber; i++)
-        {
-            for (int j = i; j <= maxNodeNumber; j++)
-            {
-                int weight = Matrix[i, j];
-                if (weight != 0)
-                {
-                    edges.Add(weight, (i, j));
-                }
-            }
-        }
+        _edges = _edges.OrderBy(pair => pair.Value).ToDictionary(pair => pair.Key, pair => pair.Value);
 
         int nodeCounter = 0;
-        foreach (var key in edges.Keys)
+        foreach (var key in _edges.Keys)
         {
-            if (nodeCounter == maxNodeNumber)
+            if (nodeCounter == _maxNodeNumber)
             {
                 break;
             }
-            int firstNode = edges[key].Item1;
-            int secondNode = edges[key].Item2;
+            int firstNode = key.Item1;
+            int secondNode = key.Item2;
             Matrix[firstNode, secondNode] = 0;
             Matrix[secondNode, firstNode] = 0;
             if (CheckConnectivity(firstNode, secondNode))
@@ -79,15 +68,15 @@ public class Graph
                 nodeCounter++;
                 continue;
             }
-            Matrix[firstNode, secondNode] = key;
-            Matrix[secondNode, firstNode] = key;
+            Matrix[firstNode, secondNode] = _edges[key];
+            Matrix[secondNode, firstNode] = _edges[key];
         }
 
         using var outputStream = new StreamWriter(outputFilePath);
-        for (int i = 0; i <= maxNodeNumber; i++)
+        for (int i = 0; i <= _maxNodeNumber; i++)
         {
             string curNodeConfig = i.ToString() + ":";
-            for (int j = i; j <= maxNodeNumber; j++)
+            for (int j = i; j <= _maxNodeNumber; j++)
             {
                 int weight = Matrix[i, j];
                 if (weight != 0)
@@ -101,7 +90,7 @@ public class Graph
 
     private bool CheckConnectivity(int searchedNode, int currentNode)
     {
-        var visited = new bool[maxNodeNumber + 1];
+        var visited = new bool[_maxNodeNumber + 1];
         return Dfs(searchedNode, currentNode, ref visited);
     }
 
@@ -112,7 +101,7 @@ public class Graph
             return true;
         }
         visited[currentNode] = true;
-        for (int adj = 0; adj < maxNodeNumber + 1; adj++)
+        for (int adj = 0; adj < _maxNodeNumber + 1; adj++)
         {
             if (Matrix[currentNode, adj] != 0)
             {
