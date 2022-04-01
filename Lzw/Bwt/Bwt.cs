@@ -172,7 +172,7 @@ public static class Transformation
     {
         int index = path.Length - 1;
         string name1 = "";
-        while (path[index] != '/' && index != -1)
+        while (path[index] != '/' && index != -1 && path[index] != '\\')
         {
             name1 = path[index] + name1;
             index -= 1;

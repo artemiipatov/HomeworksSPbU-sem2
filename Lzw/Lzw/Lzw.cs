@@ -244,7 +244,7 @@ public static class Lzw
     {
         int index = path.Length - 1;
         string name = "";
-        while (path[index] != '/' && index != -1)
+        while (path[index] != '/' && index != -1 && path[index] != '\\')
         {
             name = path[index] + name;
             index -= 1;
