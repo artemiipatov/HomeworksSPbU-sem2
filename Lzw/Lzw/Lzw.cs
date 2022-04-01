@@ -11,7 +11,7 @@ using Trie;
 public static class Lzw
 {
     /// <summary>
-    /// Compressing function of lzw algorithm
+    /// Compressing method of lzw algorithm
     /// </summary>d
     /// <param name="path"></param>
     /// <returns>Coefficient of compression</returns>
@@ -36,6 +36,7 @@ public static class Lzw
             int bitArrayIndex = 63;
             int maxCodeLength = 8;
             int powerOfTwo = (int)Math.Pow(2, 8); // Поменять название переменной
+            
             using BinaryWriter newBinFile = new BinaryWriter(File.Open(nameOfZippedFile, FileMode.Create));
             while (true)
             {
@@ -112,7 +113,6 @@ public static class Lzw
                         bitArrayIndex += 8;
                     }
 
-                    double newFileSize = newBinFile.BaseStream.Length;
                     break;
                 }
             }
@@ -120,18 +120,23 @@ public static class Lzw
         File.Delete(nameOfTransformedFile);
         return (double) new FileInfo(path).Length / new FileInfo(nameOfZippedFile).Length;
     }
-
+    
+    /// <summary>
+    /// Decompressing method of lzw algorithm
+    /// </summary>
+    /// <param name="path"></param>
     public static void Decompress(string path)
     {
-        using BinaryReader inputFile = new BinaryReader(File.Open(path, FileMode.Open));
         var pathToUnzippedFile = ("../../../unzipped." + GetNameOfFile(path)).Split(".zipped")[0];
+        using BinaryReader inputFile = new BinaryReader(File.Open(path, FileMode.Open));
         using BinaryWriter outputFile = new BinaryWriter(File.Open(pathToUnzippedFile, FileMode.Create));
+        
         // переменная для количества бит, которые нужно считывать на текущий момент (перевеодим в байты, округляем в большую сторону -- получаем количество
         // байт, которые нужно считать
-        // Считываем какое-то количество байт, заполняем битовый массив этими байтами, после этого из битового массива берем столько, сколько нужно
         int numberOfBitsToRead = 9;
         int numberOfBytesToRead = 2;
         int powerOfTwo = (int)Math.Pow(2, numberOfBitsToRead);
+        
         int bitArrayLength = 1024;
         BitArray code = new BitArray(bitArrayLength);
         int bitArrayIndex = code.Length - 1;
@@ -153,116 +158,80 @@ public static class Lzw
         int counter = 256;
         while (true)
         {
-            try
+            bool isEof = false;
+            // считали определенное количество байтов, закинули их все в общий массив битов.
+            for (int i = 0; i < numberOfBytesToRead; i++)
             {
-                // В этом блоке кода: считали определенное количество байтов, закинули их все в общий массив битов.
-                for (int i = 0; i < numberOfBytesToRead; i++)
+                int readByte;
+                try
                 {
-                    int readByte = inputFile.ReadByte();
-                    
-                    bitArrayIndex -= 7;
-                    int bitArrayIndexBeforeCycle = bitArrayIndex;
-                    for (int _ = 0; _ < 8; _++)
-                    {
-                        code[bitArrayIndex] = readByte % 2 == 1;
-                        readByte /= 2;
-                        ++bitArrayIndex;
-                    }
-                    bitArrayIndex = bitArrayIndexBeforeCycle - 1;
+                    readByte = inputFile.ReadByte();
                 }
-                
-                while (bitArrayLength - 1 - bitArrayIndex >= numberOfBitsToRead)
+                catch (EndOfStreamException)
                 {
-                    // В этом блоке кода: только что считанные биты (количеством numberOfBitsToRead) преобразовали в интовые коды
-                    int indexOfSequenceInDict = 0;
-                    for (int i = 0; i < numberOfBitsToRead; i++)
-                    {
-                        indexOfSequenceInDict = indexOfSequenceInDict * 2 + (code[bitArrayLength - 1 - i] ? 1 : 0);
-                    }
-
-                    // Убрали из массива уже преобразованные биты
-                    code.LeftShift(numberOfBitsToRead);
-                    bitArrayIndex += numberOfBitsToRead;
-                    ++counter;
-
-                    if (indexOfSequenceInDict == sequences.Count)
-                    {
-                        previousByteSequence[curIndexOfPreviousByteSequence] = previousByteSequence[0];
-                        outputFile.Write(previousByteSequence[0..(curIndexOfPreviousByteSequence + 1)]);
-                        sequences.Add(sequences.Count, previousByteSequence[0..(curIndexOfPreviousByteSequence + 1)]);
-                    }
-                    else
-                    {
-                        // последовательность битов с этим кодом кладем в файл
-                        outputFile.Write(sequences[indexOfSequenceInDict]);
-                    
-                        // Предыдущую последовательность, конкатенированную с первым байтом текущей последовательности нужно положить в словарь
-                        previousByteSequence[curIndexOfPreviousByteSequence] = sequences[indexOfSequenceInDict][0];
-                        sequences.Add(sequences.Count, previousByteSequence[0..(curIndexOfPreviousByteSequence + 1)]);
-                    }
-
-                    // После добавления в словарь нужно высчитать количество бит, которое нужно считывать.
-                    if (counter >= powerOfTwo - 1)
-                    {
-                        ++numberOfBitsToRead;
-                        numberOfBytesToRead = (int) Math.Ceiling((double) numberOfBitsToRead / 8.0);
-                        powerOfTwo *= 2;
-                    }
-
-                    // кладем предыдущие байты в previousByteSequence (Пока что через цикл копируем побайтово, потом нужно как-то оптимизировать)
-                    for (int i = 0; i < sequences[indexOfSequenceInDict].Length; i++)
-                    {
-                        previousByteSequence[i] = sequences[indexOfSequenceInDict][i];
-                    }
-
-                    curIndexOfPreviousByteSequence = sequences[indexOfSequenceInDict].Length;
+                    isEof = true;
+                    break;
                 }
+
+                bitArrayIndex -= 7;
+                int bitArrayIndexBeforeCycle = bitArrayIndex;
+                for (int _ = 0; _ < 8; _++)
+                {
+                    code[bitArrayIndex] = readByte % 2 == 1;
+                    readByte /= 2;
+                    ++bitArrayIndex;
+                }
+                bitArrayIndex = bitArrayIndexBeforeCycle - 1;
             }
-            catch (EndOfStreamException)
+            
+            while (bitArrayLength - 1 - bitArrayIndex >= numberOfBitsToRead)
             {
-                while (bitArrayLength - 1 - bitArrayIndex >= numberOfBitsToRead)
+                // только что считанные биты (количеством numberOfBitsToRead) преобразовали в интовые коды
+                int indexOfSequenceInDict = 0;
+                for (int i = 0; i < numberOfBitsToRead; i++)
                 {
-                    int indexOfSequenceInDict = 0;
-                    for (int i = 0; i < numberOfBitsToRead; i++)
-                    {
-                        indexOfSequenceInDict = indexOfSequenceInDict * 2 + (code[bitArrayLength - 1 - i] ? 1 : 0);
-                    }
-
-                    code.LeftShift(numberOfBitsToRead);
-                    bitArrayIndex += numberOfBitsToRead;
-                    ++counter;
-                    if (indexOfSequenceInDict == sequences.Count)
-                    {
-                        previousByteSequence[curIndexOfPreviousByteSequence] = previousByteSequence[0];
-                        outputFile.Write(previousByteSequence[0..(curIndexOfPreviousByteSequence + 1)]);
-                        sequences.Add(sequences.Count, previousByteSequence[0..(curIndexOfPreviousByteSequence + 1)]);
-                    }
-                    else
-                    {
-                        // последовательность битов с этим кодом кладем в файл
-                        outputFile.Write(sequences[indexOfSequenceInDict]);
-                    
-                        // Предыдущую последовательность, конкатенированную с первым байтом текущей последовательности нужно положить в словарь
-                        previousByteSequence[curIndexOfPreviousByteSequence] = sequences[indexOfSequenceInDict][0];
-                        sequences.Add(sequences.Count, previousByteSequence[0..(curIndexOfPreviousByteSequence + 1)]);
-                    }
-
-                    // После добавления в словарь нужно высчитать количество бит, которое нужно считывать.
-                    if (counter >= powerOfTwo - 1)
-                    {
-                        ++numberOfBitsToRead;
-                        powerOfTwo *= 2;
-                    }
-
-                    // кладем предыдущие байты в previousByteSequence (Пока что через цикл копируем побайтово, потом нужно как-то оптимизировать)
-                    for (int i = 0; i < sequences[indexOfSequenceInDict].Length; i++)
-                    {
-                        previousByteSequence[i] = sequences[indexOfSequenceInDict][i];
-                    }
-
-                    curIndexOfPreviousByteSequence = sequences[indexOfSequenceInDict].Length;
-
+                    indexOfSequenceInDict = indexOfSequenceInDict * 2 + (code[bitArrayLength - 1 - i] ? 1 : 0);
                 }
+
+                // Убрали из массива уже преобразованные биты
+                code.LeftShift(numberOfBitsToRead);
+                bitArrayIndex += numberOfBitsToRead;
+                // ++counter;
+
+                if (indexOfSequenceInDict == sequences.Count)
+                {
+                    previousByteSequence[curIndexOfPreviousByteSequence] = previousByteSequence[0];
+                    outputFile.Write(previousByteSequence[0..(curIndexOfPreviousByteSequence + 1)]);
+                    sequences.Add(sequences.Count, previousByteSequence[0..(curIndexOfPreviousByteSequence + 1)]);
+                }
+                else
+                {
+                    // последовательность битов с этим кодом кладем в файл
+                    outputFile.Write(sequences[indexOfSequenceInDict]);
+                
+                    // Предыдущую последовательность, конкатенированную с первым байтом текущей последовательности нужно положить в словарь
+                    previousByteSequence[curIndexOfPreviousByteSequence] = sequences[indexOfSequenceInDict][0];
+                    sequences.Add(sequences.Count, previousByteSequence[0..(curIndexOfPreviousByteSequence + 1)]);
+                }
+
+                // После добавления в словарь нужно высчитать количество бит, которое нужно считывать.
+                if (sequences.Count >= powerOfTwo - 1)
+                {
+                    ++numberOfBitsToRead;
+                    numberOfBytesToRead = (int) Math.Ceiling((double) numberOfBitsToRead / 8.0);
+                    powerOfTwo *= 2;
+                }
+
+                // кладем предыдущие байты в previousByteSequence
+                for (int i = 0; i < sequences[indexOfSequenceInDict].Length; i++)
+                {
+                    previousByteSequence[i] = sequences[indexOfSequenceInDict][i];
+                }
+
+                curIndexOfPreviousByteSequence = sequences[indexOfSequenceInDict].Length;
+            }
+            if (isEof)
+            {
                 outputFile.Close();
                 Transformation.BwtInverse(pathToUnzippedFile);
                 File.Delete(pathToUnzippedFile);
