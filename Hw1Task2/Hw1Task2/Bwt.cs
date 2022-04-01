@@ -20,7 +20,7 @@ static class Transformation
         }
         
         string[] rotations = GetRotations(str);
-        Sort(rotations);
+        Array.Sort(rotations, StringComparer.Ordinal);
         var transformedString = "";
         foreach (var rotation in rotations)
         {
@@ -38,20 +38,7 @@ static class Transformation
         }
         return rotations;
     }
-
-    private static void Sort(string[] rotations)
-    {
-        for (int index = 1; index < rotations.Length; index++)
-        {
-            int i = index;
-            while (i > 0 && String.Compare(rotations[i], rotations[i - 1], StringComparison.Ordinal) < 0)
-            {
-                (rotations[i - 1], rotations[i]) = (rotations[i], rotations[i - 1]);
-                --i;
-            }
-        }
-    }
-
+    
     /// <summary>
     /// Inverse Burrows-Wheeler transformation. Returns original string.
     /// </summary>
