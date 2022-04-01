@@ -17,13 +17,13 @@ public class ListBasedStack : IStack
         }
     }
 
-    private StackElement? head = null;
+    private StackElement? _head = null;
 
     /// <summary>
     /// Pushes value to stack.
     /// </summary>
     /// <param name="value"></param>
-    public void Push(double value) => head = new StackElement(value, head);
+    public void Push(double value) => _head = new StackElement(value, _head);
 
     /// <summary>
     /// Returns value of the stack head and removes it.
@@ -31,8 +31,8 @@ public class ListBasedStack : IStack
     /// <returns></returns>
     public double? Pop()
     {
-        var value = head?.Value ?? null;
-        head = head?.Next;
+        var value = _head?.Value ?? null;
+        _head = _head?.Next;
         return value;
     }
 
@@ -40,5 +40,5 @@ public class ListBasedStack : IStack
     /// Returns true if stack is empty, returns false if stack is not empty.
     /// </summary>
     /// <returns></returns>
-    public bool IsEmpty() => head == null;
+    public bool IsEmpty() => _head == null;
 }
