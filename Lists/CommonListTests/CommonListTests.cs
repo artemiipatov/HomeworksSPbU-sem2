@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using Exceptions;
-using NuGet.Frameworks;
 using NUnit.Framework;
 
 namespace ListsTests;
