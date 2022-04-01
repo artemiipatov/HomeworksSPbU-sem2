@@ -1,17 +1,20 @@
+using UtilityExceptions;
+
 namespace Routers;
-public class Graph
+
+public class Graph : IGraph
 {
-    static readonly int ArrayLength = 7;
+    private int _arrayLength = 10;
 
-    public int MaxNodeNumber { get; set; }
+    public int MaxNodeNumber { get; private set; }
 
-    public int[,] Matrix { get; }
+    public int[,] Matrix { get; private set; }
 
     public Dictionary<(int, int), int> Edges { get; set; }
 
     public Graph(string inputFilePath)
     {
-        Matrix = new int[ArrayLength, ArrayLength];
+        Matrix = new int[_arrayLength, _arrayLength];
         Edges = new Dictionary<(int, int), int>();
         Parse(inputFilePath);
     }
@@ -28,7 +31,16 @@ public class Graph
             }
 
             string[] splitLine = line.Split(" ");
+            if (splitLine.Length <= 1)
+            {
+                throw new WrongInputException("Wrong input: some routers are disconnected from others from the beginning");
+            }
+            
             int startNode = int.Parse(splitLine[0].Split(":")[0]);
+            if (startNode >= _arrayLength)
+            {
+                Resize();
+            }
             if (startNode > MaxNodeNumber)
             {
                 MaxNodeNumber = startNode;
@@ -37,7 +49,12 @@ public class Graph
             for (var i = 1; i < splitLine.Length; i++)
             {
                 string[] splitSplitLine = splitLine[i].Split("(");
+                
                 int finishNode = int.Parse(splitSplitLine[0]);
+                while (finishNode >= _arrayLength)
+                {
+                    Resize();
+                }
                 if (finishNode > MaxNodeNumber)
                 {
                     MaxNodeNumber = finishNode;
@@ -49,6 +66,23 @@ public class Graph
                 Matrix[finishNode, startNode] = weight;
             }
         }
+    }
+
+    public void DeleteEdge(int row, int col) => (Matrix[row, col], Matrix[col, row]) = (0, 0);
+
+    private void Resize()
+    {
+        _arrayLength *= 2;
+        int[,] tempMatrix = new int[_arrayLength, _arrayLength];
+        for (int i = 0; i <= MaxNodeNumber; i++)
+        {
+            for (int j = 0; j <= MaxNodeNumber; j++)
+            {
+                tempMatrix[i, j] = Matrix[i, j];
+            }
+        }
+        
+        Matrix = tempMatrix;
     }
 
     public bool CheckConnectivity(int searchedNode, int currentNode)

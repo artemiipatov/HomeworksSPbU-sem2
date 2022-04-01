@@ -4,25 +4,24 @@ public static class RoutersUtility
 {
     public static void GenerateConfig(string inputFilePath, string outputFilePath)
     {
-        Graph graph = new Graph(inputFilePath);
+        IGraph graph = new Graph(inputFilePath);
         
         graph.Edges = graph.Edges.OrderBy(pair => pair.Value).ToDictionary(pair => pair.Key, pair => pair.Value);
 
-        int nodeCounter = 0;
+        int edgeCounter = 0;
         foreach (var key in graph.Edges.Keys)
         {
-            if (nodeCounter == graph.MaxNodeNumber)
+            if (graph.Edges.Count - edgeCounter == graph.MaxNodeNumber)
             {
                 break;
             }
 
             int firstNode = key.Item1;
             int secondNode = key.Item2;
-            graph.Matrix[firstNode, secondNode] = 0;
-            graph.Matrix[secondNode, firstNode] = 0;
+            graph.DeleteEdge(firstNode, secondNode);
             if (graph.CheckConnectivity(firstNode, secondNode))
             {
-                nodeCounter++;
+                edgeCounter++;
                 continue;
             }
 
@@ -33,17 +32,26 @@ public static class RoutersUtility
         using var outputStream = new StreamWriter(outputFilePath);
         for (int i = 0; i <= graph.MaxNodeNumber; i++)
         {
-            string curNodeConfig = i.ToString() + ":";
+            bool weightIsNotZeroForTheFirstTime = true;
+            string curNodeConfig = "";
             for (int j = i; j <= graph.MaxNodeNumber; j++)
             {
                 int weight = graph.Matrix[i, j];
                 if (weight != 0)
                 {
+                    if (weightIsNotZeroForTheFirstTime)
+                    {
+                        curNodeConfig = i.ToString() + ":";
+                        weightIsNotZeroForTheFirstTime = false;
+                    }
                     curNodeConfig += $" {j.ToString()}({weight.ToString()})";
                 }
             }
 
-            outputStream.WriteLine(curNodeConfig);
+            if (!curNodeConfig.Equals(""))
+            {
+                outputStream.WriteLine(curNodeConfig);
+            }
         }
     }
 }

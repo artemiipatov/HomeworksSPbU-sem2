@@ -4,6 +4,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Routers", "Routers\Routers.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UtilityTests", "UtilityTests\UtilityTests.csproj", "{7AF497D2-CCBB-47CF-BA6E-4AB014EE7CA9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UtilityExceptions", "UtilityExceptions\UtilityExceptions.csproj", "{ED9D7455-AE06-40CF-8A2B-F32F2791133E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphTests", "GraphTests\GraphTests.csproj", "{3C190A7B-2DAD-4A8A-BCFA-3D3CE774E4CA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +22,13 @@ Global
 		{7AF497D2-CCBB-47CF-BA6E-4AB014EE7CA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7AF497D2-CCBB-47CF-BA6E-4AB014EE7CA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7AF497D2-CCBB-47CF-BA6E-4AB014EE7CA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED9D7455-AE06-40CF-8A2B-F32F2791133E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED9D7455-AE06-40CF-8A2B-F32F2791133E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED9D7455-AE06-40CF-8A2B-F32F2791133E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED9D7455-AE06-40CF-8A2B-F32F2791133E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C190A7B-2DAD-4A8A-BCFA-3D3CE774E4CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C190A7B-2DAD-4A8A-BCFA-3D3CE774E4CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C190A7B-2DAD-4A8A-BCFA-3D3CE774E4CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C190A7B-2DAD-4A8A-BCFA-3D3CE774E4CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
