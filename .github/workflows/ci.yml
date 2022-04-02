@@ -12,3 +12,4 @@ jobs:
         run: for %i in (*.sln) do dotnet build %i
       - name: Run tests
         run: for %i in (*.sln) do dotnet test %i
+        shell: bash
