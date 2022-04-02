@@ -1,15 +1,19 @@
 name: BuildAndTest
-on: [push, pull_request]
+on: [ push ]
 jobs:
-  runs-on ${{ os }}
-  strategy:
-    os: [ ubuntu-latext, windows-latest ]
-  steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: '6.x'
-    - name: Build
-      run: For /R %%I in (*.sln) do dotnet build %%I
-    - name: Run tests
-      run: For /R %%I in (*.sln) do dotnet test %%I
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest ]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.x'
+      - name: Build
+        run: for dir in */; do cd $dir; for sln in *.sln; do dotnet build $sln; cd ..; done; done
+        shell: bash
+      - name: RunTests
+        run: for dir in */; do cd $dir; for sln in *.sln; do dotnet test $sln; cd ..; done; done
+        shell: bash
