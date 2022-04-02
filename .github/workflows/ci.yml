@@ -10,6 +10,7 @@ jobs:
           dotnet-version: '6.x'
       - name: Build
         run: for %i in (*.sln) do dotnet build %i
+        shell: bash
       - name: Run tests
         run: for %i in (*.sln) do dotnet test %i
         shell: bash
