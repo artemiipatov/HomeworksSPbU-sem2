@@ -9,8 +9,8 @@ jobs:
         with:
           dotnet-version: '6.x'
       - name: Build
-        run: for %i in (*.sln) do dotnet build %i
+        run: for dir in */; do cd $dir; for i in *.sln; do dotnet build $i; cd ..; done; done
         shell: bash
-      - name: Run tests
-        run: for %i in (*.sln) do dotnet test %i
+      - name: RunTests
+        run: for dir in */; do cd $dir; for i in *.sln; do dotnet test $i; cd ..; done; done
         shell: bash
