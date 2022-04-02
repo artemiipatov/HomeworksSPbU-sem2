@@ -1,9 +1,7 @@
 name: BuildAndTest
 on: [push, pull_request]
 jobs:
-  runs-on ${{ os }}
-  strategy:
-    os: [ ubuntu-latext, windows-latest ]
+  runs-on [ ubuntu-latext, windows-latest ]
   steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-dotnet@v1
