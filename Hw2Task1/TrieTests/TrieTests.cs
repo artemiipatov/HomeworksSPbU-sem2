@@ -8,80 +8,80 @@ namespace TrieTests;
 /// </summary>
 public class Tests
 {
-    private Trie _testTrie = new Trie();
+    private Trie testTrie = new Trie();
     [SetUp]
     public void Setup()
     {
-        _testTrie = new Trie();
+        testTrie = new Trie();
     }
 
     [Test]
     public void TrieShouldNotContainItemsAfterAddAndRemove()
     {
-        _testTrie.AddItem("test");
-        _testTrie.AddItem("testtest");
-        _testTrie.AddItem("test123");
-        _testTrie.Remove("test");
-        Assert.IsTrue(_testTrie.Contains("testtest") && _testTrie.Contains("test123") && !_testTrie.Contains("test"));
-        _testTrie.Remove("testtest");
-        Assert.IsTrue(_testTrie.Contains("test123"));
-        _testTrie.Remove("test123");
-        Assert.IsFalse(_testTrie.Contains("test") || _testTrie.Contains("testtest") || _testTrie.Contains("test123"));
+        testTrie.AddItem("test");
+        testTrie.AddItem("testtest");
+        testTrie.AddItem("test123");
+        testTrie.Remove("test");
+        Assert.IsTrue(testTrie.Contains("testtest") && testTrie.Contains("test123") && !testTrie.Contains("test"));
+        testTrie.Remove("testtest");
+        Assert.IsTrue(testTrie.Contains("test123"));
+        testTrie.Remove("test123");
+        Assert.IsFalse(testTrie.Contains("test") || testTrie.Contains("testtest") || testTrie.Contains("test123"));
     }
 
     [Test]
     public void TrieShouldContainValueAfterAddingIt()
     {
-        _testTrie.AddItem("test");
-        Assert.IsTrue(_testTrie.Contains("test"));
+        testTrie.AddItem("test");
+        Assert.IsTrue(testTrie.Contains("test"));
     }
 
     [Test]
     public void RemoveShouldReturnFalseIfTrieContainsNoSuchValue()
     {
-        _testTrie.AddItem("test");
-        Assert.IsFalse(_testTrie.Remove("test0"));
+        testTrie.AddItem("test");
+        Assert.IsFalse(testTrie.Remove("test0"));
     }
 
     [Test]
     public void RemoveShouldReturnTrueIfValueHasBeenRemoved()
     {
-        _testTrie.AddItem("test123");
-        Assert.IsTrue(_testTrie.Remove("test123"));
+        testTrie.AddItem("test123");
+        Assert.IsTrue(testTrie.Remove("test123"));
     }
 
     [Test]
     public void HowManyStartsWithPrefixShouldReturn3()
     {
-        _testTrie.AddItem("test");
-        _testTrie.AddItem("testtest");
-        _testTrie.AddItem("test123");
-        Assert.AreEqual(_testTrie.HowManyStartsWithPrefix("test"), 3);
+        testTrie.AddItem("test");
+        testTrie.AddItem("testtest");
+        testTrie.AddItem("test123");
+        Assert.AreEqual(testTrie.HowManyStartsWithPrefix("test"), 3);
     }
 
     [Test]
     public void HowManyStartsWithPrefixesShouldReturn0()
     {
-        _testTrie.AddItem("item");
-        _testTrie.AddItem("string");
-        Assert.Zero(_testTrie.HowManyStartsWithPrefix("test"));
+        testTrie.AddItem("item");
+        testTrie.AddItem("string");
+        Assert.Zero(testTrie.HowManyStartsWithPrefix("test"));
     }
 
     [Test]
     public void TrieShouldContainTwoValuesTrieShouldNotContainThirdValue()
     {
-        _testTrie.AddItem("item");
-        _testTrie.AddItem("string");
-        Assert.IsTrue(_testTrie.Contains("item"));
-        Assert.IsTrue(_testTrie.Contains("string"));
-        Assert.IsFalse(_testTrie.Contains("object"));
+        testTrie.AddItem("item");
+        testTrie.AddItem("string");
+        Assert.IsTrue(testTrie.Contains("item"));
+        Assert.IsTrue(testTrie.Contains("string"));
+        Assert.IsFalse(testTrie.Contains("object"));
     }
 
     [Test]
     public void AllMethodsShouldSuccessfullyDealWithEmptyTrie()
     {
-        Assert.IsFalse(_testTrie.Remove("item"));
-        Assert.IsFalse(_testTrie.Contains("string"));
-        Assert.Zero(_testTrie.HowManyStartsWithPrefix("object"));
+        Assert.IsFalse(testTrie.Remove("item"));
+        Assert.IsFalse(testTrie.Contains("string"));
+        Assert.Zero(testTrie.HowManyStartsWithPrefix("object"));
     }
 }
