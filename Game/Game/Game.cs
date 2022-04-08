@@ -2,17 +2,22 @@ namespace Game;
 
 public class Game
 {
-    public (int, int) position { get; private set; }
-    public Game((int, int) startingPosition)
-    {
-        position = startingPosition;
-    }
+    public (int, int) Position { get; private set; }
+    public bool[][] Walls { get; } = new bool[100][];
     
-    public static (int, int) GenerateMap(string path)
+    public Game()
+    {
+        Position = (-1, -1);
+        for (int i = 0; i < 100; i++)
+        {
+            Walls[i] = new bool[100];
+        }
+    }
+
+    public void GenerateMap(string path)
     {
         using StreamReader map = new StreamReader(path);
-        (int, int) position = (-1, -1);
-        int stringCounter = 0;
+        int stringCounter = Console.CursorTop;
         while (true)
         {
             string? line = map.ReadLine();
@@ -21,57 +26,74 @@ public class Game
                 break;
             }
 
-            if (line.Contains('@'))
+            for (int i = Console.CursorLeft; i < line.Length; i++)
             {
-                if (position.Item2 != -1)
+                Walls[stringCounter][i] = line[i] == '|' || line[i] == '+' || line[i] == '-';
+                if (line[i] == '@')
                 {
-                    throw new Exception(); // Заменить на что-то более конкретное
+                    if (Position.Item2 != -1)
+                    {
+                        throw new Exception("Wrong input: there are more than one characters on the map");
+                    }
+                    Position = (i, stringCounter);
                 }
-                position.Item2 = stringCounter;
-                position.Item1 = line.IndexOf("@", StringComparison.Ordinal);
             }
 
             ++stringCounter;
             Console.WriteLine(line);
         }
-        Console.SetCursorPosition(position.Item1, position.Item2);
-        return position;
+        Console.SetCursorPosition(Position.Item1, Position.Item2);
     }
 
     public void OnLeft(object? sender, EventArgs args)
     {
-        // Console.WriteLine("Going left");
+        if (Walls[Position.Item2][Position.Item1 - 1])
+        {
+            return;
+        }
         Console.Write(" ");
-        Console.SetCursorPosition(position.Item1 - 2, position.Item2);
-        Console.Write("@");
-        position = (Console.CursorLeft, Console.CursorTop);
-        Console.SetCursorPosition(position.Item1 - 1, position.Item2);
+        Console.SetCursorPosition(Position.Item1 - 1, Position.Item2);
+        WriteAtSign();
     }
 
     public void OnRight(object? sender, EventArgs args)
     {
+        if (Walls[Position.Item2][Position.Item1 + 1])
+        {
+            return;
+        }
         Console.Write(" ");
-        Console.SetCursorPosition(position.Item1, position.Item2);
-        Console.Write("@");
-        position = (Console.CursorLeft, Console.CursorTop);
-        Console.SetCursorPosition(position.Item1 - 1, position.Item2);
+        WriteAtSign();
     }
 
     public void OnUp(object? sender, EventArgs args)
     {
+        if (Walls[Position.Item2 - 1][Position.Item1])
+        {
+            return;
+        }
         Console.Write(" ");
-        Console.SetCursorPosition(position.Item1 - 1, position.Item2 - 1);
-        Console.Write("@");
-        position = (Console.CursorLeft, Console.CursorTop);
-        Console.SetCursorPosition(position.Item1 - 1, position.Item2);
+        Console.SetCursorPosition(Position.Item1, Position.Item2 - 1);
+        WriteAtSign();
     }
 
     public void OnDown(object? sender, EventArgs args)
     {
+        if (Walls[Position.Item2 + 1][Position.Item1])
+        {
+            return;
+        }
         Console.Write(" ");
-        Console.SetCursorPosition(position.Item1 - 1, position.Item2 + 1);
+        Console.SetCursorPosition(Position.Item1, Position.Item2 + 1);
+        WriteAtSign();
+    }
+
+    private void WriteAtSign()
+    {
+        Position = (Console.CursorLeft, Console.CursorTop);
         Console.Write("@");
-        position = (Console.CursorLeft, Console.CursorTop);
-        Console.SetCursorPosition(position.Item1 - 1, position.Item2);
+        Console.SetCursorPosition(Position.Item1 + 1, Position.Item2); // This is for nunit testing (beacuse Console.Write does not work in Nunit)
+        Position = (Console.CursorLeft - 1, Console.CursorTop);
+        Console.SetCursorPosition(Position.Item1, Position.Item2);
     }
 }
