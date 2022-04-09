@@ -7,6 +7,10 @@ public class EventLoop
     public event EventHandler<EventArgs> DownHandler = (sender, args) => { };
     public event EventHandler<EventArgs> UpHandler = (sender, args) => { };
 
+    /// <summary>
+    /// Starts the event loop
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
     public void Run()
     {
         while (true)

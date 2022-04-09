@@ -120,6 +120,23 @@ public class Tests
     [Test]
     public void WallsShouldBeDetectedCorrectly()
     {
+        string[] mapArray = { "|---|", "|@  |", "| + |", "|   |", "|---|" };
+        using (var writer = new StreamWriter(File.Open("../../../TestMap.txt", FileMode.Create)))
+        {
+            foreach (var line in mapArray)
+            {
+                writer.WriteLine(line);
+            }
+        }
         
+        var game = new Game.Game();
+        game.GenerateMap("../../../TestMap.txt");
+        for (var i = 0; i < mapArray.Length; i++)
+        {
+            for (var j = 0; j < mapArray[i].Length; j++)
+            {
+                Assert.AreEqual(mapArray[i][j] == '-' || mapArray[i][j] == '|' || mapArray[i][j] == '+', game.Walls[i][j]);
+            }
+        }
     }
 }
