@@ -1,7 +1,3 @@
-using System.Collections.Specialized;
-using System.Linq.Expressions;
-using System.Transactions;
-
 namespace Lzw;
 
 using System.Collections;
@@ -20,7 +16,7 @@ public static class Lzw
         Transformation.Bwt(path);
         BitArray code = new BitArray(64);
         // Создаем дерево
-        ITrie sequences = new Trie();
+        Trie sequences = new Trie();
         for (var i = 0; i < 256; i++)
         {
             sequences.AddItem(new byte[] { (byte)i });

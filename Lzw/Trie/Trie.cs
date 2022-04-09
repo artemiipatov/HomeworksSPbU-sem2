@@ -1,9 +1,9 @@
 namespace Trie;
 
 /// <summary>
-/// Prefix tree containing strings
+/// Prefix tree containing byte sequence
 /// </summary>
-public class Trie : ITrie
+public class Trie
 {
     private class Node
     {
@@ -17,7 +17,7 @@ public class Trie : ITrie
     }
     private Node root = new Node(null);
 
-    public int Size { get; set; } = 0;
+    public int Size { get; private set; }
 
     /// <summary>
     /// Adds item to prefix tree
@@ -144,40 +144,5 @@ public class Trie : ITrie
         }
 
         return -1;
-    }
-
-    private static int HowManyStartsWithPrefixRecursive(Node pos)
-    {
-        var counter = 0;
-        if (pos.Terminal != -1)
-        {
-            ++counter;
-        }
-
-        foreach (var ch in pos.Next.Keys)
-        {
-            counter += HowManyStartsWithPrefixRecursive(pos.Next[ch]);
-        }
-
-        return counter;
-    }
-
-    /// <summary>
-    /// Returns number of strings in prefix tree which start with given prefix
-    /// </summary>
-    /// <param name="prefix"></param>
-    /// <returns></returns>
-    public int HowManyStartsWithPrefix(byte[] prefix)
-    {
-        var currentNode = root;
-        for (var i = 0; i < prefix.Length; i++)
-        {
-            if (!currentNode.Next.ContainsKey(prefix[i]))
-            {
-                return 0;
-            }
-            currentNode = currentNode.Next[prefix[i]];
-        }
-        return HowManyStartsWithPrefixRecursive(currentNode);
     }
 }
