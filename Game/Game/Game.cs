@@ -52,7 +52,8 @@ public class Game
             return;
         }
         Console.Write(" ");
-        Console.SetCursorPosition(Position.Item1 - 1, Position.Item2);
+        Position = (Position.Item1 - 1, Position.Item2);
+        Console.SetCursorPosition(Position.Item1, Position.Item2);
         WriteAtSign();
     }
 
@@ -63,6 +64,7 @@ public class Game
             return;
         }
         Console.Write(" ");
+        Position = (Position.Item1 + 1, Position.Item2);
         WriteAtSign();
     }
 
@@ -73,7 +75,8 @@ public class Game
             return;
         }
         Console.Write(" ");
-        Console.SetCursorPosition(Position.Item1, Position.Item2 - 1);
+        Position = (Position.Item1, Position.Item2 - 1);
+        Console.SetCursorPosition(Position.Item1, Position.Item2);
         WriteAtSign();
     }
 
@@ -84,16 +87,14 @@ public class Game
             return;
         }
         Console.Write(" ");
-        Console.SetCursorPosition(Position.Item1, Position.Item2 + 1);
+        Position = (Position.Item1, Position.Item2 + 1);
+        Console.SetCursorPosition(Position.Item1, Position.Item2);
         WriteAtSign();
     }
 
     private void WriteAtSign()
     {
-        Position = (Console.CursorLeft, Console.CursorTop);
         Console.Write("@");
-        Console.SetCursorPosition(Position.Item1 + 1, Position.Item2); // This is for nunit testing (beacuse Console.Write does not work in Nunit)
-        Position = (Console.CursorLeft - 1, Console.CursorTop);
         Console.SetCursorPosition(Position.Item1, Position.Item2);
     }
 }

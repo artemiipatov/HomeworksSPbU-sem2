@@ -1,20 +1,11 @@
 using System;
-using System.Diagnostics;
 using System.IO;
-using System.Resources;
-using System.Threading;
 using NUnit.Framework;
-using Game;
 
 namespace GameTests;
 
 public class Tests
 {
-    [SetUp]
-    public void Setup()
-    {
-    }
-
     [Test]
     public void ExceptionShouldBeThrownIfThereAreMoreThanOneCharactersOnTheMap()
     {
@@ -41,15 +32,11 @@ public class Tests
                 writer.WriteLine(line);
             }
         }
-        Thread currentThread = Thread.CurrentThread;
-        currentThread.Priority = ThreadPriority.Highest;
-        int number = Process.GetCurrentProcess().Threads.Count;
-        
+
         var game = new Game.Game();
-        Console.SetCursorPosition(0, 0);
         game.GenerateMap("../../../TestMap.txt");
         (int, int) startingPosition = game.Position;
-        // void Work1() { }
+
         game.OnLeft(this, EventArgs.Empty);
         Assert.AreEqual((startingPosition.Item1 - 1, startingPosition.Item2), game.Position);
         game.OnLeft(this, EventArgs.Empty);
@@ -71,7 +58,6 @@ public class Tests
         }
 
         var game = new Game.Game();
-        Console.SetCursorPosition(0, 0);
         game.GenerateMap("../../../TestMap.txt");
         
         (int, int) startingPosition = game.Position;
@@ -96,7 +82,6 @@ public class Tests
         }
 
         var game = new Game.Game();
-        Console.SetCursorPosition(0, 0);
         game.GenerateMap("../../../TestMap.txt");
         
         (int, int) startingPosition = game.Position;
@@ -121,7 +106,6 @@ public class Tests
         }
 
         var game = new Game.Game();
-        Console.SetCursorPosition(0, 0);
         game.GenerateMap("../../../TestMap.txt");
         
         (int, int) startingPosition = game.Position;
