@@ -1,7 +1,15 @@
 namespace Routers;
 
+/// <summary>
+/// Utility for routers that generates configuration for each router and checks that all routers are connected with each other
+/// </summary>
 public static class RoutersUtility
 {
+    /// <summary>
+    /// The main and the only function of the utility.
+    /// </summary>
+    /// <param name="inputFilePath"></param>
+    /// <param name="outputFilePath"></param>
     public static void GenerateConfig(string inputFilePath, string outputFilePath)
     {
         IGraph graph = new Graph(inputFilePath);

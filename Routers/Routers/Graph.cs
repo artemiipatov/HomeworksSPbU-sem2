@@ -2,6 +2,9 @@ using UtilityExceptions;
 
 namespace Routers;
 
+/// <summary>
+/// Graph class with adjacency matrix as a property and dfs, connection checking and parsing methods
+/// </summary>
 public class Graph : IGraph
 {
     private int _arrayLength = 10;

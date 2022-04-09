@@ -7,16 +7,10 @@ namespace UtilityTests;
 
 public class Tests
 {
-    [SetUp]
-    public void Setup()
-    {
-    }
-
     private readonly string inputFilePath = "../../../TestInput.txt";
     private readonly string outputFilePath = "../../../TestOutput.txt";
     
     [Test]
-    // Smoke testing
     public void UtilityShouldMakeCorrectConfigurationsForDifferentSystems()
     {
         var inputFile = new StreamWriter(File.Open(inputFilePath, FileMode.Create));
