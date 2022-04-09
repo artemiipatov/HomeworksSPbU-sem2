@@ -13,10 +13,10 @@ public static class StackCalculator
     /// <returns></returns>
     public static double? Evaluate(string expression, IStack stack)
     {
-        var splitExp = expression.Split(' ');
-        foreach (var t in splitExp)
+        var splitExpression = expression.Split(' ');
+        foreach (var token in splitExpression)
         {
-            switch (t)
+            switch (token)
             {
                 case "+":
                 case "-":
@@ -33,7 +33,7 @@ public static class StackCalculator
                     {
                         return null;
                     }
-                    switch (t)
+                    switch (token)
                     {
                         case "+":
                             stack.Push((double) firstOperand + (double)secondOperand);
@@ -44,7 +44,8 @@ public static class StackCalculator
                         case "*":
                             stack.Push((double)firstOperand * (double)secondOperand);
                             break;
-                        case "/" when firstOperand.Equals((double)0):
+                        // case "/" when (firstOperand - 0.0 < 0 ? 0.0 - firstOperand : firstOperand - 0.0) < 0.0000000000000000000001:
+                        case "/" when Math.Abs(firstOperand.GetValueOrDefault() - 0.0) < 0.0000000000000000000001:
                             return null;
                         case "/":
                             stack.Push((double)secondOperand / (double)firstOperand);
@@ -54,7 +55,7 @@ public static class StackCalculator
                 }
                 default:
                 {
-                    if (!double.TryParse(t, out var number))
+                    if (!double.TryParse(token, out var number))
                     {
                         return null;
                     }
@@ -65,6 +66,6 @@ public static class StackCalculator
         }
 
         var result = stack.Pop();
-        return (!stack.IsEmpty()) ? null : result;
+        return !stack.IsEmpty ? null : result;
     }
 }

@@ -6,7 +6,7 @@
 
         <IsPackable>false</IsPackable>
 
-        <RootNamespace>StackCalculatorTests</RootNamespace>
+        <RootNamespace>StackTests</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

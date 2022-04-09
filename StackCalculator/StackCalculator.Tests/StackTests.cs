@@ -1,16 +1,11 @@
+namespace StackTests;
+
+using StackCalculator;
 using System.Collections.Generic;
 using NUnit.Framework;
-using StackCalculator;
-
-namespace StackTests;
 
 public class Tests
 {
-    [SetUp]
-    public void Setup()
-    {
-    }
-
     private static IEnumerable<IStack> StackTestData
     {
         get
@@ -24,7 +19,7 @@ public class Tests
     public void PushShallWork(IStack stack)
     {
         stack.Push(24.4);
-        Assert.IsFalse(stack.IsEmpty());
+        Assert.IsFalse(stack.IsEmpty);
     }
 
     [Test, TestCaseSource(nameof(StackTestData))]
@@ -50,7 +45,7 @@ public class Tests
     {
         stack.Push(1);
         stack.Pop();
-        Assert.IsTrue(stack.IsEmpty());
+        Assert.IsTrue(stack.IsEmpty);
     }
 
     [Test, TestCaseSource(nameof(StackTestData))]
@@ -62,7 +57,7 @@ public class Tests
     [Test, TestCaseSource(nameof(StackTestData))]
     public void NewStackShouldBeEmpty(IStack stack)
     {
-        Assert.IsTrue(stack.IsEmpty());
+        Assert.IsTrue(stack.IsEmpty);
     }
 
     [Test, TestCaseSource(nameof(StackTestData))]

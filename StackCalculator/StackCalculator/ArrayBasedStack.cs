@@ -5,38 +5,46 @@ namespace StackCalculator;
 /// </summary>
 public class ArrayBasedStack : IStack
 {
-    private double[] mainArray = new double[100];
+    private int _size = 100;
+    private double[] _mainArray = new double[100];
     private int _headPosition = 0;
+    public bool IsEmpty { get; private set; } = true;
 
-    /// <summary>
-    /// Pushes value to stack.
-    /// </summary>
-    /// <param name="value"></param>
     public void Push(double value)
     {
-        mainArray[_headPosition] = value;
+        if (_headPosition >= _mainArray.Length)
+        {
+            Resize();
+        }
+
+        IsEmpty = false;
+        _mainArray[_headPosition] = value;
         ++_headPosition;
     }
 
-    /// <summary>
-    /// Returns value of the stack head and removes it.
-    /// </summary>
-    /// <returns></returns>
+    private void Resize()
+    {
+        var newArray = new double[_size * 2];
+        for (int i = 0; i < _mainArray.Length; i++)
+        {
+            newArray[i] = _mainArray[i];
+        }
+        _mainArray = newArray;
+    }
+
     public double? Pop()
     {
         if (_headPosition == 0)
         {
             return null;
         }
+
         --_headPosition;
-        var value = mainArray[_headPosition];
-        mainArray[_headPosition] = 0;
+        if (_headPosition == 0)
+        {
+            IsEmpty = true;
+        }
+        var value = _mainArray[_headPosition];
         return value;
     }
-
-    /// <summary>
-    /// Returns true if stack is empty, returns false if stack is not empty.
-    /// </summary>
-    /// <returns></returns>
-    public bool IsEmpty() => _headPosition == 0;
 }

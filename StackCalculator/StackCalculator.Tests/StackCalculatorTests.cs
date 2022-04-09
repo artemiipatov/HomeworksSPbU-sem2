@@ -1,16 +1,11 @@
+namespace StackTests;
+
+using StackCalculator;
 using System.Collections.Generic;
 using NUnit.Framework;
 
-namespace StackCalculatorTests;
-using StackCalculator;
-
-public class Tests
+public class StackCalculatorTests
 {
-    [SetUp]
-    public void Setup()
-    {
-    }
-
     private static IEnumerable<IStack> CalcTestData
     {
         get
@@ -20,7 +15,7 @@ public class Tests
         }
     }
 
-    [Test, TestCaseSource(nameof(CalcTestData))]
+    [TestCaseSource(nameof(CalcTestData))]
     public void EvaluationResultShouldBeCorrectInCommonCases(IStack stack)
     {
         Assert.AreEqual(59.5, StackCalculator.Evaluate("100 2 + 51 / 4 / 59 +", stack));
@@ -30,14 +25,14 @@ public class Tests
         Assert.AreEqual(1000, StackCalculator.Evaluate("1000", stack));
     }
 
-    [Test, TestCaseSource(nameof(CalcTestData))]
+    [TestCaseSource(nameof(CalcTestData))]
     public void EvaluationResultShouldBeCorrectInNegativeNumbersCase(IStack stack)
     {
         Assert.AreEqual(-75, StackCalculator.Evaluate("-100 50 - -10 / -5 *", stack));
         Assert.AreEqual(-51, StackCalculator.Evaluate("-90 -85 * -150 /", stack));
     }
 
-    [Test, TestCaseSource(nameof(CalcTestData))]
+    [TestCaseSource(nameof(CalcTestData))]
     public void EvaluateShouldReturnNullIfInputIsIncorrect(IStack stack)
     {
         Assert.IsNull(StackCalculator.Evaluate("100 9510985", stack));
@@ -46,7 +41,7 @@ public class Tests
         Assert.IsNull(StackCalculator.Evaluate("abd 123 +", stack));
     }
 
-    [Test, TestCaseSource(nameof(CalcTestData))]
+    [TestCaseSource(nameof(CalcTestData))]
     public void EvaluateShouldReturnNullAfterDividingByZero(IStack stack)
     {
         Assert.IsNull(StackCalculator.Evaluate("100 0 /", stack));
