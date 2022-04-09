@@ -25,6 +25,6 @@ public static class SomeFunctions<T>
     /// <param name="sourceList"></param>
     /// <param name="acc"></param>
     /// <param name="func"></param>
-    /// <returns></returns>
+    /// <returns>Accumulated value</returns>
     public static T Fold(List<T> sourceList, T acc, Func<T, T, T> func) => sourceList.Aggregate(acc, func);
 }
