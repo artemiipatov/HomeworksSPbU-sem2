@@ -30,7 +30,7 @@ public class Tests
     }
 
     [Test]
-    public void TrieShouldContainValueAfterAddingIt()
+    public void TrieShouldContainItemAfterAddingIt()
     {
         testTrie.AddItem("test");
         Assert.IsTrue(testTrie.Contains("test"));
@@ -56,7 +56,7 @@ public class Tests
         testTrie.AddItem("test");
         testTrie.AddItem("testtest");
         testTrie.AddItem("test123");
-        Assert.AreEqual(testTrie.HowManyStartsWithPrefix("test"), 3);
+        Assert.AreEqual(3, testTrie.HowManyStartsWithPrefix("test"));
     }
 
     [Test]
@@ -83,5 +83,38 @@ public class Tests
         Assert.IsFalse(testTrie.Remove("item"));
         Assert.IsFalse(testTrie.Contains("string"));
         Assert.Zero(testTrie.HowManyStartsWithPrefix("object"));
+    }
+
+    [Test]
+    public void SizeOfTrieShouldNotIncreaseAfterAddingTheSameValue()
+    {
+        testTrie.AddItem("item");
+        testTrie.AddItem("item");
+        Assert.AreEqual(1, testTrie.Size);
+    }
+
+    [Test]
+    public void SizeShouldIncreaseInCaseOfAddingTheStringThatIsPrefixOfAnotherString()
+    {
+        testTrie.AddItem("test123");
+        Assert.AreEqual(1, testTrie.Size);
+        testTrie.AddItem("test");
+        Assert.AreEqual(2, testTrie.Size);
+    }
+
+    [Test]
+    public void HowManyStartsWithPrefixShouldReturnOneLessIfTheStringStartingWithThisPrefixIsRemoved()
+    {
+        testTrie.AddItem("test");
+        testTrie.AddItem("test123");
+        testTrie.AddItem("testtest");
+        Assert.AreEqual(3, testTrie.HowManyStartsWithPrefix("test"));
+        testTrie.Remove("test123");
+        Assert.AreEqual(2, testTrie.HowManyStartsWithPrefix("test"));
+        testTrie.Remove("test");
+        Assert.AreEqual(1, testTrie.HowManyStartsWithPrefix("test"));
+        testTrie.Remove("testtest");
+        Assert.AreEqual(0, testTrie.HowManyStartsWithPrefix("test"));
+
     }
 }

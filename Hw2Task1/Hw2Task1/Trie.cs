@@ -3,56 +3,76 @@ namespace Hw2Task1;
 /// <summary>
 /// Prefix tree containing strings
 /// </summary>
-public class Trie : ITrie
+public class Trie
 {
     private class Node
     {
-        public Dictionary<char, Node> Next { get; set; }
-
+        public Dictionary<char, Node> Next { get; }
+        public int NumberOfSons { get; internal set; } = 0;
         public bool Terminal { get; set; } = false;
+        
         public Node(char? symbol)
         {
             this.Next = new Dictionary<char, Node>();
         }
     }
+
     private Node root = new Node(null);
 
-    private int Size { get; set; } = 0;
+    public int Size { get; private set; }
+
+    private bool AddItemRecursive(string element, Node currentNode, int i)
+    {
+        if (currentNode.Next.ContainsKey(element[i]))
+        {
+            if (i == element.Length - 1)
+            {
+                if (!currentNode.Next[element[i]].Terminal)
+                {
+                    ++Size;
+                    ++currentNode.NumberOfSons;
+                    ++currentNode.Next[element[i]].NumberOfSons;
+                    currentNode.Terminal = true;
+                    return true;
+                }
+                return false;
+            }
+            if (AddItemRecursive(element, currentNode.Next[element[i]], ++i))
+            {
+                ++currentNode.NumberOfSons;
+                return true;
+            }
+        }
+        else
+        {
+            var newNode = new Node(element[i]);
+            currentNode.Next.Add(element[i], newNode);
+            if (i == element.Length - 1)
+            {
+                ++Size;
+                ++currentNode.NumberOfSons;
+                ++currentNode.Next[element[i]].NumberOfSons;
+                newNode.Terminal = true;
+                return true;
+            }
+            if (AddItemRecursive(element, currentNode.Next[element[i]], ++i))
+            {
+                ++currentNode.NumberOfSons;
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     /// <summary>
     /// Adds item to prefix tree
     /// </summary>
     /// <param name="element"></param>
-    /// <returns></returns>
+    /// <returns>returns true if there has been no such string in the trie, false if this string is already in the trie</returns>
     public bool AddItem(string element)
     {
-        var currentNode = root;
-        for (var i = 0; i < element.Length; i++)
-        {
-            if (currentNode.Next.ContainsKey(element[i]))
-            {
-                if (i == element.Length - 1)
-                {
-                    currentNode.Terminal = true;
-                }
-                currentNode = currentNode.Next[element[i]];
-            }
-            else
-            {
-                var newNode = new Node(element[i]);
-                currentNode.Next.Add(element[i], newNode);
-                if (i == element.Length - 1)
-                {
-                    newNode.Terminal = true;
-                    Size++;
-                    return true;
-                }
-
-                currentNode = currentNode.Next[element[i]];
-            }
-        }
-
-        return false;
+        return AddItemRecursive(element, root, 0);
     }
 
     private static bool RemoveRecursive(string element, int symbolIndex, Node pos, ref bool canDelete)
@@ -76,6 +96,8 @@ public class Trie : ITrie
                 pos.Terminal = false;
                 canDelete = false;
             }
+
+            --pos.NumberOfSons;
             return true;
         }
 
@@ -89,6 +111,7 @@ public class Trie : ITrie
             pos.Next.Remove(element[symbolIndex]);
         }
 
+        --pos.NumberOfSons;
         return true;
     }
 
@@ -96,7 +119,7 @@ public class Trie : ITrie
     /// Removes item from prefix tree
     /// </summary>
     /// <param name="element"></param>
-    /// <returns></returns>
+    /// <returns>True if the string was present in the trie, false if it wasn't</returns>
     public bool Remove(string element)
     {
         var canDelete = true;
@@ -118,29 +141,13 @@ public class Trie : ITrie
         var currentNode = root;
         for (var i = 0; i < element.Length; i++)
         {
-            if (!currentNode.Next.ContainsKey(element[i]) || (i == element.Length - 1 && currentNode.Next[element[i]].Terminal == false))
+            if (!currentNode.Next.ContainsKey(element[i]) || (i == element.Length - 1 && !currentNode.Next[element[i]].Terminal))
             {
                 return false;
             }
             currentNode = currentNode.Next[element[i]];
         }
         return true;
-    }
-
-    private static int HowManyStartsWithPrefixRecursive(Node pos)
-    {
-        var counter = 0;
-        if (pos.Terminal)
-        {
-            ++counter;
-        }
-
-        foreach (var ch in pos.Next.Keys)
-        {
-            counter += HowManyStartsWithPrefixRecursive(pos.Next[ch]);
-        }
-
-        return counter;
     }
 
     /// <summary>
@@ -159,6 +166,7 @@ public class Trie : ITrie
             }
             currentNode = currentNode.Next[prefix[i]];
         }
-        return HowManyStartsWithPrefixRecursive(currentNode);
+
+        return currentNode.NumberOfSons;
     }
 }
