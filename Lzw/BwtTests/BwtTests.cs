@@ -12,22 +12,7 @@ public class Tests
     {
         
     }
-
-    // [SetUpFixture]
-    // public class MySetUpClass
-    // {
-    //     [OneTimeSetUp]
-    //     public void ExecuteTransformations()
-    //     {
-    //         Transformation.Bwt("../../../skyrim_level_up.mp3");
-    //         Transformation.Bwt("../../../slick.bin");
-    //         Transformation.Bwt("../../../text.txt");
-    //     }
-    // }
-    //
-    // тестирвоать нужно всего два метода. Тесты: 1) после трансформации размер у файла увеличен на несколько бит (из-за индексов строк). 2) после бвт и бвтинверс та же самая последовательность байтов (прогнать на разных файлах: txt, .bin, .mp3)
-    // 
-
+    
     [Test]
     public void AfterTransformationSizeOfFileShouldBeSlightlyIncreased()
     {
