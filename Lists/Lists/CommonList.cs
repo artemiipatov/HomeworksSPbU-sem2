@@ -33,7 +33,7 @@ public class CommonList : ICommonList
         ListElement? currentElement = Head;
         if (currentElement == null)
         {
-            throw new ItemNotFoundException("Removing item from empty list"); // заменить на свое исключение.
+            throw new ItemNotFoundException("Removing item from empty list");
         }
 
         if (position == 0)
@@ -48,7 +48,7 @@ public class CommonList : ICommonList
         {
             if (currentElement.Next == null)
             {
-                throw new ItemNotFoundException("Index is out of range"); // заменить на свое исключение.
+                throw new ItemNotFoundException("Index is out of range");
             }
 
             currentElement = currentElement.Next;
@@ -57,7 +57,7 @@ public class CommonList : ICommonList
 
         if (currentElement.Next == null)
         {
-            throw new ItemNotFoundException("Index is out of range"); // заменить на свое исключение.
+            throw new ItemNotFoundException("Index is out of range");
         }
 
         currentElement.Next = currentElement.Next.Next;
@@ -69,7 +69,7 @@ public class CommonList : ICommonList
         ListElement? currentElement = Head;
         if (currentElement == null)
         {
-            throw new ItemNotFoundException("Changing item in empty list"); // заменить на свое исключение.
+            throw new ItemNotFoundException("Changing item in empty list");
         }
 
         int currentPosition = 0;
@@ -87,13 +87,13 @@ public class CommonList : ICommonList
         ListElement? currentElement = Head;
         if (currentElement == null)
         {
-            throw new ItemNotFoundException("Changing item in empty list"); // заменить на свое исключение.
+            throw new ItemNotFoundException("Changing item in empty list");
         }
 
         int currentPosition = 0;
         while (currentPosition != position)
         {
-            currentElement = currentElement.Next ?? throw new ItemNotFoundException("Index is out of range"); // заменить на свое исключение.
+            currentElement = currentElement.Next ?? throw new ItemNotFoundException("Index is out of range");
             ++currentPosition;
         }
 
