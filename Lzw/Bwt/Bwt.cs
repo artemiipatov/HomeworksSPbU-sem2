@@ -1,8 +1,5 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
-using System.Net;
-using System.Net.NetworkInformation;
-using System.Text;
 namespace Bwt;
 
 using System;
@@ -19,7 +16,7 @@ public static class Transformation
             IEnumerable enumerable2 = obj2 as IEnumerable ?? throw new InvalidOperationException();
             IEnumerator enumerator1 = enumerable1.GetEnumerator();
             IEnumerator enumerator2 = enumerable2.GetEnumerator();
-            
+
             enumerator1.MoveNext();
             enumerator2.MoveNext();
             while (true)
@@ -45,7 +42,6 @@ public static class Transformation
     /// forward burrows-wheeler transformation. Returns transformed string and index of the original string in the array of sorted rotations. 
     /// </summary>
     /// <param name="path"></param>
-    /// <returns></returns>
     [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH", MessageId = "type: System.Byte[]")]
     [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH", MessageId = "type: System.Byte")]
     public static void Bwt(string path)
@@ -90,19 +86,6 @@ public static class Transformation
         return rotations;
     }
 
-    // private static void Sort(byte[][] rotations)
-    // {
-    //     for (int index = 1; index < rotations.Length; index++)
-    //     {
-    //         int i = index;
-    //         while (i > 0 && ((IStructuralComparable) rotations[i]).CompareTo(rotations[i - 1], Comparer<byte>.Default) < 0)
-    //         {
-    //             (rotations[i - 1], rotations[i]) = (rotations[i], rotations[i - 1]);
-    //             --i;
-    //         }
-    //     }
-    // }
-
     private static int IndexOfByteArray(byte[][] sourceArray, byte[] byteArray)
     {
         for (int i = 0; i < sourceArray.Length; ++i)
@@ -121,7 +104,6 @@ public static class Transformation
     /// <param name="str"></param>
     /// <param name="index"></param>
     /// <param name="path"></param>
-    /// <returns></returns>
     public static void BwtInverse(string path)
     {
         using var inputFile = new BinaryReader(File.Open(path, FileMode.Open));
@@ -144,7 +126,7 @@ public static class Transformation
             }
         }
     }
-    
+
     private static int[] GetNumbers(byte[] fileBytes, byte[] sortedBytes)
     {
         var frequencies = new int[UnicodeSize];
@@ -167,7 +149,7 @@ public static class Transformation
         }
         return result;
     }
-    
+
     private static string GetNameOfFile(string path)
     {
         int index = path.Length - 1;
