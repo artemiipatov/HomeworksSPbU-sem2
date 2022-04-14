@@ -1,4 +1,6 @@
-﻿namespace SparseVector;
+﻿using Exceptions;
+
+namespace SparseVector;
 
 /// <summary>
 /// Sparse vector implementation
@@ -31,7 +33,7 @@ public class SparseVector
     {
         if (Length != vector2.Length)
         {
-            throw new Exception("vectors have different lengths");
+            throw new DifferentLengthsException("vectors have different lengths");
         }
         var result = new Dictionary<int, int>();
         foreach (var key in Vector.Keys)
@@ -60,7 +62,7 @@ public class SparseVector
     {
         if (Length != vector2.Length)
         {
-            throw new Exception("vectors have different lengths");
+            throw new DifferentLengthsException("vectors have different lengths");
         }
 
         var negativeVector = new Dictionary<int, int>();
@@ -82,7 +84,7 @@ public class SparseVector
     {
         if (Length != vector2.Length)
         {
-            throw new Exception("vectors have different lengths");
+            throw new DifferentLengthsException("vectors have different lengths");
         }
 
         int scalarProduct = 0;

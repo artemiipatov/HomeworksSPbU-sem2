@@ -7,4 +7,8 @@
         <RootNamespace>test1</RootNamespace>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Exceptions\Exceptions.csproj" />
+    </ItemGroup>
+
 </Project>

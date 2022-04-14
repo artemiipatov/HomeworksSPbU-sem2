@@ -1,4 +1,4 @@
-using System;
+using Exceptions;
 using System.Collections.Generic;
 using NUnit.Framework;
 
@@ -129,9 +129,9 @@ public class Tests
             {1500000000, 9},
         };
         var vector2 = new SparseVector.SparseVector(dictionary2, 2000000000);
-        Assert.Throws<Exception>(() => vector1.Add(vector2));
-        Assert.Throws<Exception>(() => vector1.Substract(vector2));
-        Assert.Throws<Exception>(() => vector1.ScalarMultiply(vector2));
+        Assert.Throws<DifferentLengthsException>(() => vector1.Add(vector2));
+        Assert.Throws<DifferentLengthsException>(() => vector1.Substract(vector2));
+        Assert.Throws<DifferentLengthsException>(() => vector1.ScalarMultiply(vector2));
 
     }
 }
