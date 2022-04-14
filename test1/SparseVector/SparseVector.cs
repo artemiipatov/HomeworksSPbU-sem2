@@ -75,9 +75,9 @@ public class SparseVector
     }
 
     /// <summary>
-    /// 
+    /// Scalar multiply two vectors
     /// </summary>
-    /// <param name="vector2">Scalar multiply two vectors</param>
+    /// <param name="vector2"></param>
     /// <returns></returns>
     /// <exception cref="Exception">Throws if vectors have different lengths</exception>
     public int ScalarMultiply(SparseVector vector2)
