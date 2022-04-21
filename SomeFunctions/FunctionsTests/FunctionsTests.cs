@@ -1,8 +1,8 @@
+namespace FunctionsTests;
+
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-
-namespace FunctionsTests;
 
 public class Tests
 {
