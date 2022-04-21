@@ -6,11 +6,6 @@ using Routers;
 
 public class Tests
 {
-    [SetUp]
-    public void Setup()
-    {
-    }
-
     private string inputFilePath = "../../../TestInput.txt";
     
     [Test]

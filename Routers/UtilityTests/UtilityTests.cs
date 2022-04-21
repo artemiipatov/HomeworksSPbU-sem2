@@ -28,8 +28,7 @@ public class Tests
         Assert.AreEqual(outputFile.ReadLine(), "1: 2(16) 4(20) 6(11)");
         Assert.AreEqual(outputFile.ReadLine(), "3: 5(17)");
         outputFile.Close();
-        
-        
+
         inputFile = new StreamWriter(File.Open(inputFilePath, FileMode.Create));
         inputFile.WriteLine("0: 1(7) 2(15) 3(40) 6(3) 7(1)");
         inputFile.WriteLine("1: 2(8) 3(17) 7(9)");
