@@ -1,8 +1,8 @@
+namespace GameTests;
+
 using System;
 using System.IO;
-using NUnit.Framework;
-
-namespace GameTests;
+using NUnit.Framework; 
 
 public class Tests
 {
