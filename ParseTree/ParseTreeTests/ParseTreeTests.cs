@@ -1,7 +1,7 @@
+namespace ParseTreeTests;
+
 using System.IO;
 using NUnit.Framework;
-
-namespace ParseTreeTests;
 using ParseTree;
 
 public class Tests
