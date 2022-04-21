@@ -6,112 +6,31 @@ using Calculator;
 
 public class Tests
 {
-    private CalculatorForm testForm;
-    private Button button0;
-    private Button button1;
-    private Button button2;
-    private Button button3;
-    private Button button4;
-    private Button button5;
-    private Button button6;
-    private Button button7;
-    private Button button8;
-    private Button button9;
-    private Button buttonMultiplication;
-    private Button buttonDecimalPoint;
-    private Button buttonNegation;
-    private Button buttonEquals;
-    private Button buttonPlus;
-    private Button buttonMinus;
-    private Button buttonDivision;
-    private Button buttonSqrt;
-    private Button buttonClear;
-    private Button buttonBackspace;
+    private CalculatorForm testForm = new();
+    private Button button0 = new() { Text = "0" };
+    private Button button1 = new() { Text = "1" };
+    private Button button2 = new() { Text = "2" };
+    private Button button3 = new() { Text = "3" };
+    private Button button4 = new() { Text = "4" };
+    private Button button5 = new() { Text = "5" };
+    private Button button6 = new() { Text = "6" };
+    private Button button7 = new() { Text = "7" };
+    private Button button8 = new() { Text = "8" };
+    private Button button9 = new() { Text = "9" };
+    private Button buttonMultiplication = new() { Text = "✕" };
+    private Button buttonDecimalPoint = new() { Text = "," };
+    private Button buttonNegation = new() { Text = "+/-" };
+    private Button buttonEquals = new() { Text = "=" };
+    private Button buttonPlus = new() { Text = "+" };
+    private Button buttonMinus = new() { Text = "-" };
+    private Button buttonDivision = new() { Text = "÷" };
+    private Button buttonSqrt = new() { Text = "√" };
+    private Button buttonClear = new() { Text = "C" };
+    private Button buttonBackspace = new() { Text = "⌫" };
 
     [SetUp]
     public void Setup()
     {
-        testForm = new CalculatorForm();
-        button0 = new System.Windows.Forms.Button()
-        {
-            Text = "0"
-        };
-        button1 = new System.Windows.Forms.Button()
-        {
-            Text = "1"
-        };
-        button2 = new System.Windows.Forms.Button()
-        {
-            Text = "2"
-        };
-        button3 = new System.Windows.Forms.Button()
-        {
-            Text = "3"
-        };
-        button4 = new System.Windows.Forms.Button()
-        {
-            Text = "4"
-        };
-        button5 = new System.Windows.Forms.Button()
-        {
-            Text = "5"
-        };
-        button6 = new System.Windows.Forms.Button()
-        {
-            Text = "6"
-        };
-        button7 = new System.Windows.Forms.Button()
-        {
-            Text = "7"
-        };
-        button8 = new System.Windows.Forms.Button()
-        {
-            Text = "8"
-        };
-        button9 = new System.Windows.Forms.Button()
-        {
-            Text = "9"
-        };
-        buttonNegation = new System.Windows.Forms.Button()
-        {
-            Text = "+/-"
-        };
-        buttonDecimalPoint = new System.Windows.Forms.Button()
-        {
-            Text = ","
-        };
-        buttonEquals = new System.Windows.Forms.Button()
-        {
-            Text = "="
-        };
-        buttonPlus = new System.Windows.Forms.Button()
-        {
-            Text = "+"
-        };
-        buttonMinus = new System.Windows.Forms.Button()
-        {
-            Text = "-"
-        };
-        buttonMultiplication = new System.Windows.Forms.Button()
-        {
-            Text = "✕"
-        };
-        buttonDivision = new System.Windows.Forms.Button()
-        {
-            Text = "÷"
-        };
-        buttonSqrt = new System.Windows.Forms.Button()
-        {
-            Text = "√"
-        };
-        buttonBackspace = new System.Windows.Forms.Button()
-        {
-            Text = "⌫"
-        };
-        buttonClear = new System.Windows.Forms.Button()
-        {
-            Text = "C"
-        };
         button1.Click += new System.EventHandler(testForm.OperandClick!);
         button2.Click += new System.EventHandler(testForm.OperandClick!);
         button3.Click += new System.EventHandler(testForm.OperandClick!);
@@ -147,7 +66,7 @@ public class Tests
         button8.PerformClick();
         button9.PerformClick();
         button0.PerformClick();
-        Assert.AreEqual("1234567890", testForm.firstOperand);
+        Assert.AreEqual("1234567890", testForm.FirstOperand);
 
         buttonPlus.PerformClick();
         button9.PerformClick();
@@ -160,7 +79,7 @@ public class Tests
         button2.PerformClick();
         button1.PerformClick();
         button0.PerformClick();
-        Assert.AreEqual("9876543210", testForm.secondOperand);
+        Assert.AreEqual("9876543210", testForm.SecondOperand);
     }
 
     [Test]
@@ -179,7 +98,7 @@ public class Tests
         button1.PerformClick();
         button7.PerformClick();
         buttonEquals.PerformClick();
-        Assert.AreEqual("430376", testForm.firstOperand);
+        Assert.AreEqual("430376", testForm.FirstOperand);
     }
 
     [Test]
@@ -199,7 +118,7 @@ public class Tests
         button1.PerformClick();
         button3.PerformClick();
         buttonEquals.PerformClick();
-        Assert.AreEqual("-763063", testForm.firstOperand);
+        Assert.AreEqual("-763063", testForm.FirstOperand);
     }
 
     [Test]
@@ -217,7 +136,7 @@ public class Tests
         button8.PerformClick();
         button4.PerformClick();
         buttonEquals.PerformClick();
-        Assert.AreEqual("108", testForm.firstOperand);
+        Assert.AreEqual("108", testForm.FirstOperand);
     }
 
     [Test]
@@ -237,7 +156,7 @@ public class Tests
         button2.PerformClick();
         button4.PerformClick();
         buttonEquals.PerformClick();
-        Assert.AreEqual("689419600128", testForm.firstOperand);
+        Assert.AreEqual("689419600128", testForm.FirstOperand);
     }
 
     [Test]
@@ -266,7 +185,7 @@ public class Tests
         button9.PerformClick();
         button2.PerformClick();
         buttonEquals.PerformClick();
-        Assert.AreEqual("13693722,43861093368", testForm.firstOperand);
+        Assert.AreEqual("13693722,43861093368", testForm.FirstOperand);
     }
 
     [Test]
@@ -295,18 +214,18 @@ public class Tests
         button9.PerformClick();
         button2.PerformClick();
         buttonClear.PerformClick();
-        Assert.AreEqual("", testForm.firstOperand);
-        Assert.AreEqual('\0', testForm.currentOperator);
-        Assert.AreEqual("", testForm.secondOperand);
+        Assert.AreEqual("", testForm.FirstOperand);
+        Assert.AreEqual('\0', testForm.CurrentOperator);
+        Assert.AreEqual("", testForm.SecondOperand);
     }
     
     [Test]
     public void TestClearButtonOnEmptyExpression()
     {
         buttonClear.PerformClick();
-        Assert.AreEqual("", testForm.firstOperand);
-        Assert.AreEqual('\0', testForm.currentOperator);
-        Assert.AreEqual("", testForm.secondOperand);
+        Assert.AreEqual("", testForm.FirstOperand);
+        Assert.AreEqual('\0', testForm.CurrentOperator);
+        Assert.AreEqual("", testForm.SecondOperand);
     }
 
     [Test]
@@ -321,7 +240,7 @@ public class Tests
         button8.PerformClick();
         button1.PerformClick();
         buttonSqrt.PerformClick();
-        Assert.AreEqual("85,9", testForm.firstOperand);
+        Assert.AreEqual("85,9", testForm.FirstOperand);
         buttonClear.PerformClick();
 
         button2.PerformClick();
@@ -336,9 +255,9 @@ public class Tests
         button8.PerformClick();
         button1.PerformClick();
         buttonSqrt.PerformClick();
-        Assert.AreEqual("85,9", testForm.secondOperand);
+        Assert.AreEqual("85,9", testForm.SecondOperand);
         buttonEquals.PerformClick();
-        Assert.AreEqual("374,9", testForm.firstOperand);
+        Assert.AreEqual("374,9", testForm.FirstOperand);
     }
 
     [Test]
@@ -357,30 +276,30 @@ public class Tests
         buttonBackspace.PerformClick();
         buttonBackspace.PerformClick();
         buttonBackspace.PerformClick();
-        Assert.AreEqual("1234567", testForm.firstOperand);
+        Assert.AreEqual("1234567", testForm.FirstOperand);
         buttonDecimalPoint.PerformClick();
         button7.PerformClick();
         button8.PerformClick();
-        Assert.AreEqual("1234567,78", testForm.firstOperand);
+        Assert.AreEqual("1234567,78", testForm.FirstOperand);
         buttonBackspace.PerformClick();
         buttonBackspace.PerformClick();
         buttonBackspace.PerformClick();
         buttonBackspace.PerformClick();
         buttonBackspace.PerformClick();
-        Assert.AreEqual("12345", testForm.firstOperand);
+        Assert.AreEqual("12345", testForm.FirstOperand);
         buttonPlus.PerformClick();
         button8.PerformClick();
         button9.PerformClick();
         buttonBackspace.PerformClick();
-        Assert.AreEqual("8", testForm.secondOperand);
-        Assert.AreEqual('+', testForm.currentOperator);
-        Assert.AreEqual("12345", testForm.firstOperand);
+        Assert.AreEqual("8", testForm.SecondOperand);
+        Assert.AreEqual('+', testForm.CurrentOperator);
+        Assert.AreEqual("12345", testForm.FirstOperand);
         buttonBackspace.PerformClick();
         buttonBackspace.PerformClick();
         buttonBackspace.PerformClick();
-        Assert.AreEqual("", testForm.secondOperand);
-        Assert.AreEqual('\0', testForm.currentOperator);
-        Assert.AreEqual("1234", testForm.firstOperand);
+        Assert.AreEqual("", testForm.SecondOperand);
+        Assert.AreEqual('\0', testForm.CurrentOperator);
+        Assert.AreEqual("1234", testForm.FirstOperand);
     }
 
     [Test]
@@ -388,9 +307,9 @@ public class Tests
     {
         button9.PerformClick();
         buttonNegation.PerformClick();
-        Assert.AreEqual("-9", testForm.firstOperand);
+        Assert.AreEqual("-9", testForm.FirstOperand);
         buttonNegation.PerformClick();
-        Assert.AreEqual("9", testForm.firstOperand);
+        Assert.AreEqual("9", testForm.FirstOperand);
     }
 
     [Test]
@@ -411,26 +330,26 @@ public class Tests
         buttonDecimalPoint.PerformClick();
         button4.PerformClick();
         buttonMinus.PerformClick();
-        Assert.AreEqual("5542,56", testForm.firstOperand);
+        Assert.AreEqual("5542,56", testForm.FirstOperand);
         button1.PerformClick();
         button0.PerformClick();
         button0.PerformClick();
         button0.PerformClick();
         button0.PerformClick();
         buttonEquals.PerformClick();
-        Assert.AreEqual("-4457,44", testForm.firstOperand);
+        Assert.AreEqual("-4457,44", testForm.FirstOperand);
         buttonBackspace.PerformClick();
         buttonBackspace.PerformClick();
         buttonBackspace.PerformClick();
         buttonBackspace.PerformClick();
-        Assert.AreEqual("-445", testForm.firstOperand);
+        Assert.AreEqual("-445", testForm.FirstOperand);
         buttonNegation.PerformClick();
-        Assert.AreEqual("445", testForm.firstOperand);
+        Assert.AreEqual("445", testForm.FirstOperand);
         buttonMinus.PerformClick();
         button4.PerformClick();
         buttonEquals.PerformClick();
         buttonSqrt.PerformClick();
-        Assert.AreEqual("21", testForm.firstOperand);
+        Assert.AreEqual("21", testForm.FirstOperand);
     }
 
     [Test]
@@ -441,13 +360,13 @@ public class Tests
         buttonMinus.PerformClick();
         buttonDivision.PerformClick();
         buttonEquals.PerformClick();
-        Assert.AreEqual('\0', testForm.currentOperator);
+        Assert.AreEqual('\0', testForm.CurrentOperator);
         button9.PerformClick();
         buttonPlus.PerformClick();
-        Assert.AreEqual('+', testForm.currentOperator);
+        Assert.AreEqual('+', testForm.CurrentOperator);
         buttonMultiplication.PerformClick();
         buttonMinus.PerformClick();
-        Assert.AreEqual('-', testForm.currentOperator);
+        Assert.AreEqual('-', testForm.CurrentOperator);
     }
 
     [Test]
@@ -455,11 +374,11 @@ public class Tests
     {
         button9.PerformClick();
         buttonDecimalPoint.PerformClick();
-        Assert.AreEqual("9,", testForm.firstOperand);
+        Assert.AreEqual("9,", testForm.FirstOperand);
         buttonDecimalPoint.PerformClick();
-        Assert.AreEqual("9,", testForm.firstOperand);
+        Assert.AreEqual("9,", testForm.FirstOperand);
         buttonDecimalPoint.PerformClick();
-        Assert.AreEqual("9,", testForm.firstOperand);
+        Assert.AreEqual("9,", testForm.FirstOperand);
     }
 
     [Test]

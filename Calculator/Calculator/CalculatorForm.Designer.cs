@@ -496,7 +496,7 @@
 
         private void PrintSomethingOnClick(object sender, EventArgs e)
         {
-            textBox1.Text = this.firstOperand + (this.currentOperator == '\0' ? "" : currentOperator) + secondOperand;
+            textBox1.Text = this.FirstOperand + (this.CurrentOperator == '\0' ? "" : CurrentOperator) + SecondOperand;
         }
 
         private void OnClearButtonClick(object sender, EventArgs e)

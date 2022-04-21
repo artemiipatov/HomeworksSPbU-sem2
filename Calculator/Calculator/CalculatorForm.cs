@@ -2,9 +2,9 @@
 
 public partial class CalculatorForm : Form
 {
-    public string firstOperand { get; private set; } = "";
-    public string secondOperand { get; private set; } = "";
-    public char currentOperator { get; private set; } = '\0';
+    public string FirstOperand { get; private set; } = "";
+    public string SecondOperand { get; private set; } = "";
+    public char CurrentOperator { get; private set; } = '\0';
 
     public CalculatorForm()
     {
@@ -13,122 +13,122 @@ public partial class CalculatorForm : Form
 
     public void OperandClick(object sender, EventArgs e)
     {
-        if (currentOperator != '\0')
+        if (CurrentOperator != '\0')
         {
-            secondOperand += (sender as Button)!.Text;
+            SecondOperand += (sender as Button)!.Text;
         }
         else
         {
-            firstOperand += (sender as Button)!.Text;
+            FirstOperand += (sender as Button)!.Text;
         }
     }
 
     public void OperatorClick(object sender, EventArgs e)
     {
-        if (firstOperand == "")
+        if (FirstOperand == "")
         {
             return;
         }
-        if (secondOperand == "")
+        if (SecondOperand == "")
         {
             if ((sender as Button)!.Text == "√")
             {
-                firstOperand = Math.Sqrt(double.Parse(firstOperand)).ToString("G29");
+                FirstOperand = Math.Sqrt(double.Parse(FirstOperand)).ToString("G29");
                 return;
             }
-            currentOperator = Convert.ToChar((sender as Button)!.Text);
+            CurrentOperator = Convert.ToChar((sender as Button)!.Text);
         }
         else
         {
-            decimal decimalFirstOperand = (decimal)double.Parse(firstOperand);
-            decimal decimalSecondOperand = (decimal)double.Parse(secondOperand);
+            decimal decimalFirstOperand = (decimal)double.Parse(FirstOperand);
+            decimal decimalSecondOperand = (decimal)double.Parse(SecondOperand);
             if ((sender as Button)!.Text == "√")
             {
-                secondOperand = Math.Sqrt((double)decimalSecondOperand).ToString("G29");
+                SecondOperand = Math.Sqrt((double)decimalSecondOperand).ToString("G29");
                 return;
             }
-            switch (currentOperator)
+            switch (CurrentOperator)
             {
                 case '+':
                 {
-                    firstOperand = (decimalFirstOperand + decimalSecondOperand).ToString("G29");
+                    FirstOperand = (decimalFirstOperand + decimalSecondOperand).ToString("G29");
                     break;
                 }
                 case '-':
                 {
-                    firstOperand = (decimalFirstOperand - decimalSecondOperand).ToString("G29");
+                    FirstOperand = (decimalFirstOperand - decimalSecondOperand).ToString("G29");
                     break;
                 }
                 case '✕':
                 {
-                    firstOperand = (decimalFirstOperand * decimalSecondOperand).ToString("G29");
+                    FirstOperand = (decimalFirstOperand * decimalSecondOperand).ToString("G29");
                     break;
                 }
                 case '÷':
                 {
-                    firstOperand = (decimalFirstOperand / decimalSecondOperand).ToString("G29");
+                    FirstOperand = (decimalFirstOperand / decimalSecondOperand).ToString("G29");
                     break;
                 }
             }
-            currentOperator = (sender as Button)!.Text == "=" ? '\0' : Convert.ToChar((sender as Button)!.Text);
-            secondOperand = "";
+            CurrentOperator = (sender as Button)!.Text == "=" ? '\0' : Convert.ToChar((sender as Button)!.Text);
+            SecondOperand = "";
         }
     }
 
     public void ButtonBackspaceClick(object sender, EventArgs e)
     {
-        if (secondOperand != "")
+        if (SecondOperand != "")
         {
-            secondOperand = secondOperand.Remove(secondOperand.Length - 1);
+            SecondOperand = SecondOperand.Remove(SecondOperand.Length - 1);
         }
-        else if (currentOperator != '\0')
+        else if (CurrentOperator != '\0')
         {
-            currentOperator = '\0';
+            CurrentOperator = '\0';
         }
-        else if (firstOperand != "")
+        else if (FirstOperand != "")
         {
-            firstOperand = firstOperand.Remove(firstOperand.Length - 1);
+            FirstOperand = FirstOperand.Remove(FirstOperand.Length - 1);
         }
     }
 
     public void ButtonNegationClick(object sender, EventArgs e)
     {
-        if (secondOperand != "")
+        if (SecondOperand != "")
         {
-            if (secondOperand[0] == '-')
+            if (SecondOperand[0] == '-')
             {
-                secondOperand = secondOperand.Substring(1);
+                SecondOperand = SecondOperand.Substring(1);
                 return;
             }
-            secondOperand = "-" + secondOperand;
+            SecondOperand = "-" + SecondOperand;
         }
-        else if (firstOperand != "")
+        else if (FirstOperand != "")
         {
-            if (firstOperand[0] == '-')
+            if (FirstOperand[0] == '-')
             {
-                firstOperand = firstOperand.Substring(1);
+                FirstOperand = FirstOperand.Substring(1);
                 return;
             }
-            firstOperand = "-" + firstOperand;
+            FirstOperand = "-" + FirstOperand;
         }
     }
 
     public void ButtonDecimalPointClick(object sender, EventArgs e)
     {
-        if (secondOperand != "")
+        if (SecondOperand != "")
         {
-            secondOperand += secondOperand.Contains(',') ? "" : ',';
+            SecondOperand += SecondOperand.Contains(',') ? "" : ',';
         }
-        else if (firstOperand != "")
+        else if (FirstOperand != "")
         {
-            firstOperand += firstOperand.Contains(',') ? "" : ',';
+            FirstOperand += FirstOperand.Contains(',') ? "" : ',';
         }
     }
 
     public void ButtonClearClick(object sender, EventArgs e)
     {
-        secondOperand = "";
-        currentOperator = '\0';
-        firstOperand = "";
+        SecondOperand = "";
+        CurrentOperator = '\0';
+        FirstOperand = "";
     }
 }
