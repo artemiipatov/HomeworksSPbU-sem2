@@ -1,6 +1,6 @@
-﻿using System.Runtime.Serialization;
+﻿namespace Exceptions;
 
-namespace Exceptions;
+using System.Runtime.Serialization;
 
 [Serializable]
 public class AddingExistingItemException : Exception

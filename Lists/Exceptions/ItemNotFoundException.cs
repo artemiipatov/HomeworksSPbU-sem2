@@ -1,6 +1,6 @@
-using System.Runtime.Serialization;
-
 namespace Exceptions;
+
+using System.Runtime.Serialization;
 
 [Serializable]
 public class ItemNotFoundException : Exception

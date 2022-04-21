@@ -1,6 +1,6 @@
-using Exceptions;
-
 namespace Lists;
+
+using Exceptions;
 
 public class CommonList : ICommonList
 {

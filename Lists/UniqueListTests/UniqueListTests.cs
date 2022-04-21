@@ -1,7 +1,6 @@
-using NUnit.Framework;
-
 namespace UniqueListTests;
 
+using NUnit.Framework;
 using Lists;
 using Exceptions;
 

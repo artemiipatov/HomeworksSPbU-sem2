@@ -1,7 +1,7 @@
+namespace ListsTests;
+
 using Exceptions;
 using NUnit.Framework;
-
-namespace ListsTests;
 using Lists;
 
 public class Tests
