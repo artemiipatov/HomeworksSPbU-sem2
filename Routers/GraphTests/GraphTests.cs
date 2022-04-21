@@ -1,8 +1,8 @@
+namespace GraphTests;
+
 using System.IO;
 using NUnit.Framework;
 using Routers;
-
-namespace GraphTests;
 
 public class Tests
 {

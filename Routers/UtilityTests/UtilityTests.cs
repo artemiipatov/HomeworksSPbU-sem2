@@ -1,9 +1,9 @@
+namespace UtilityTests;
+
 using System.IO;
 using NUnit.Framework;
 using Routers;
 using UtilityExceptions;
-
-namespace UtilityTests;
 
 public class Tests
 {

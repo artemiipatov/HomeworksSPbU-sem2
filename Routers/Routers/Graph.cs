@@ -1,6 +1,6 @@
-using UtilityExceptions;
-
 namespace Routers;
+
+using UtilityExceptions;
 
 /// <summary>
 /// Graph class with adjacency matrix as a property and dfs, connection checking and parsing methods

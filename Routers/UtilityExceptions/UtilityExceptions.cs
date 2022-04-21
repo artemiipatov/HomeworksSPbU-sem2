@@ -1,5 +1,6 @@
-﻿using System.Runtime.Serialization;
-namespace UtilityExceptions;
+﻿namespace UtilityExceptions;
+
+using System.Runtime.Serialization;
 
 [Serializable]
 public class WrongInputException : Exception
