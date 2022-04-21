@@ -1,10 +1,12 @@
-using System.Collections;
-using System.Diagnostics.CodeAnalysis;
 namespace Bwt;
 
+using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System;
 
-// class with two public methods for burrows-wheeler transformation
+/// <summary>
+/// class with two public methods for burrows-wheeler transformation
+/// </summary>
 public static class Transformation
 {
     private class ByteArrayComparer : IComparer
@@ -101,9 +103,7 @@ public static class Transformation
     /// <summary>
     /// Inverse Burrows-Wheeler transformation. Returns original string.
     /// </summary>
-    /// <param name="str"></param>
-    /// <param name="index"></param>
-    /// <param name="path"></param>
+    /// <param name="path">path to the file</param>
     public static void BwtInverse(string path)
     {
         using var inputFile = new BinaryReader(File.Open(path, FileMode.Open));

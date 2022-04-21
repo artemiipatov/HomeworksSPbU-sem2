@@ -1,18 +1,11 @@
-using System;
+namespace BwtTests;
+
 using System.IO;
 using NUnit.Framework;
-
-namespace BwtTests;
 using Bwt;
 
 public class Tests
 {
-    [SetUp]
-    public void Setup()
-    {
-        
-    }
-    
     [Test]
     public void AfterTransformationSizeOfFileShouldBeSlightlyIncreased()
     {

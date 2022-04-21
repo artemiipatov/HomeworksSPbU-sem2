@@ -1,7 +1,7 @@
+namespace LzwTests;
+
 using System.IO;
 using NUnit.Framework;
-
-namespace LzwTests;
 using Lzw;
 
 public class Tests
