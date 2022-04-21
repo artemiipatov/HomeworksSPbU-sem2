@@ -27,11 +27,7 @@ public partial class Form1 : Form
         };
 
         Brush brush = new SolidBrush(Color.FromArgb(0xFF, 0xE0, 0xFA));
-        //Pen pen = new Pen(Color.Black, 10);
-        //e.Graphics.FillEllipse(brush, new Rectangle(centerPoint.X - clockDiameter / 2, centerPoint.Y - clockDiameter / 2, clockDiameter, clockDiameter));
         e.Graphics.DrawImage(Image.FromFile("../../../ussr.png"), new Rectangle(centerPoint.X - clockDiameter / 2, centerPoint.Y - clockDiameter / 2, clockDiameter, clockDiameter));
-        //pen.Width = (float)5;
-        //e.Graphics.DrawEllipse(pen, new Rectangle(centerPoint.X - clockDiameter / 2, centerPoint.Y - clockDiameter / 2, clockDiameter, clockDiameter));
 
         double secondsAngle = (2 * (Math.PI) * DateTime.Now.Second / 60);
         int secondsX = centerPoint.X + (int)Math.Round(Math.Sin(secondsAngle) * clockDiameter / 2);
