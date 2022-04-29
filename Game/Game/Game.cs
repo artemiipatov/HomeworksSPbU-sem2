@@ -1,12 +1,17 @@
 namespace Game;
 
+using IConsoleWrapper = ConsoleWrapper.IConsoleWrapper;
+
 public class Game
 {
     public (int, int) Position { get; private set; }
     public bool[][] Walls { get; } = new bool[100][];
+    private readonly IConsoleWrapper console;
     
-    public Game()
+    public Game(IConsoleWrapper console)
     {
+        this.console = console;
+
         Position = (-1, -1);
         for (int i = 0; i < 100; i++)
         {
@@ -22,7 +27,7 @@ public class Game
     public void GenerateMap(string path)
     {
         using StreamReader map = new StreamReader(path);
-        int stringCounter = Console.CursorTop;
+        int stringCounter = console.GetCursorTop();
         while (true)
         {
             string? line = map.ReadLine();
@@ -31,7 +36,7 @@ public class Game
                 break;
             }
 
-            for (int i = Console.CursorLeft; i < line.Length; i++)
+            for (int i = console.GetCursorLeft(); i < line.Length; i++)
             {
                 Walls[stringCounter][i] = line[i] == '|' || line[i] == '+' || line[i] == '-';
                 if (line[i] == '@')
@@ -45,9 +50,9 @@ public class Game
             }
 
             ++stringCounter;
-            Console.WriteLine(line);
+            console.WriteLine(line);
         }
-        Console.SetCursorPosition(Position.Item1, Position.Item2);
+        console.SetCursorPosition(Position.Item1, Position.Item2);
     }
 
     /// <summary>
@@ -61,9 +66,9 @@ public class Game
         {
             return;
         }
-        Console.Write(" ");
+        console.Write(" ");
         Position = (Position.Item1 - 1, Position.Item2);
-        Console.SetCursorPosition(Position.Item1, Position.Item2);
+        console.SetCursorPosition(Position.Item1, Position.Item2);
         WriteAtSign();
     }
 
@@ -78,7 +83,7 @@ public class Game
         {
             return;
         }
-        Console.Write(" ");
+        console.Write(" ");
         Position = (Position.Item1 + 1, Position.Item2);
         WriteAtSign();
     }
@@ -94,9 +99,9 @@ public class Game
         {
             return;
         }
-        Console.Write(" ");
+        console.Write(" ");
         Position = (Position.Item1, Position.Item2 - 1);
-        Console.SetCursorPosition(Position.Item1, Position.Item2);
+        console.SetCursorPosition(Position.Item1, Position.Item2);
         WriteAtSign();
     }
 
@@ -111,15 +116,15 @@ public class Game
         {
             return;
         }
-        Console.Write(" ");
+        console.Write(" ");
         Position = (Position.Item1, Position.Item2 + 1);
-        Console.SetCursorPosition(Position.Item1, Position.Item2);
+        console.SetCursorPosition(Position.Item1, Position.Item2);
         WriteAtSign();
     }
 
     private void WriteAtSign()
     {
-        Console.Write("@");
-        Console.SetCursorPosition(Position.Item1, Position.Item2);
+        console.Write("@");
+        console.SetCursorPosition(Position.Item1, Position.Item2);
     }
 }

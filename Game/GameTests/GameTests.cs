@@ -2,10 +2,19 @@ namespace GameTests;
 
 using System;
 using System.IO;
-using NUnit.Framework; 
+using NUnit.Framework;
+using IConsoleWrapper = ConsoleWrapper.IConsoleWrapper;
 
 public class Tests
 {
+    IConsoleWrapper console;
+
+    [SetUp]
+    public void SetUp()
+    {
+        console = new ConsoleWrapper.ConsoleWrapperStub();
+    }
+
     [Test]
     public void ExceptionShouldBeThrownIfThereAreMoreThanOneCharactersOnTheMap()
     {
@@ -17,7 +26,7 @@ public class Tests
                 writer.WriteLine(line);
             }
         }
-        var game = new Game.Game();
+        var game = new Game.Game(console);
         Assert.Throws<Exception>(() => game.GenerateMap("../../../TestMap.txt"));
     }
 
@@ -33,7 +42,7 @@ public class Tests
             }
         }
 
-        var game = new Game.Game();
+        var game = new Game.Game(console);
         game.GenerateMap("../../../TestMap.txt");
         (int, int) startingPosition = game.Position;
 
@@ -57,7 +66,7 @@ public class Tests
             }
         }
 
-        var game = new Game.Game();
+        var game = new Game.Game(console);
         game.GenerateMap("../../../TestMap.txt");
         
         (int, int) startingPosition = game.Position;
@@ -81,7 +90,7 @@ public class Tests
             }
         }
 
-        var game = new Game.Game();
+        var game = new Game.Game(console);
         game.GenerateMap("../../../TestMap.txt");
         
         (int, int) startingPosition = game.Position;
@@ -105,7 +114,7 @@ public class Tests
             }
         }
 
-        var game = new Game.Game();
+        var game = new Game.Game(console);
         game.GenerateMap("../../../TestMap.txt");
         
         (int, int) startingPosition = game.Position;
@@ -129,7 +138,7 @@ public class Tests
             }
         }
         
-        var game = new Game.Game();
+        var game = new Game.Game(console);
         game.GenerateMap("../../../TestMap.txt");
         for (var i = 0; i < mapArray.Length; i++)
         {

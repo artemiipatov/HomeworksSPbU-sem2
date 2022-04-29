@@ -1,7 +1,9 @@
 ﻿using Game;
+using IConsoleWrapper = ConsoleWrapper.IConsoleWrapper;
 
-var game = new Game.Game();
-game.GenerateMap("/home/strider/repos/HomeworksSPbU-sem2/Game/Game/map.txt");
+IConsoleWrapper console = new ConsoleWrapper.ConsoleWrapper();
+var game = new Game.Game(console);
+game.GenerateMap("../../../map.txt");
 
 var eventLoop = new EventLoop();
 
