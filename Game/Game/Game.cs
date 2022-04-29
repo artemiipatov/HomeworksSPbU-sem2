@@ -5,7 +5,7 @@ using IConsoleWrapper = ConsoleWrapper.IConsoleWrapper;
 public class Game
 {
     public (int, int) Position { get; private set; }
-    public bool[][] Walls { get; } = new bool[100][];
+    public bool[][] Walls { get; private set; } = new bool[100][];
     private readonly IConsoleWrapper console;
     
     public Game(IConsoleWrapper console)
@@ -38,6 +38,10 @@ public class Game
 
             for (int i = console.GetCursorLeft(); i < line.Length; i++)
             {
+                if (stringCounter >= Walls.Length || i > Walls[stringCounter].Length)
+                {
+                    ResizeMap();
+                }
                 Walls[stringCounter][i] = line[i] == '|' || line[i] == '+' || line[i] == '-';
                 if (line[i] == '@')
                 {
@@ -53,6 +57,25 @@ public class Game
             console.WriteLine(line);
         }
         console.SetCursorPosition(Position.Item1, Position.Item2);
+    }
+    
+    private void ResizeMap()
+    {
+        bool[][] newWalls = new bool[Walls.Length * 2][];
+        for (int i = 0; i < newWalls.Length; i++)
+        {
+            newWalls[i] = new bool[Walls[i].Length];
+        }
+
+        for (int i = 0; i < Walls.Length; i++)
+        {
+            for (int j = 0; j < Walls[i].Length; j++)
+            {
+                newWalls[i][j] = Walls[i][j];
+            }
+        }
+
+        Walls = newWalls;
     }
 
     /// <summary>
