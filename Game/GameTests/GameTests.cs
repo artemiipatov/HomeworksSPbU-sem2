@@ -7,7 +7,7 @@ using IConsoleWrapper = ConsoleWrapper.IConsoleWrapper;
 
 public class Tests
 {
-    IConsoleWrapper console;
+    public IConsoleWrapper? console;
 
     [SetUp]
     public void SetUp()
@@ -26,7 +26,7 @@ public class Tests
                 writer.WriteLine(line);
             }
         }
-        var game = new Game.Game(console);
+        var game = new Game.Game(console!);
         Assert.Throws<Exception>(() => game.GenerateMap("../../../TestMap.txt"));
     }
 
@@ -42,7 +42,7 @@ public class Tests
             }
         }
 
-        var game = new Game.Game(console);
+        var game = new Game.Game(console!);
         game.GenerateMap("../../../TestMap.txt");
         (int, int) startingPosition = game.Position;
 
@@ -66,7 +66,7 @@ public class Tests
             }
         }
 
-        var game = new Game.Game(console);
+        var game = new Game.Game(console!);
         game.GenerateMap("../../../TestMap.txt");
         
         (int, int) startingPosition = game.Position;
@@ -90,7 +90,7 @@ public class Tests
             }
         }
 
-        var game = new Game.Game(console);
+        var game = new Game.Game(console!);
         game.GenerateMap("../../../TestMap.txt");
         
         (int, int) startingPosition = game.Position;
@@ -114,7 +114,7 @@ public class Tests
             }
         }
 
-        var game = new Game.Game(console);
+        var game = new Game.Game(console!);
         game.GenerateMap("../../../TestMap.txt");
         
         (int, int) startingPosition = game.Position;
@@ -138,7 +138,7 @@ public class Tests
             }
         }
         
-        var game = new Game.Game(console);
+        var game = new Game.Game(console!);
         game.GenerateMap("../../../TestMap.txt");
         for (var i = 0; i < mapArray.Length; i++)
         {
