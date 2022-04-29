@@ -67,8 +67,6 @@ public static class Transformation
                 newFile.Write(rotation[^1]);
             }
         }
-
-        File.SetAttributes(nameOfNewFile, FileAttributes.Hidden);
     }
 
     private static byte[][] GetRotations(byte[] fileBytes)
