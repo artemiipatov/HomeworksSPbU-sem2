@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.Metrics;
-
-namespace SkipList;
+﻿namespace SkipList;
 
 using System.Collections;
 
@@ -29,7 +27,19 @@ public class SkipList<T> : IList<T> where T : IComparable<T>
 
     public IEnumerator<T> GetEnumerator()
     {
-        throw new NotImplementedException();
+        return this.GetList().GetEnumerator();
+    }
+
+    private List<T> GetList()
+    {
+        var list = new List<T>();
+        var curElement = _firstElement.Next[0];
+        for (int i = 0; i < Count; i++)
+        {
+            list.Add(curElement!.Value!);
+            curElement = curElement.Next[0];
+        }
+        return list;
     }
 
     IEnumerator IEnumerable.GetEnumerator()
@@ -39,18 +49,27 @@ public class SkipList<T> : IList<T> where T : IComparable<T>
 
     public void Add(T item)
     {
+        if (IsReadOnly)
+        {
+            throw new NotSupportedException();
+        }
+        ++Count;
         if (_firstElement.Next[0] == null)
         {
-            Random rand = new Random();
             _firstElement.Next[0] = new SkipListElement(item, 1);
             return;
         }
         AddRecursive(item, _firstElement, _firstElement.NumberOfLevels);
+
+        if (Math.Log2(Count) >= _firstElement.NumberOfLevels)
+        {
+            _firstElement.NumberOfLevels++;
+        }
     }
 
     private SkipListElement AddRecursive(T item, SkipListElement currentElement, int currentLevel)
     {
-        while (currentElement.Next[currentLevel - 1] != null && currentElement.Next[currentLevel - 1]!.Value!.CompareTo(item) > 0)
+        while (currentElement.Next[currentLevel - 1] != null && currentElement.Next[currentLevel - 1]!.Value!.CompareTo(item) < 0)
         {
             currentElement = currentElement.Next[currentLevel - 1]!;
         }
@@ -68,13 +87,17 @@ public class SkipList<T> : IList<T> where T : IComparable<T>
         if (currentLevel <= addedElement.NumberOfLevels)
         {
             addedElement.Next[currentLevel - 1] = currentElement.Next[currentLevel - 1];
-            currentElement.Next[currentLevel - 1] = addedElement.Next[currentLevel - 1];
+            currentElement.Next[currentLevel - 1] = addedElement;
         }
         return addedElement;
     }
 
     public void Clear()
     {
+        if (IsReadOnly)
+        {
+            throw new NotSupportedException();
+        }
         _firstElement = new SkipListElement(default, 1);
     }
 
@@ -85,7 +108,7 @@ public class SkipList<T> : IList<T> where T : IComparable<T>
 
     private bool ContainsRecursive(T item, SkipListElement currentElement, int currentLevel)
     {
-        while (currentElement.Next[currentLevel - 1] != null && currentElement.Next[currentLevel - 1]!.Value!.CompareTo(item) > 0)
+        while (currentElement.Next[currentLevel - 1] != null && currentElement.Next[currentLevel - 1]!.Value!.CompareTo(item) < 0)
         {
             currentElement = currentElement.Next[currentLevel - 1]!;
         }
@@ -97,7 +120,15 @@ public class SkipList<T> : IList<T> where T : IComparable<T>
     
     public void CopyTo(T[] array, int arrayIndex)
     {
+        if (arrayIndex < 0 || arrayIndex >= Count)
+        {
+            throw new ArgumentOutOfRangeException();
+        }
         var currentElement = _firstElement.Next[0];
+        for (int i = 0; i < arrayIndex; i++)
+        {
+            currentElement = currentElement!.Next[0];
+        }
         int counter = 0;
         while (currentElement != null)
         {
@@ -109,6 +140,10 @@ public class SkipList<T> : IList<T> where T : IComparable<T>
 
     public bool Remove(T item)
     {
+        if (IsReadOnly)
+        {
+            throw new NotSupportedException();
+        }
         if (_firstElement.Next[0] == null)
         {
             return false;
@@ -119,20 +154,22 @@ public class SkipList<T> : IList<T> where T : IComparable<T>
 
     private int RemoveRecursive(T item, SkipListElement currentElement, int currentLevel)
     {
-        while (currentElement.Next[currentLevel - 1] != null && currentElement.Next[currentLevel - 1]!.Value!.CompareTo(item) > 0)
+        while (currentElement.Next[currentLevel - 1] != null && currentElement.Next[currentLevel - 1]!.Value!.CompareTo(item) < 0)
         {
             currentElement = currentElement.Next[currentLevel - 1]!;
         }
 
         if (currentLevel == 1)
         {
-            if (currentElement.Next[1] == null)
+            if (currentElement.Next[0] == null)
             {
                 return -1;
             }
-            if (currentElement.Next[currentLevel - 1]!.Value!.CompareTo(item) == 0)
+            if (currentElement.Next[0]!.Value!.CompareTo(item) == 0)
             {
-                int level = currentElement.Next[1]!.NumberOfLevels;
+                int level = currentElement.Next[0]!.NumberOfLevels;
+                currentElement.Next[0] = currentElement.Next[0]!.Next[0];
+                --Count;
                 return level;
             }
         }
@@ -143,7 +180,7 @@ public class SkipList<T> : IList<T> where T : IComparable<T>
             return -1;
         }
 
-        if (currentLevel >= levelOfRemovedElement)
+        if (currentLevel <= levelOfRemovedElement)
         {
             currentElement.Next[currentLevel - 1] = currentElement.Next[currentLevel - 1]!.Next[currentLevel - 1];
         }
@@ -152,7 +189,8 @@ public class SkipList<T> : IList<T> where T : IComparable<T>
     }
 
     public int Count { get; private set; }
-    public bool IsReadOnly { get; }
+    public bool IsReadOnly => false;
+
     public int IndexOf(T item)
     {
         var currentElement = _firstElement.Next[0];
@@ -172,17 +210,60 @@ public class SkipList<T> : IList<T> where T : IComparable<T>
 
     public void Insert(int index, T item)
     {
-        throw new NotImplementedException();
+        throw new NotSupportedException("Insertion by index is not supported because the the list is sorted");
     }
 
     public void RemoveAt(int index)
     {
-        throw new NotImplementedException();
+        if (IsReadOnly)
+        {
+            throw new NotSupportedException();
+        }
+
+        if (index < 0 || index >= Count)
+        {
+            throw new ArgumentOutOfRangeException();
+        }
+        
+        var previousElement = _firstElement;
+        int counter = 0; // индекс currentElement.Next
+        while (counter < index)
+        {
+            previousElement = previousElement!.Next[0];
+            counter++;
+        }
+
+        var curElement = _firstElement;
+        for (int i = previousElement!.Next[0]!.NumberOfLevels - 1; i >= 0; i--)
+        {
+            while (curElement!.Next[i] != previousElement.Next[0])
+            {
+                curElement = curElement.Next[i];
+            }
+
+            curElement.Next[i] = curElement.Next[i]!.Next[i];
+        }
     }
 
     public T this[int index]
     {
-        get => throw new NotImplementedException();
-        set => throw new NotImplementedException();
+        get
+        {
+            if (index < 0 || index >= Count)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+
+            int counter = 0;
+            var curElement = _firstElement;
+            while (counter < index)
+            {
+                curElement = curElement!.Next[0];
+                counter++;
+            }
+
+            return curElement!.Next[0]!.Value!;
+        }
+        set => throw new NotSupportedException("Setting value by index is not supported because the list is sorted");
     }
 }

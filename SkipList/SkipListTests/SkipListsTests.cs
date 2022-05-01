@@ -68,6 +68,7 @@ public class Tests
         testSkipList.RemoveAt(4);
         testSkipList.RemoveAt(9);
         testSkipList.RemoveAt(9);
-        Assert.IsFalse(testSkipList.Contains(8));
+        Assert.IsFalse(testSkipList.Contains(9));
+        Assert.IsFalse(testSkipList.Contains(0));
     }
 }
