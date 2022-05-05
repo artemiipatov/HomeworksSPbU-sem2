@@ -146,7 +146,14 @@ public class ParseTree : IParseTree
                         ++iter;
                         continue;
                     }
-                    goto default;
+                    string number = "";
+                    while ('0' <= expression[iter] && expression[iter] <= '9' || expression[iter] == '-')
+                    {
+                        number += expression[iter];
+                        ++iter;
+                    }
+                    AddNode(int.Parse(number), IParseTree.NodeType.Operand);
+                    break;
                 }
                 default:
                 {
