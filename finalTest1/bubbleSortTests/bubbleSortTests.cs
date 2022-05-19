@@ -28,7 +28,6 @@ public class Tests
         {
             Assert.AreEqual(correctResult[i], stringList[i]);
         }
-
     }
 
     [Test]
@@ -68,7 +67,7 @@ public class Tests
         {
             Assert.AreEqual(correctResult[i], decimalList[i]);
         }
-        
+
         decimalList = new List<decimal>();
         BubbleSort.Sort(decimalList, new DecimalComparer());
         Assert.AreEqual(0, decimalList.Count);

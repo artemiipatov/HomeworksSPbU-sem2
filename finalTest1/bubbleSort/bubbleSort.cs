@@ -10,7 +10,6 @@ public static class BubbleSort
     /// </summary>
     /// <param name="list">List of T type elements</param>
     /// <param name="comparer">Comparer for comparing T type values</param>
-    /// <typeparam name="T"></typeparam>
     public static void Sort<T>(IList<T> list, IComparer<T> comparer)
     {
         for (int i = 0; i < list.Count; i++)
