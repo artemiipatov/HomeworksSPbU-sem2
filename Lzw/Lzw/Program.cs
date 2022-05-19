@@ -1,11 +1,11 @@
-﻿Console.Write("Instructions:\nType -c to compress\nType -u to decompress\nType -e to exit\n");
+﻿Console.Write("Instructions:\nType -ct to compress using bwt\nType -cf to compress without bwt\nType -u to decompress\nType -e to exit\n");
 while (true)
 {
     Console.Write("Input key: ");
     string? key = Console.ReadLine();
     switch (key)
     {
-        case "-c":
+        case "-ct":
         {
             Console.Write("Path: ");
             string? path = Console.ReadLine();
@@ -14,9 +14,22 @@ while (true)
                 Console.WriteLine("Wrong input data: null path");
                 return;
             }
-            Console.WriteLine(Lzw.Lzw.Compress(path));
+            Console.WriteLine(Lzw.Lzw.Compress(path, true));
             break;
         }
+        case "-cf":
+            {
+                Console.Write("Path: ");
+                string? path = Console.ReadLine();
+                if (path == null)
+                {
+                    Console.WriteLine("Wrong input data: null path");
+                    return;
+                }
+                Console.WriteLine(Lzw.Lzw.Compress(path, false));
+                break;
+            }
+
         case "-u":
         {
             Console.Write("Path: ");

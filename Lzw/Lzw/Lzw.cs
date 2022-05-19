@@ -8,12 +8,15 @@ public static class Lzw
 {
     /// <summary>
     /// Compressing method of lzw algorithm
-    /// </summary>d
+    /// </summary>
     /// <param name="path"></param>
     /// <returns>Coefficient of compression</returns>
-    public static double Compress(string path)
+    public static double Compress(string path, bool BwtShouldBeUsed)
     {
-        Transformation.Bwt(path);
+        if (BwtShouldBeUsed)
+        {
+            Transformation.Bwt(path);
+        }
         BitArray code = new BitArray(64);
         // Создаем дерево
         Trie sequences = new Trie();
@@ -22,7 +25,7 @@ public static class Lzw
             sequences.AddItem(new byte[] { (byte)i });
         }
 
-        string nameOfTransformedFile = "../../../" + GetNameOfFile(path) + ".transformed";
+        string nameOfTransformedFile = BwtShouldBeUsed ? "../../../" + GetNameOfFile(path) + ".transformed" : "../../../" + GetNameOfFile(path);
         string nameOfZippedFile = "../../../" + GetNameOfFile(path) + ".zipped";
         using (BinaryReader binFile = new BinaryReader(File.Open(nameOfTransformedFile, FileMode.Open)))
         {
@@ -113,7 +116,10 @@ public static class Lzw
                 }
             }
         }
-        File.Delete(nameOfTransformedFile);
+        if (BwtShouldBeUsed)
+        {
+            File.Delete(nameOfTransformedFile);
+        }
         return (double) new FileInfo(path).Length / new FileInfo(nameOfZippedFile).Length;
     }
     
