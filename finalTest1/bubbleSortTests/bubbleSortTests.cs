@@ -46,7 +46,7 @@ public class Tests
     public void BubbleSortWorksProperlyOnBoundaryValues()
     {
         IList<decimal> decimalList = new List<decimal> {1, 2, 3, 4, 5, 6};
-        decimal[] correctResult = new decimal[] {1, 2, 3, 4, 5, 6};
+        decimal[] correctResult = {1, 2, 3, 4, 5, 6};
         BubbleSort.Sort(decimalList, new DecimalComparer());
         for (int i = 0; i < correctResult.Length; i++)
         {
