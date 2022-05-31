@@ -10,8 +10,8 @@ public class Tests
     public void AfterTransformationSizeOfFileShouldBeSlightlyIncreased()
     {
         Transformation.Bwt("../../../skyrim_level_up.mp3");
-        FileInfo originalFile = new FileInfo("../../../skyrim_level_up.mp3");
-        FileInfo transformedFile = new FileInfo("../../../skyrim_level_up.mp3.transformed");
+        var originalFile = new FileInfo("../../../skyrim_level_up.mp3");
+        var transformedFile = new FileInfo("../../../skyrim_level_up.mp3.transformed");
         Assert.AreEqual(originalFile.Length, transformedFile.Length - 84);
     }
     

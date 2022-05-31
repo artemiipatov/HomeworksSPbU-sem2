@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System;
 
 /// <summary>
-/// class with two public methods for burrows-wheeler transformation
+/// Class with two public methods for burrows-wheeler transformation
 /// </summary>
 public static class Transformation
 {
@@ -41,9 +41,8 @@ public static class Transformation
     private const int BytesToRead = 8192;
 
     /// <summary>
-    /// forward burrows-wheeler transformation. Returns transformed string and index of the original string in the array of sorted rotations. 
+    /// Forward burrows-wheeler transformation. Returns transformed string and index of the original string in the array of sorted rotations. 
     /// </summary>
-    /// <param name="path"></param>
     [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH", MessageId = "type: System.Byte[]")]
     [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH", MessageId = "type: System.Byte")]
     public static void Bwt(string path)
@@ -53,13 +52,12 @@ public static class Transformation
         using var newFile = new BinaryWriter(File.Open(nameOfNewFile, FileMode.Create));
         while (true)
         {
-            byte[] fileBytes = binReader.ReadBytes(BytesToRead);
+            var fileBytes = binReader.ReadBytes(BytesToRead);
             if (fileBytes.Length == 0)
             {
                 break;
             }
-            byte[][] rotations = GetRotations(fileBytes);
-            // Sort(rotations);
+            var rotations = GetRotations(fileBytes);
             Array.Sort(rotations, new ByteArrayComparer());
             newFile.Write(IndexOfByteArray(rotations, fileBytes));
             foreach (var rotation in rotations)
@@ -105,17 +103,17 @@ public static class Transformation
     public static void BwtInverse(string path)
     {
         using var inputFile = new BinaryReader(File.Open(path, FileMode.Open));
-        string nameOfNewFile = ("../../../" + "original." + GetNameOfFile(path)).Split(".transformed")[0];
+        var nameOfNewFile = ("../../../" + "original." + GetNameOfFile(path)).Split(".transformed")[0];
         using var outputFile = new BinaryWriter(File.Open(nameOfNewFile, FileMode.Create));
         while (true)
         {
             try
             {
                 var index = inputFile.ReadInt32();
-                byte[] fileBytes = inputFile.ReadBytes(BytesToRead);
-                byte[] sortedBytes = fileBytes.ToArray();
+                var fileBytes = inputFile.ReadBytes(BytesToRead);
+                var sortedBytes = fileBytes.ToArray();
                 Array.Sort(sortedBytes);
-                int[] numbers = GetNumbers(fileBytes, sortedBytes);
+                var numbers = GetNumbers(fileBytes, sortedBytes);
                 outputFile.Write(GetOriginalString(fileBytes, index, numbers));
             }
             catch (EndOfStreamException)
@@ -139,7 +137,7 @@ public static class Transformation
 
     private static byte[] GetOriginalString(byte[] fileBytes, int pos, int[] numbers)
     {
-        byte[] result = new byte[fileBytes.Length];
+        var result = new byte[fileBytes.Length];
         for (int i = fileBytes.Length - 1; i >= 0; --i)
         {
             result[i] = fileBytes[pos];
@@ -151,7 +149,7 @@ public static class Transformation
     private static string GetNameOfFile(string path)
     {
         int index = path.Length - 1;
-        string name1 = "";
+        var name1 = "";
         while (path[index] != '/' && index != -1 && path[index] != '\\')
         {
             name1 = path[index] + name1;
@@ -159,7 +157,7 @@ public static class Transformation
         }
 
         index = name1.Length - 1;
-        string name2 = "";
+        var name2 = "";
         while (!name2.Contains("unzipped") && index != -1)
         {
             name2 = name1[index] + name2;

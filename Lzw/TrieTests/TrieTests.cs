@@ -6,6 +6,7 @@ using Trie;
 public class Tests
 {
     private Trie _testTrie = new Trie();
+
     [SetUp]
     public void Setup()
     {

@@ -4,39 +4,41 @@ using System.Collections;
 using Bwt;
 using Trie;
 
+/// <summary>
+/// Lzw compress and decompress implementation
+/// </summary>
 public static class Lzw
 {
     /// <summary>
     /// Compressing method of lzw algorithm
     /// </summary>
-    /// <param name="path"></param>
     /// <returns>Coefficient of compression</returns>
-    public static double Compress(string path, bool BwtShouldBeUsed)
+    public static double Compress(string path, bool bwtShouldBeUsed)
     {
-        if (BwtShouldBeUsed)
+        if (bwtShouldBeUsed)
         {
             Transformation.Bwt(path);
         }
-        BitArray code = new BitArray(64);
+        var code = new BitArray(64);
         // Создаем дерево
-        Trie sequences = new Trie();
+        var sequences = new Trie();
         for (var i = 0; i < 256; i++)
         {
             sequences.AddItem(new byte[] { (byte)i });
         }
 
-        string nameOfTransformedFile = BwtShouldBeUsed ? "../../../" + GetNameOfFile(path) + ".transformed" : "../../../" + GetNameOfFile(path);
-        string nameOfZippedFile = "../../../" + GetNameOfFile(path) + ".zipped";
-        using (BinaryReader binFile = new BinaryReader(File.Open(nameOfTransformedFile, FileMode.Open)))
+        var nameOfTransformedFile = bwtShouldBeUsed ? GetNameOfFile(path) + ".transformed" : GetNameOfFile(path);
+        var nameOfZippedFile = "../../../" + GetNameOfFile(path) + ".zipped";
+        using (var binFile = new BinaryReader(File.Open(nameOfTransformedFile, FileMode.Open)))
         {
-            byte[] readBytes = new byte[1024]; // Подумать насчет размера
+            var readBytes = new byte[1024];
             readBytes[0] = binFile.ReadByte();
             int byteArrayIndex = 1;
             int bitArrayIndex = 63;
             int maxCodeLength = 8;
-            int powerOfTwo = (int)Math.Pow(2, 8); // Поменять название переменной
+            int powerOfTwo = (int)Math.Pow(2, 8);
             
-            using BinaryWriter newBinFile = new BinaryWriter(File.Open(nameOfZippedFile, FileMode.Create));
+            using var newBinFile = new BinaryWriter(File.Open(nameOfZippedFile, FileMode.Create));
             while (true)
             {
                 try
@@ -60,8 +62,8 @@ public static class Lzw
                         bitArrayIndex = bitArrayIndexBeforeCycle - 1;
                         while ((63 - bitArrayIndex) >= 8)
                         {
-                            byte[] byteToFile = new byte[1];
-                            BitArray oneByteArrayOfBits = new BitArray(8);
+                            var byteToFile = new byte[1];
+                            var oneByteArrayOfBits = new BitArray(8);
                             for (int i = 0; i < 8; i++)
                             {
                                 oneByteArrayOfBits[7 - i] = code[63 - i];
@@ -101,7 +103,7 @@ public static class Lzw
                     while (bitArrayIndex <= 63)
                     {
                         byte[] byteToFile = new byte[1];
-                        BitArray oneByteArrayOfBits = new BitArray(8);
+                        var oneByteArrayOfBits = new BitArray(8);
                         for (int i = 0; i < 8; i++)
                         {
                             oneByteArrayOfBits[7 - i] = code[63 - i];
@@ -116,7 +118,7 @@ public static class Lzw
                 }
             }
         }
-        if (BwtShouldBeUsed)
+        if (bwtShouldBeUsed)
         {
             File.Delete(nameOfTransformedFile);
         }
@@ -140,24 +142,23 @@ public static class Lzw
         int powerOfTwo = (int)Math.Pow(2, numberOfBitsToRead);
         
         int bitArrayLength = 1024;
-        BitArray code = new BitArray(bitArrayLength);
+        var code = new BitArray(bitArrayLength);
         int bitArrayIndex = code.Length - 1;
 
         // создаем словарь
-        Dictionary<int, byte[]> sequences = new Dictionary<int, byte[]>();
+        var sequences = new Dictionary<int, byte[]>();
         
         // Заполняем словарь одиночными байтами
         for (var i = 0; i < 256; i++)
         {
             sequences.Add(i, new byte[] { (byte)i });
         }
-        byte[] previousByteSequence = new byte[1024];
+        var previousByteSequence = new byte[1024];
         previousByteSequence[0] = inputFile.ReadByte(); // Код первого считанного байта известен сразу, потому что первая последовательность байтов кодируется одним байтом
         int curIndexOfPreviousByteSequence = 1;
         
         outputFile.Write(previousByteSequence[0]);
 
-        int counter = 256;
         while (true)
         {
             bool isEof = false;
@@ -198,7 +199,6 @@ public static class Lzw
                 // Убрали из массива уже преобразованные биты
                 code.LeftShift(numberOfBitsToRead);
                 bitArrayIndex += numberOfBitsToRead;
-                // ++counter;
 
                 if (indexOfSequenceInDict == sequences.Count)
                 {
@@ -246,7 +246,7 @@ public static class Lzw
     {
         int index = path.Length - 1;
         string name = "";
-        while (path[index] != '/' && index != -1 && path[index] != '\\')
+        while (path[index] != '/' && index != -1 && path[index] != '\\' && index >= 0)
         {
             name = path[index] + name;
             index -= 1;

@@ -10,20 +10,20 @@ public class Trie
         public Dictionary<byte, Node> Next { get; set; }
 
         public int Terminal { get; set; } = -1;
-        public Node(byte? symbol)
+
+        public Node()
         {
             this.Next = new Dictionary<byte, Node>();
         }
     }
-    private Node root = new Node(null);
+
+    private Node root = new Node();
 
     public int Size { get; private set; }
 
     /// <summary>
     /// Adds item to prefix tree
     /// </summary>
-    /// <param name="sequence"></param>
-    /// <returns></returns>
     public bool AddItem(byte[] sequence)
     {
         var currentNode = root;
@@ -39,7 +39,7 @@ public class Trie
             }
             else
             {
-                var newNode = new Node(sequence[i]);
+                var newNode = new Node();
                 currentNode.Next.Add(sequence[i], newNode);
                 if (i == sequence.Length - 1)
                 {
@@ -95,8 +95,6 @@ public class Trie
     /// <summary>
     /// Removes item from prefix tree
     /// </summary>
-    /// <param name="sequence"></param>
-    /// <returns></returns>
     public bool Remove(byte[] sequence)
     {
         var canDelete = true;
@@ -111,8 +109,6 @@ public class Trie
     /// <summary>
     /// Checks if item is in prefix tree. Returns true if it is in tree, false if it is not
     /// </summary>
-    /// <param name="sequence"></param>
-    /// <returns></returns>
     public bool Contains(byte[] sequence)
     {
         var currentNode = root;
@@ -138,7 +134,7 @@ public class Trie
             }
             if (i == sequence.Length - 1)
             {
-                return currentNode.Next[sequence[i]].Terminal == -1 ? -1 : currentNode.Next[sequence[i]].Terminal; // Убрать лишнее
+                return currentNode.Next[sequence[i]].Terminal == -1 ? -1 : currentNode.Next[sequence[i]].Terminal;
             }
             currentNode = currentNode.Next[sequence[i]];
         }
