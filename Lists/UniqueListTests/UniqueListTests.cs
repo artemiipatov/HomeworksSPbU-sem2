@@ -2,11 +2,11 @@ namespace UniqueListTests;
 
 using NUnit.Framework;
 using Lists;
-using Exceptions;
 
 public class Tests
 {
-    private UniqueList? _uniqueList;
+    private UniqueList _uniqueList = new();
+    
     [SetUp]
     public void Setup()
     {
@@ -16,7 +16,7 @@ public class Tests
     [Test]
     public void UniqueListShouldContainOnlyDifferentValues()
     {
-        _uniqueList!.Add(0);
+        _uniqueList.Add(0);
         _uniqueList.Add(1);
         _uniqueList.Add(2);
         Assert.Throws<AddingExistingItemException>(() => _uniqueList.Add(2));

@@ -1,7 +1,10 @@
-namespace Exceptions;
-
 using System.Runtime.Serialization;
 
+namespace Lists;
+
+/// <summary>
+/// Exception that is thrown when searched value is not in the unique list
+/// </summary>
 [Serializable]
 public class ItemNotFoundException : Exception
 {

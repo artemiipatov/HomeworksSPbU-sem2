@@ -1,7 +1,10 @@
-﻿namespace Exceptions;
+﻿using System.Runtime.Serialization;
 
-using System.Runtime.Serialization;
+namespace Lists;
 
+/// <summary>
+/// Exception that is thrown when the value is already in the unique list
+/// </summary>
 [Serializable]
 public class AddingExistingItemException : Exception
 {

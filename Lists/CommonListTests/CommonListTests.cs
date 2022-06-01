@@ -1,114 +1,124 @@
-namespace ListsTests;
-
-using Exceptions;
+using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Lists;
 
+namespace ListsTests;
+
 public class Tests
 {
-    private CommonList? _commonList;
-    
-    [SetUp]
-    public void Setup()
-    {
-        _commonList = new CommonList();
-    }
+    private CommonList _commonList = new();
+    // private UniqueList _uniqueList = new();
+    //
+    // [SetUp]
+    // public void Setup()
+    // {
+    //     _commonList = new CommonList();
+    //     _uniqueList = new UniqueList();
+    // }
 
-    [Test]
-    public void CommonListShouldContainValuesAfterAddingThem()
+    private static IEnumerable<CommonList> ListTestData
     {
-        _commonList!.Add(1);
-        _commonList!.Add(2);
-        _commonList!.Add(3);
-        Assert.AreEqual(_commonList.Get(0), 1);
-        Assert.AreEqual(_commonList.Get(1), 2);
-        Assert.AreEqual(_commonList.Get(2), 3);
-    }
-
-    [Test]
-    public void CommonListShouldCorrectlyRemoveValueByPosition()
-    {
-        _commonList!.Add(1);
-        _commonList!.Add(2);
-        _commonList!.Add(3);
-        _commonList!.Add(4);
-        _commonList.Remove(1);
-        Assert.AreEqual(_commonList.Get(1), 3);
-        _commonList.Remove(2);
-        Assert.AreEqual(_commonList.Length, 2);
-    }
-
-    [Test]
-    public void LengthPropertyShouldHaveCorrectValueAfterChangingList()
-    {
-        Assert.AreEqual(0, _commonList!.Length);
-        _commonList!.Add(1);
-        _commonList!.Add(1);
-        Assert.AreEqual(2, _commonList.Length);
-        _commonList!.Add(1);
-        _commonList!.Add(1);
-        _commonList!.Add(1);
-        Assert.AreEqual(5, _commonList.Length);
-        _commonList.Remove(3);
-        Assert.AreEqual(4, _commonList.Length);
-        _commonList.Remove(0);
-        _commonList.Remove(2);
-        Assert.AreEqual(2, _commonList.Length);
-        _commonList.Remove(1);
-        _commonList.Remove(0);
-        Assert.AreEqual(0, _commonList.Length);
-    }
-
-    [Test]
-    public void ChangeValueMethodShouldCorrectlyChangeValueByPosition()
-    {
-        _commonList!.Add(1);
-        _commonList!.Add(2);
-        _commonList!.Add(3);
-        _commonList!.Add(4);
-        _commonList.ChangeValue(2, 2022);
-        Assert.AreEqual(_commonList.Get(2), 2022);
-        _commonList!.ChangeValue(0, 777);
-        Assert.AreEqual(_commonList.Get(0), 777);
-    }
-
-    [Test]
-    public void ItemNotFoundExceptionShouldBeRaisedInCaseOfRemovingNonExistingItem()
-    {
-        _commonList!.Add(1);
-        _commonList!.Add(2);
-        _commonList!.Add(3);
-        Assert.Throws<ItemNotFoundException>(() => _commonList.Remove(3));
-        _commonList!.Remove(2);
-        _commonList!.Remove(1);
-        _commonList!.Remove(0);
-        Assert.Throws<ItemNotFoundException>(() => _commonList.Remove(0));
+        get
+        {
+            yield return new CommonList();
+            yield return new UniqueList();
+        }
     }
     
-    [Test]
-    public void ItemNotFoundExceptionShouldBeRaisedInCaseOfChangingNonExistingItem()
+    [TestCaseSource(nameof(ListTestData))]
+    public void CommonListShouldContainValuesAfterAddingThem(CommonList list)
     {
-        _commonList!.Add(1);
-        _commonList!.Add(2);
-        _commonList!.Add(3);
-        Assert.Throws<ItemNotFoundException>(() => _commonList.ChangeValue(10, 128));
-        _commonList!.Remove(2);
-        _commonList!.Remove(1);
-        _commonList!.Remove(0);
-        Assert.Throws<ItemNotFoundException>(() => _commonList.ChangeValue(0, 256));
+        list.Add(1);
+        list.Add(2);
+        list.Add(3);
+        Assert.AreEqual(1, list.Get(0));
+        Assert.AreEqual(2, list.Get(1));
+        Assert.AreEqual(3, list.Get(2));
+    }
+
+    [TestCaseSource(nameof(ListTestData))]
+    public void CommonListShouldCorrectlyRemoveValueByPosition(CommonList list)
+    {
+        list.Add(1);
+        list.Add(2);
+        list.Add(3);
+        list.Add(4);
+        list.Remove(1);
+        Assert.AreEqual(3, list.Get(1));
+        list.Remove(2);
+        Assert.AreEqual(2, list.Length);
+    }
+
+    public void LengthPropertyShouldHaveCorrectValueAfterChangingList(CommonList list)
+    {
+        Assert.AreEqual(0, list!.Length);
+        list.Add(1);
+        list.Add(1);
+        Assert.AreEqual(2, list.Length);
+        list.Add(1);
+        list.Add(1);
+        list.Add(1);
+        Assert.AreEqual(5, list.Length);
+        list.Remove(3);
+        Assert.AreEqual(4, list.Length);
+        list.Remove(0);
+        list.Remove(2);
+        Assert.AreEqual(2, list.Length);
+        list.Remove(1);
+        list.Remove(0);
+        Assert.AreEqual(0, list.Length);
+    }
+
+    [TestCaseSource(nameof(ListTestData))]
+    public void ChangeValueMethodShouldCorrectlyChangeValueByPosition(CommonList list)
+    {
+        list.Add(1);
+        list.Add(2);
+        list.Add(3);
+        list.Add(4);
+        list.ChangeValue(2, 2022);
+        Assert.AreEqual(2022, list.Get(2));
+        list!.ChangeValue(0, 777);
+        Assert.AreEqual(777, list.Get(0));
+    }
+
+    [TestCaseSource(nameof(ListTestData))]
+    public void ItemNotFoundExceptionShouldBeRaisedInCaseOfRemovingNonExistingItem(CommonList list)
+    {
+        list.Add(1);
+        list.Add(2);
+        list.Add(3);
+        Assert.Throws<IndexOutOfRangeException>(() => list.Remove(3));
+        list.Remove(2);
+        list.Remove(1);
+        list.Remove(0);
+        Assert.Throws<ItemNotFoundException>(() => list.Remove(0));
     }
     
-    [Test]
+    [TestCaseSource(nameof(ListTestData))]
+    public void ItemNotFoundExceptionShouldBeRaisedInCaseOfChangingNonExistingItem(CommonList list)
+    {
+        list.Add(1);
+        list.Add(2);
+        list.Add(3);
+        Assert.Throws<IndexOutOfRangeException>(() => list.ChangeValue(10, 128));
+        list.Remove(2);
+        list.Remove(1);
+        list.Remove(0);
+        Assert.Throws<ItemNotFoundException>(() => list.ChangeValue(0, 256));
+    }
+    
+    [TestCaseSource(nameof(ListTestData))]
     public void ItemNotFoundExceptionShouldBeRaisedInCaseOfGettingNonExistingItem()
     {
-        _commonList!.Add(1);
-        _commonList!.Add(2);
-        _commonList!.Add(3);
-        Assert.Throws<ItemNotFoundException>(() => _commonList.Get(10));
-        _commonList!.Remove(2);
-        _commonList!.Remove(1);
-        _commonList!.Remove(0);
+        _commonList.Add(1);
+        _commonList.Add(2);
+        _commonList.Add(3);
+        Assert.Throws<IndexOutOfRangeException>(() => _commonList.Get(10));
+        _commonList.Remove(2);
+        _commonList.Remove(1);
+        _commonList.Remove(0);
         Assert.Throws<ItemNotFoundException>(() => _commonList.Get(0));
     }
-
 }

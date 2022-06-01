@@ -2,8 +2,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lists", "Lists\Lists.csproj", "{96B9400D-422C-4B9F-B6CF-D1D0FA0345BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exceptions", "Exceptions\Exceptions.csproj", "{FD82BF5F-1535-4DC9-A089-F76BBFDA5D79}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonListTests", "CommonListTests\CommonListTests.csproj", "{1314D8B3-DBDF-432A-A7E1-0EE16609C5E9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniqueListTests", "UniqueListTests\UniqueListTests.csproj", "{E9DAEDAD-7F24-491A-986E-8C87F5CFF26D}"
@@ -18,10 +16,6 @@ Global
 		{96B9400D-422C-4B9F-B6CF-D1D0FA0345BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{96B9400D-422C-4B9F-B6CF-D1D0FA0345BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{96B9400D-422C-4B9F-B6CF-D1D0FA0345BF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FD82BF5F-1535-4DC9-A089-F76BBFDA5D79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FD82BF5F-1535-4DC9-A089-F76BBFDA5D79}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FD82BF5F-1535-4DC9-A089-F76BBFDA5D79}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FD82BF5F-1535-4DC9-A089-F76BBFDA5D79}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1314D8B3-DBDF-432A-A7E1-0EE16609C5E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1314D8B3-DBDF-432A-A7E1-0EE16609C5E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1314D8B3-DBDF-432A-A7E1-0EE16609C5E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
