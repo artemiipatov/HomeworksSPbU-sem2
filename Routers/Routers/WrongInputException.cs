@@ -1,6 +1,6 @@
-﻿namespace UtilityExceptions;
+﻿using System.Runtime.Serialization;
 
-using System.Runtime.Serialization;
+namespace Routers;
 
 [Serializable]
 public class WrongInputException : Exception

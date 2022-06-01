@@ -1,30 +1,31 @@
-namespace Routers;
+using System.Text.RegularExpressions;
 
-using UtilityExceptions;
+namespace Routers;
 
 /// <summary>
 /// Graph class with adjacency matrix as a property and dfs, connection checking and parsing methods
 /// </summary>
 public class Graph : IGraph
 {
-    private int _arrayLength = 10;
-
     public int MaxNodeNumber { get; private set; }
 
-    public int[,] Matrix { get; private set; }
-
+    public int[,] Matrix { get; }
+    
     public Dictionary<(int, int), int> Edges { get; set; }
 
     public Graph(string inputFilePath)
     {
-        Matrix = new int[_arrayLength, _arrayLength];
+        var size = GetSize(inputFilePath);
+        Matrix = new int[size, size];
         Edges = new Dictionary<(int, int), int>();
         Parse(inputFilePath);
+        Edges = Edges.OrderBy(pair => pair.Value).ToDictionary(pair => pair.Key, pair => pair.Value);
     }
 
     private void Parse(string inputFilePath)
     {
         using StreamReader reader = new StreamReader(inputFilePath);
+        
         while (true)
         {
             string? line = reader.ReadLine();
@@ -40,10 +41,7 @@ public class Graph : IGraph
             }
             
             int startNode = int.Parse(splitLine[0].Split(":")[0]);
-            if (startNode >= _arrayLength)
-            {
-                Resize();
-            }
+
             if (startNode > MaxNodeNumber)
             {
                 MaxNodeNumber = startNode;
@@ -54,10 +52,7 @@ public class Graph : IGraph
                 string[] splitSplitLine = splitLine[i].Split("(");
                 
                 int finishNode = int.Parse(splitSplitLine[0]);
-                while (finishNode >= _arrayLength)
-                {
-                    Resize();
-                }
+
                 if (finishNode > MaxNodeNumber)
                 {
                     MaxNodeNumber = finishNode;
@@ -71,23 +66,36 @@ public class Graph : IGraph
         }
     }
 
-    public void DeleteEdge(int row, int col) => (Matrix[row, col], Matrix[col, row]) = (0, 0);
-
-    private void Resize()
+    private int GetSize(string inputFilePath)
     {
-        _arrayLength *= 2;
-        int[,] tempMatrix = new int[_arrayLength, _arrayLength];
-        for (int i = 0; i <= MaxNodeNumber; i++)
+        int size = 0;
+        
+        using var reader = new StreamReader(inputFilePath);
+        
+        while (!reader.EndOfStream)
         {
-            for (int j = 0; j <= MaxNodeNumber; j++)
+            string[] numbers = Regex.Split(reader.ReadLine()!, @"\D+");
+            foreach (string value in numbers)
             {
-                tempMatrix[i, j] = Matrix[i, j];
+                if (!string.IsNullOrEmpty(value))
+                {
+                    int i = int.Parse(value);
+                    size = i > size ? i : size;
+                }
             }
         }
-        
-        Matrix = tempMatrix;
+
+        return size + 1;
     }
 
+    /// <summary>
+    /// Sets edge weigth to null
+    /// </summary>
+    public void DeleteEdge(int row, int col) => (Matrix[row, col], Matrix[col, row]) = (0, 0);
+    
+    /// <summary>
+    /// Checks if graph is connected
+    /// </summary>
     public bool CheckConnectivity(int searchedNode, int currentNode)
     {
         var visited = new bool[MaxNodeNumber + 1];

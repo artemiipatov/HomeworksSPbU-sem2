@@ -11,7 +11,7 @@ public class Tests
     [Test]
     public void DataFromFileShouldBeParsedCorrectly()
     {
-        var inputFile = new StreamWriter(File.Open(inputFilePath, FileMode.Create));
+        using var inputFile = new StreamWriter(File.Open(inputFilePath, FileMode.Create));
         inputFile.WriteLine("0: 1(10) 3(40) 5(10) 6(15)");
         inputFile.WriteLine("1: 2(16) 4(20) 6(11)");
         inputFile.WriteLine("2: 5(1)");
@@ -35,12 +35,13 @@ public class Tests
                 Assert.AreEqual(correctMatrix[i, j], graph.Matrix[i, j]);
             }
         }
+        File.Delete(inputFilePath);
     }
 
     [Test]
     public void CheckConnectivityMethodShouldReturnTrue()
     {
-        var inputFile = new StreamWriter(File.Open(inputFilePath, FileMode.Create));
+        using var inputFile = new StreamWriter(File.Open(inputFilePath, FileMode.Create));
         inputFile.WriteLine("0: 1(10) 3(40) 6(15)");
         inputFile.WriteLine("1: 2(16) 4(20) 6(11)");
         inputFile.WriteLine("2: 5(1), 4(15)");
@@ -57,12 +58,13 @@ public class Tests
         Assert.IsTrue(graph.CheckConnectivity(0, 4));
         Assert.IsTrue(graph.CheckConnectivity(0, 5));
         Assert.IsTrue(graph.CheckConnectivity(0, 6));
+        File.Delete(inputFilePath);
     }
 
     [Test]
     public void CheckConnectivityMethodShouldReturnFalse()
     {
-        var inputFile = new StreamWriter(File.Open(inputFilePath, FileMode.Create));
+        using var inputFile = new StreamWriter(File.Open(inputFilePath, FileMode.Create));
         inputFile.WriteLine("0: 1(10) 3(40) 6(15)");
         inputFile.WriteLine("1: 2(16) 4(20) 6(11)");
         inputFile.WriteLine("2: 5(1), 4(15)");
@@ -83,12 +85,13 @@ public class Tests
         Assert.IsFalse(graph.CheckConnectivity(3, 4));
         Assert.IsFalse(graph.CheckConnectivity(3, 5));
         Assert.IsFalse(graph.CheckConnectivity(3, 6));
+        File.Delete(inputFilePath);
     }
 
     [Test]
     public void DictionaryShouldContainAllEdges()
     {
-        var inputFile = new StreamWriter(File.Open(inputFilePath, FileMode.Create));
+        using var inputFile = new StreamWriter(File.Open(inputFilePath, FileMode.Create));
         inputFile.WriteLine("0: 1(10) 3(20) 5(9)");
         inputFile.WriteLine("1: 2(16) 4(20) 5(4) 6(11)");
         inputFile.WriteLine("2: 5(1), 3(2) 4(5)");
@@ -111,5 +114,7 @@ public class Tests
                 }
             }
         }
+
+        File.Delete(inputFilePath);
     }
 }

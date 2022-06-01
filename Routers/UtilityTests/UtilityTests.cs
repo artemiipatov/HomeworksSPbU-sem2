@@ -3,7 +3,6 @@ namespace UtilityTests;
 using System.IO;
 using NUnit.Framework;
 using Routers;
-using UtilityExceptions;
 
 public class Tests
 {
