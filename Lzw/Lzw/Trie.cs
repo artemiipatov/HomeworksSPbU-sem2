@@ -1,4 +1,4 @@
-namespace Trie;
+namespace Lzw;
 
 /// <summary>
 /// Prefix tree containing byte sequence

@@ -1,8 +1,6 @@
 namespace Lzw;
 
 using System.Collections;
-using Bwt;
-using Trie;
 
 /// <summary>
 /// Lzw compress and decompress implementation
@@ -27,8 +25,8 @@ public static class Lzw
             sequences.AddItem(new byte[] { (byte)i });
         }
 
-        var nameOfTransformedFile = bwtShouldBeUsed ? GetNameOfFile(path) + ".transformed" : GetNameOfFile(path);
-        var nameOfZippedFile = "../../../" + GetNameOfFile(path) + ".zipped";
+        var nameOfTransformedFile = bwtShouldBeUsed ? path + ".transformed" : path;
+        var nameOfZippedFile = path + ".zipped";
         using (var binFile = new BinaryReader(File.Open(nameOfTransformedFile, FileMode.Open)))
         {
             var readBytes = new byte[1024];
@@ -39,70 +37,28 @@ public static class Lzw
             int powerOfTwo = (int)Math.Pow(2, 8);
             
             using var newBinFile = new BinaryWriter(File.Open(nameOfZippedFile, FileMode.Create));
-            while (true)
+            while (binFile.BaseStream.Position != binFile.BaseStream.Length)
             {
-                try
+                readBytes[byteArrayIndex] = binFile.ReadByte();
+                if (!sequences.Contains(readBytes[0..(byteArrayIndex + 1)]))
                 {
-                    readBytes[byteArrayIndex] = binFile.ReadByte();
-                    if (!sequences.Contains(readBytes[0..(byteArrayIndex + 1)]))
+                    sequences.AddItem(readBytes[0..(byteArrayIndex + 1)]);
+                    int codeOfByteSequence = sequences.GetNumber(readBytes[0..byteArrayIndex]);
+                    readBytes[0] = readBytes[byteArrayIndex];
+                    byteArrayIndex = 1;
+                    bitArrayIndex = bitArrayIndex - maxCodeLength + 1;
+                    int bitArrayIndexBeforeCycle = bitArrayIndex;
+                    while (codeOfByteSequence != 0)
                     {
-                        sequences.AddItem(readBytes[0..(byteArrayIndex + 1)]);
-                        int codeOfByteSequence = sequences.GetNumber(readBytes[0..byteArrayIndex]);
-                        readBytes[0] = readBytes[byteArrayIndex];
-                        byteArrayIndex = 1;
-                        bitArrayIndex = bitArrayIndex - maxCodeLength + 1;
-                        int bitArrayIndexBeforeCycle = bitArrayIndex;
-                        while (codeOfByteSequence != 0)
-                        {
-                            code[bitArrayIndex] = codeOfByteSequence % 2 == 1;
-                            codeOfByteSequence /= 2;
-                            ++bitArrayIndex;
-                        }
+                        code[bitArrayIndex] = codeOfByteSequence % 2 == 1;
+                        codeOfByteSequence /= 2;
+                        ++bitArrayIndex;
+                    }
 
-                        bitArrayIndex = bitArrayIndexBeforeCycle - 1;
-                        while ((63 - bitArrayIndex) >= 8)
-                        {
-                            var byteToFile = new byte[1];
-                            var oneByteArrayOfBits = new BitArray(8);
-                            for (int i = 0; i < 8; i++)
-                            {
-                                oneByteArrayOfBits[7 - i] = code[63 - i];
-                            }
-                            oneByteArrayOfBits.CopyTo(byteToFile, 0);
-                            newBinFile.Write(byteToFile);
-                            code.LeftShift(8);
-                            bitArrayIndex += 8;
-                        }
-                        if (sequences.Size >= powerOfTwo)
-                        {
-                            ++maxCodeLength;
-                            powerOfTwo = (int)Math.Pow(2, maxCodeLength);
-                        }
-                    }
-                    else
+                    bitArrayIndex = bitArrayIndexBeforeCycle - 1;
+                    while ((63 - bitArrayIndex) >= 8)
                     {
-                        ++byteArrayIndex;
-                    }
-                }
-                catch (EndOfStreamException)
-                {
-                    if (byteArrayIndex >= 1)
-                    {
-                        int codeOfByteSequence = sequences.GetNumber(readBytes[0..byteArrayIndex]);
-                        bitArrayIndex = bitArrayIndex - maxCodeLength + 1;
-                        int bitArrayIndexBeforeCycle = bitArrayIndex;
-                        while (codeOfByteSequence != 0)
-                        {
-                            code[bitArrayIndex] = codeOfByteSequence % 2 == 1;
-                            codeOfByteSequence /= 2;
-                            ++bitArrayIndex;
-                        }
-
-                        bitArrayIndex = bitArrayIndexBeforeCycle - 1;
-                    }
-                    while (bitArrayIndex <= 63)
-                    {
-                        byte[] byteToFile = new byte[1];
+                        var byteToFile = new byte[1];
                         var oneByteArrayOfBits = new BitArray(8);
                         for (int i = 0; i < 8; i++)
                         {
@@ -113,9 +69,44 @@ public static class Lzw
                         code.LeftShift(8);
                         bitArrayIndex += 8;
                     }
-
-                    break;
+                    if (sequences.Size >= powerOfTwo)
+                    {
+                        ++maxCodeLength;
+                        powerOfTwo = (int)Math.Pow(2, maxCodeLength);
+                    }
                 }
+                else
+                {
+                    ++byteArrayIndex;
+                }
+            }
+            
+            if (byteArrayIndex >= 1)
+            {
+                int codeOfByteSequence = sequences.GetNumber(readBytes[0..byteArrayIndex]);
+                bitArrayIndex = bitArrayIndex - maxCodeLength + 1;
+                int bitArrayIndexBeforeCycle = bitArrayIndex;
+                while (codeOfByteSequence != 0)
+                {
+                    code[bitArrayIndex] = codeOfByteSequence % 2 == 1;
+                    codeOfByteSequence /= 2;
+                    ++bitArrayIndex;
+                }
+
+                bitArrayIndex = bitArrayIndexBeforeCycle - 1;
+            }
+            while (bitArrayIndex <= 63)
+            {
+                byte[] byteToFile = new byte[1];
+                var oneByteArrayOfBits = new BitArray(8);
+                for (int i = 0; i < 8; i++)
+                {
+                    oneByteArrayOfBits[7 - i] = code[63 - i];
+                }
+                oneByteArrayOfBits.CopyTo(byteToFile, 0);
+                newBinFile.Write(byteToFile);
+                code.LeftShift(8);
+                bitArrayIndex += 8;
             }
         }
         if (bwtShouldBeUsed)
@@ -128,12 +119,12 @@ public static class Lzw
     /// <summary>
     /// Decompressing method of lzw algorithm
     /// </summary>
-    /// <param name="path"></param>
     public static void Decompress(string path)
     {
-        var pathToUnzippedFile = ("../../../unzipped." + GetNameOfFile(path)).Split(".zipped")[0];
-        using BinaryReader inputFile = new BinaryReader(File.Open(path, FileMode.Open));
-        using BinaryWriter outputFile = new BinaryWriter(File.Open(pathToUnzippedFile, FileMode.Create));
+        var nameOfFile = GetNameOfFile(path);
+        var pathToUnzippedFile = (path.Split(nameOfFile)[0] + "unzipped." + GetNameOfFile(path)).Split(".zipped")[0];
+        using var inputFile = new BinaryReader(File.Open(path, FileMode.Open));
+        using var outputFile = new BinaryWriter(File.Open(pathToUnzippedFile, FileMode.Create));
         
         // переменная для количества бит, которые нужно считывать на текущий момент (перевеодим в байты, округляем в большую сторону -- получаем количество
         // байт, которые нужно считать
@@ -165,18 +156,14 @@ public static class Lzw
             // считали определенное количество байтов, закинули их все в общий массив битов.
             for (int i = 0; i < numberOfBytesToRead; i++)
             {
-                int readByte;
-                try
-                {
-                    readByte = inputFile.ReadByte();
-                }
-                catch (EndOfStreamException)
+                if (inputFile.BaseStream.Position == inputFile.BaseStream.Length)
                 {
                     isEof = true;
                     break;
                 }
+                int readByte = inputFile.ReadByte();
 
-                bitArrayIndex -= 7;
+                    bitArrayIndex -= 7;
                 int bitArrayIndexBeforeCycle = bitArrayIndex;
                 for (int _ = 0; _ < 8; _++)
                 {

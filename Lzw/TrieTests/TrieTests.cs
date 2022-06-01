@@ -1,7 +1,7 @@
 using NUnit.Framework;
 
 namespace TrieTests;
-using Trie;
+using Lzw;
 
 public class Tests
 {

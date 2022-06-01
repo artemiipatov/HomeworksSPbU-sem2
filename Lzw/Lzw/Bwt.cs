@@ -1,4 +1,4 @@
-namespace Bwt;
+namespace Lzw;
 
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
@@ -48,7 +48,7 @@ public static class Transformation
     public static void Bwt(string path)
     {
         using var binReader = new BinaryReader(File.Open(path, FileMode.Open));
-        string nameOfNewFile = "../../../" + GetNameOfFile(path) + ".transformed";
+        string nameOfNewFile = path + ".transformed";
         using var newFile = new BinaryWriter(File.Open(nameOfNewFile, FileMode.Create));
         while (true)
         {
@@ -103,7 +103,8 @@ public static class Transformation
     public static void BwtInverse(string path)
     {
         using var inputFile = new BinaryReader(File.Open(path, FileMode.Open));
-        var nameOfNewFile = ("../../../" + "original." + GetNameOfFile(path)).Split(".transformed")[0];
+        var nameOfFile = GetNameOfFile(path);
+        var nameOfNewFile = (path.Split(nameOfFile)[0] + "original." + nameOfFile).Split(".transformed")[0];
         using var outputFile = new BinaryWriter(File.Open(nameOfNewFile, FileMode.Create));
         while (true)
         {

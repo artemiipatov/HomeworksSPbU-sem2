@@ -2,7 +2,7 @@ namespace BwtTests;
 
 using System.IO;
 using NUnit.Framework;
-using Bwt;
+using Lzw;
 
 public class Tests
 {
@@ -19,9 +19,9 @@ public class Tests
     public void FileShouldNotBeChangedAfterBwtAndInverseBwt()
     {
         Transformation.Bwt("../../../skyrim_level_up.mp3");
-        BinaryReader originalFile = new BinaryReader(File.Open("../../../skyrim_level_up.mp3", FileMode.Open));
+        var originalFile = new BinaryReader(File.Open("../../../skyrim_level_up.mp3", FileMode.Open));
         Transformation.BwtInverse("../../../skyrim_level_up.mp3.transformed");
-        BinaryReader bwtInversedFile = new BinaryReader(File.Open("../../../original.skyrim_level_up.mp3", FileMode.Open));
+        var bwtInversedFile = new BinaryReader(File.Open("../../../original.skyrim_level_up.mp3", FileMode.Open));
         Assert.AreEqual(originalFile.BaseStream.Length, bwtInversedFile.BaseStream.Length);
         while (true)
         {
