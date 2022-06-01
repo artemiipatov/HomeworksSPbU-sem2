@@ -7,27 +7,35 @@ using ParseTree;
 public class Tests
 {
     [Test]
-    public void EvaluationOfLargeExpressionsShouldBeCorrect()
+    public void TestFirstLargeExpressionEvaluation()
     {
-        StreamWriter strWriter = new StreamWriter(File.Open("../../../testExpression.txt", FileMode.Create));
+        var strWriter = new StreamWriter(File.Open("../../../testExpression.txt", FileMode.Create));
         strWriter.Write("* (- 89 (/ 50 (+ 10 15))) (- 117 (/ 954 9))");
         strWriter.Close();
-        IParseTree testTree = new ParseTree();
+        var testTree = new ParseTree();
         testTree.Parse("../../../testExpression.txt");
-        Assert.AreEqual(testTree.Eval(), 957);
-        
-        strWriter = new StreamWriter(File.Open("../../../testExpression.txt", FileMode.Create));
-        strWriter.Write("(* (- (* 43 42) (+ (/ 324 18) -3459)) 2)");
-        strWriter.Close();
-        testTree = new ParseTree();
-        testTree.Parse("../../../testExpression.txt");
-        Assert.AreEqual(testTree.Eval(), 10494);
-        
-        strWriter = new StreamWriter(File.Open("../../../testExpression.txt", FileMode.Create));
+        Assert.AreEqual(957, testTree.Eval());
+    }
+
+    [Test]
+    public void TestSecondLargeExpressionEvaluation()
+    {
+        var strWriter = new StreamWriter(File.Open("../../../testExpression.txt", FileMode.Create));
         strWriter.Write("- (* (- 29 13) 3) (/ (+ 2000 322) 43)");
         strWriter.Close();
-        testTree = new ParseTree();
+        var testTree = new ParseTree();
         testTree.Parse("../../../testExpression.txt");
-        Assert.AreEqual(testTree.Eval(), -6);
+        Assert.AreEqual(-6, testTree.Eval());
+    }
+    
+    [Test]
+    public void EvaluationOfExpressionWithNegativeValueShouldBeCorrect()
+    {
+        var strWriter = new StreamWriter(File.Open("../../../testExpression.txt", FileMode.Create));
+        strWriter.Write("(* (- (* 43 42) (+ (/ 324 18) -3459)) 2)");
+        strWriter.Close();
+        var testTree = new ParseTree();
+        testTree.Parse("../../../testExpression.txt");
+        Assert.AreEqual(10494, testTree.Eval());
     }
 }

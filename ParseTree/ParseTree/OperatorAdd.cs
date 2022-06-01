@@ -4,34 +4,23 @@ public class OperatorAdd : Operator
 {
     public override int Eval()
     {
-        if (LeftSon != null && RightSon != null) return LeftSon.Eval() + RightSon.Eval();
-        throw new NullReferenceException("Wrong input");
+        if (LeftSon != null && RightSon != null)
+        {
+            return LeftSon.Eval() + RightSon.Eval();
+        }
+        throw new InvalidOperationException("Wrong input");
     }
 
     public override void Print()
     {
+        Console.Write("(");
         Console.Write("+ ");
-        if (LeftSon == null || RightSon == null) throw new NullReferenceException("Wrong input");
-        if (LeftSon is Operator)
+        if (LeftSon == null || RightSon == null)
         {
-            Console.Write("( ");
-            LeftSon.Print();
-            Console.Write(") ");
+            throw new InvalidOperationException();
         }
-        else
-        {
-            LeftSon.Print();
-        }
-
-        if (RightSon is Operator)
-        {
-            Console.Write("( ");
-            RightSon.Print();
-            Console.Write(") ");
-        }
-        else
-        {
-            RightSon.Print();
-        }
+        LeftSon.Print();
+        RightSon.Print();
+        Console.Write(")");
     }
 }

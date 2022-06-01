@@ -1,122 +1,30 @@
 namespace ParseTree;
 
-public class ParseTree : IParseTree
+public class ParseTree
 {
     private INode? _root;
     private INode? _currentNode;
-    
-    public void AddNode(int value, IParseTree.NodeType operandOrOperator)
+
+    private void AddOperand(int value)
     {
-        if (operandOrOperator == IParseTree.NodeType.Operator)
+        if (_currentNode == null)
         {
-            switch ((char)value)
-            {
-                case ')':
-                {
-                    if (_currentNode == null)
-                    {
-                        throw new Exception("Wrong input");
-                    }
-                    _currentNode = ((Operator)_currentNode).Parent ?? _currentNode;
-                    break;
-                }
-                case '*':
-                {
-                    if (_currentNode == null)
-                    {
-                        _root = new OperatorMultiply();
-                        _currentNode = _root;
-                    }
-                    else if (((Operator)_currentNode).LeftSon == null)
-                    {
-                        (((Operator)_currentNode!)).LeftSon = new OperatorMultiply() { Parent = _currentNode };
-                        _currentNode = ((Operator)_currentNode).LeftSon;
-                    }
-                    else if (((Operator)_currentNode).RightSon == null)
-                    {
-                        (((Operator)_currentNode!)).RightSon = new OperatorMultiply() { Parent = _currentNode };
-                        _currentNode = ((Operator)_currentNode).RightSon;
-                    }
-                    break;
-                }
-                case '/':
-                {
-                    if (_currentNode == null)
-                    {
-                        _root = new OperatorDivide();
-                        _currentNode = _root;
-                    }
-                    else if (((Operator)_currentNode).LeftSon == null)
-                    {
-                        (((Operator)_currentNode!)).LeftSon = new OperatorDivide() { Parent = _currentNode };
-                        _currentNode = ((Operator)_currentNode).LeftSon;
-                    }
-                    else if (((Operator)_currentNode).RightSon == null)
-                    {
-                        (((Operator)_currentNode!)).RightSon = new OperatorDivide() { Parent = _currentNode };
-                        _currentNode = ((Operator)_currentNode).RightSon;
-                    }
-                    break;
-                }
-                case '-':
-                {
-                    if (_currentNode == null)
-                    {
-                        _root = new OperatorSubstract();
-                        _currentNode = _root;
-                    }
-                    else if (((Operator)_currentNode).LeftSon == null)
-                    {
-                        (((Operator)_currentNode!)).LeftSon = new OperatorSubstract() { Parent = _currentNode };
-                        _currentNode = ((Operator)_currentNode).LeftSon;
-                    }
-                    else if (((Operator)_currentNode).RightSon == null)
-                    {
-                        (((Operator)_currentNode!)).RightSon = new OperatorSubstract() { Parent = _currentNode };
-                        _currentNode = ((Operator)_currentNode).RightSon;
-                    }
-                    break;
-                }
-                case '+':
-                {
-                    if (_currentNode == null)
-                    {
-                        _root = new OperatorAdd();
-                        _currentNode = _root;
-                    }
-                    else if (((Operator)_currentNode).LeftSon == null)
-                    {
-                        (((Operator)_currentNode!)).LeftSon = new OperatorAdd() { Parent = _currentNode };
-                        _currentNode = ((Operator)_currentNode).LeftSon;
-                    }
-                    else if (((Operator)_currentNode).RightSon == null)
-                    {
-                        (((Operator)_currentNode!)).RightSon = new OperatorAdd() { Parent = _currentNode };
-                        _currentNode = ((Operator)_currentNode).RightSon;
-                    }
-                    break;
-                }
-            }
+            throw new Exception("Wrong input");
+        }
+        
+        Operand newNode = new Operand(value) { Parent = _currentNode };
+        
+        if (((Operator)_currentNode).LeftSon == null)
+        {
+            ((Operator)_currentNode!).LeftSon = newNode;
+        }
+        else if (((Operator)_currentNode).RightSon == null)
+        {
+            ((Operator)_currentNode!).RightSon = newNode;
         }
         else
         {
-            if (_currentNode == null)
-            {
-                throw new Exception("Wrong input");
-            }
-            Operand newNode = new Operand(value) { Parent = _currentNode };
-            if (((Operator)_currentNode).LeftSon == null)
-            {
-                (((Operator)_currentNode!)).LeftSon = newNode;
-            }
-            else if (((Operator)_currentNode).RightSon == null)
-            {
-                (((Operator)_currentNode!)).RightSon = newNode;
-            }
-            else
-            {
-                throw new Exception("Wrong input");
-            }
+            throw new InvalidOperationException("Wrong input");
         }
     }
 
@@ -142,28 +50,84 @@ public class ParseTree : IParseTree
                 {
                     if (iter + 1 == expression.Length || expression[iter + 1] == ' ' || expression[iter + 1] == ')')
                     {
-                        AddNode(expression[iter], IParseTree.NodeType.Operator);
+                        INode? newNode = null;
+                        switch (expression[iter])
+                        {
+                            case ')':
+                            {
+                                if (_currentNode == null)
+                                {
+                                    throw new InvalidOperationException("Wrong input");
+                                }
+                                _currentNode = ((Operator)_currentNode).Parent ?? _currentNode;
+                                break;
+                            }
+                            case '*':
+                            {
+                                newNode = new OperatorMultiply() {Parent = _currentNode};
+                                break;
+                            }
+                            case '/':
+                            {
+                                newNode = new OperatorDivide() {Parent = _currentNode};
+                                break;
+                            }
+                            case '+':
+                            {
+                                newNode = new OperatorAdd() {Parent = _currentNode};
+                                break;
+                            }
+                            case '-':
+                            {
+                                newNode = new OperatorSubstract() {Parent = _currentNode};
+                                break;
+                            }
+                        }
+                        
                         ++iter;
+
+                        if (newNode == null)
+                        {
+                            continue;
+                        }
+                        
+                        if (_currentNode == null)
+                        {
+                            _root = newNode;
+                            _currentNode = _root;
+                        }
+                        else if (((Operator)_currentNode).LeftSon == null)
+                        {
+                            ((Operator)_currentNode!).LeftSon = newNode;
+                            _currentNode = ((Operator)_currentNode).LeftSon;
+                        }
+                        else if (((Operator)_currentNode).RightSon == null)
+                        {
+                            ((Operator)_currentNode!).RightSon = newNode;
+                            _currentNode = ((Operator)_currentNode).RightSon;
+                        }
+
                         continue;
                     }
+                    
                     string number = "";
                     while ('0' <= expression[iter] && expression[iter] <= '9' || expression[iter] == '-')
                     {
                         number += expression[iter];
                         ++iter;
                     }
-                    AddNode(int.Parse(number), IParseTree.NodeType.Operand);
+                    AddOperand(int.Parse(number));
                     break;
                 }
                 default:
                 {
                     string number = "";
-                    while ('0' <= expression[iter] && expression[iter] <= '9' || expression[iter] == '-')
+                    while ('0' <= expression[iter] && expression[iter] <= '9')
                     {
                         number += expression[iter];
                         ++iter;
                     }
-                    AddNode(int.Parse(number), IParseTree.NodeType.Operand);
+                    AddOperand(int.Parse(number));
                     break;
                 }
             }

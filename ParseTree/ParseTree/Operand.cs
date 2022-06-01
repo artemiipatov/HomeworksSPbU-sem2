@@ -4,6 +4,7 @@ public class Operand : INode
 {
     public int Value { get; set; }
     public INode? Parent { get; set; }
+    
     public Operand(int value)
     {
         Value = value;

@@ -1,5 +1,8 @@
 namespace ParseTree;
 
+/// <summary>
+/// Parse tree node interface
+/// </summary>
 public interface INode
 {
     /// <summary>
@@ -10,6 +13,5 @@ public interface INode
     /// <summary>
     /// Evaluates value of current node subtree.
     /// </summary>
-    /// <returns></returns>
     int Eval();
 }
