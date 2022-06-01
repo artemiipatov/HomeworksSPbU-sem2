@@ -1,4 +1,4 @@
-﻿foreach (var v in SomeFunctions.SomeFunctions.Map<string>(new List<string>() {"1", "2", "3"}, x => x + '4'))
+﻿foreach (var v in SomeFunctions.SomeFunctions.Map<string, string>(new List<string>() {"1", "2", "3"}, x => x + '4'))
 {
     Console.WriteLine(v);
 }
