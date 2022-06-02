@@ -8,7 +8,7 @@ public class Tests
 {
     private readonly string inputFilePath = "../../../TestInput.txt";
     private readonly string outputFilePath = "../../../TestOutput.txt";
-    
+
     [Test]
     public void UtilityShouldMakeCorrectConfigurationsForDifferentSystems()
     {
@@ -19,8 +19,9 @@ public class Tests
         inputFile.WriteLine("3: 4(8) 5(17)");
         inputFile.WriteLine("4: 5(9)");
         inputFile.Close();
-        
-        RoutersUtility.GenerateConfig(inputFilePath, outputFilePath);
+
+        Routers routers = new Routers(inputFilePath);
+        routers.GenerateConfig(outputFilePath);
 
         var outputFile = new StreamReader(outputFilePath);
         Assert.AreEqual(outputFile.ReadLine(), "0: 3(40) 6(15)");
@@ -37,8 +38,9 @@ public class Tests
         inputFile.WriteLine("5: 6(4) 7(10)");
         inputFile.WriteLine("6: 7(2)");
         inputFile.Close();
-        
-        RoutersUtility.GenerateConfig(inputFilePath, outputFilePath);
+
+        routers = new Routers(inputFilePath);
+        routers.GenerateConfig(outputFilePath);
 
         outputFile = new StreamReader(outputFilePath);
         Assert.AreEqual("0: 2(15) 3(40)", outputFile.ReadLine());
@@ -60,6 +62,7 @@ public class Tests
         inputFile.WriteLine("7:");
         inputFile.Close();
 
-        Assert.Throws<WrongInputException>(() => RoutersUtility.GenerateConfig(inputFilePath, outputFilePath));
+        Routers routers = new Routers(inputFilePath);
+        Assert.Throws<WrongInputException>(() => routers.GenerateConfig(outputFilePath));
     }
 }

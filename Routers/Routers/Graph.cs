@@ -3,35 +3,33 @@ using System.Text.RegularExpressions;
 namespace Routers;
 
 /// <summary>
-/// Graph class with adjacency matrix as a property and dfs, connection checking and parsing methods
+/// Graph class with adjacency matrix as a property and dfs, connection checking and parsing methods.
 /// </summary>
-public class Graph : IGraph
+public class Graph
 {
     public int MaxNodeNumber { get; private set; }
 
-    public int[,] Matrix { get; }
-    
-    public Dictionary<(int, int), int> Edges { get; set; }
+    private int[,]? Matrix;
 
-    public Graph(string inputFilePath)
+    /// <summary>
+    /// Parses file into matrix.
+    /// </summary>
+    /// <returns>Returns dictionary with edges of the graph and their weight.</returns>
+    public Dictionary<(int, int), int>? Parse(string inputFilePath)
     {
         var size = GetSize(inputFilePath);
         Matrix = new int[size, size];
-        Edges = new Dictionary<(int, int), int>();
-        Parse(inputFilePath);
-        Edges = Edges.OrderBy(pair => pair.Value).ToDictionary(pair => pair.Key, pair => pair.Value);
-    }
 
-    private void Parse(string inputFilePath)
-    {
         using StreamReader reader = new StreamReader(inputFilePath);
-        
+
+        Dictionary<(int, int), int> Edges = new Dictionary<(int, int), int>();
+
         while (true)
         {
             string? line = reader.ReadLine();
             if (line == null)
             {
-                return;
+                break;
             }
 
             string[] splitLine = line.Split(" ");
@@ -64,6 +62,7 @@ public class Graph : IGraph
                 Matrix[finishNode, startNode] = weight;
             }
         }
+        return Edges;
     }
 
     private int GetSize(string inputFilePath)
@@ -91,8 +90,12 @@ public class Graph : IGraph
     /// <summary>
     /// Sets edge weigth to null
     /// </summary>
-    public void DeleteEdge(int row, int col) => (Matrix[row, col], Matrix[col, row]) = (0, 0);
-    
+    public void DeleteEdgeFromMatrix(int row, int col) => (Matrix![row, col], Matrix[col, row]) = (0, 0);
+
+    public void SetEdge(int row, int col, int value) => (Matrix![row, col], Matrix[col, row]) = (value, value);
+
+    public int GetEdge(int row, int col) => Matrix![row, col];
+
     /// <summary>
     /// Checks if graph is connected
     /// </summary>

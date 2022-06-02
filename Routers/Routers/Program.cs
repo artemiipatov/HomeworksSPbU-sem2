@@ -2,4 +2,5 @@
 
 string inputFilePath = "../../../input.txt";
 string outputFilePath = "../../../output.txt";
-RoutersUtility.GenerateConfig(inputFilePath, outputFilePath);
+Routers.Routers routers = new Routers.Routers(inputFilePath);
+routers.GenerateConfig(outputFilePath);
