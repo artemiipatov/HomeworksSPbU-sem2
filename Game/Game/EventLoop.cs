@@ -10,7 +10,6 @@ public class EventLoop
     /// <summary>
     /// Starts the event loop
     /// </summary>
-    /// <exception cref="ArgumentOutOfRangeException"></exception>
     public void Run()
     {
         while (true)

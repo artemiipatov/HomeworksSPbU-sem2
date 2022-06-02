@@ -5,7 +5,9 @@ using IConsoleWrapper = ConsoleWrapper.IConsoleWrapper;
 public class Game
 {
     public (int, int) Position { get; private set; }
+    
     public bool[][] Walls { get; private set; } = new bool[100][];
+
     private readonly IConsoleWrapper console;
     
     public Game(IConsoleWrapper console)
@@ -22,8 +24,6 @@ public class Game
     /// <summary>
     /// Prints map from the given file to the console
     /// </summary>
-    /// <param name="path"></param>
-    /// <exception cref="Exception"></exception>
     public void GenerateMap(string path)
     {
         using StreamReader map = new StreamReader(path);
@@ -81,8 +81,6 @@ public class Game
     /// <summary>
     /// Actions on left arrow key
     /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="args"></param>
     public void OnLeft(object? sender, EventArgs args)
     {
         if (Walls[Position.Item2][Position.Item1 - 1])
@@ -98,8 +96,6 @@ public class Game
     /// <summary>
     /// Actions on right arrow key
     /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="args"></param>
     public void OnRight(object? sender, EventArgs args)
     {
         if (Walls[Position.Item2][Position.Item1 + 1])
@@ -114,8 +110,6 @@ public class Game
     /// <summary>
     /// Actions on up arrow key
     /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="args"></param>
     public void OnUp(object? sender, EventArgs args)
     {
         if (Walls[Position.Item2 - 1][Position.Item1])
@@ -131,8 +125,6 @@ public class Game
     /// <summary>
     /// Actions on down arrow key
     /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="args"></param>
     public void OnDown(object? sender, EventArgs args)
     {
         if (Walls[Position.Item2 + 1][Position.Item1])
