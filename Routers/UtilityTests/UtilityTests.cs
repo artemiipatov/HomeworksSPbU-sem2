@@ -10,7 +10,7 @@ public class Tests
     private readonly string outputFilePath = "../../../TestOutput.txt";
 
     [Test]
-    public void UtilityShouldMakeCorrectConfigurationsForDifferentSystems()
+    public void TestFirstSystem()
     {
         var inputFile = new StreamWriter(File.Open(inputFilePath, FileMode.Create));
         inputFile.WriteLine("0: 1(10) 3(40) 5(10) 6(15)");
@@ -28,7 +28,11 @@ public class Tests
         Assert.AreEqual(outputFile.ReadLine(), "1: 2(16) 4(20) 6(11)");
         Assert.AreEqual(outputFile.ReadLine(), "3: 5(17)");
         outputFile.Close();
+    }
 
+    public void TestSecondSystem()
+    {
+        var inputFile = new StreamWriter(File.Open(inputFilePath, FileMode.Create));
         inputFile = new StreamWriter(File.Open(inputFilePath, FileMode.Create));
         inputFile.WriteLine("0: 1(7) 2(15) 3(40) 6(3) 7(1)");
         inputFile.WriteLine("1: 2(8) 3(17) 7(9)");
@@ -39,10 +43,10 @@ public class Tests
         inputFile.WriteLine("6: 7(2)");
         inputFile.Close();
 
-        routers = new Routers(inputFilePath);
+        Routers routers = new Routers(inputFilePath);
         routers.GenerateConfig(outputFilePath);
 
-        outputFile = new StreamReader(outputFilePath);
+        var outputFile = new StreamReader(outputFilePath);
         Assert.AreEqual("0: 2(15) 3(40)", outputFile.ReadLine());
         Assert.AreEqual("1: 3(17) 7(9)", outputFile.ReadLine());
         Assert.AreEqual("3: 4(20) 6(7)", outputFile.ReadLine());
