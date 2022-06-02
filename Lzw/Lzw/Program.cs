@@ -1,56 +1,41 @@
-﻿Console.Write("Instructions:\nType -ct to compress using bwt\nType -cf to compress without bwt\nType -u to decompress\nType -e to exit\n");
-while (true)
+﻿static void Main(string[] args)
 {
-    Console.Write("Input key: ");
-    string? key = Console.ReadLine();
-    switch (key)
+    switch (args[0])
     {
         case "-ct":
         {
-            Console.Write("Path: ");
-            string? path = Console.ReadLine();
-            if (path == null)
+            if (args.Length == 1 || args[1] == null)
             {
                 Console.WriteLine("Wrong input data: null path");
                 return;
             }
-            Console.WriteLine(Lzw.Lzw.Compress(path, true));
-            break;
+            Console.WriteLine(Lzw.Lzw.Compress(args[1], true));
+            return;
         }
         case "-cf":
-            {
-                Console.Write("Path: ");
-                string? path = Console.ReadLine();
-                if (path == null)
-                {
-                    Console.WriteLine("Wrong input data: null path");
-                    return;
-                }
-                Console.WriteLine(Lzw.Lzw.Compress(path, false));
-                break;
-            }
-
-        case "-u":
         {
-            Console.Write("Path: ");
-            string? path = Console.ReadLine();
-            if (path == null)
+            if (args.Length == 1 || args[1] == null)
             {
                 Console.WriteLine("Wrong input data: null path");
                 return;
             }
-            Lzw.Lzw.Decompress(path);
-            break;
+            Console.WriteLine(Lzw.Lzw.Compress(args[1], false));
+            return;
         }
-        case "-e":
+        case "-u":
         {
-            Console.WriteLine("exiting...");
+            if (args.Length == 1 || args[1] == null)
+            {
+                Console.WriteLine("Wrong input data: null path");
+                return;
+            }
+            Lzw.Lzw.Decompress(args[1]);
             return;
         }
         default:
         {
             Console.WriteLine("Wrong input, read instructions carefully");
-            break;
+            return;
         }
     }
 }

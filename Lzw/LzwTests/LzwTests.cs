@@ -4,7 +4,7 @@ using System.IO;
 using NUnit.Framework;
 using Lzw;
 
-public class Tests
+public class LzwTests
 {
     [Test]
     public void CompressShouldCreateNewDotZippedFile()

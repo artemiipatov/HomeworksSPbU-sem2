@@ -7,6 +7,8 @@ using System.Collections;
 /// </summary>
 public static class Lzw
 {
+
+
     /// <summary>
     /// Compressing method of lzw algorithm
     /// </summary>
@@ -163,7 +165,7 @@ public static class Lzw
                 }
                 int readByte = inputFile.ReadByte();
 
-                    bitArrayIndex -= 7;
+                bitArrayIndex -= 7;
                 int bitArrayIndexBeforeCycle = bitArrayIndex;
                 for (int _ = 0; _ < 8; _++)
                 {
@@ -233,7 +235,7 @@ public static class Lzw
     {
         int index = path.Length - 1;
         string name = "";
-        while (path[index] != '/' && index != -1 && path[index] != '\\' && index >= 0)
+        while (index >= 0 && path[index] != '/' && index != -1 && path[index] != '\\')
         {
             name = path[index] + name;
             index -= 1;
