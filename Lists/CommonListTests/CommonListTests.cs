@@ -85,7 +85,7 @@ public class Tests
         list.Remove(0);
         Assert.Throws<ItemNotFoundException>(() => list.Remove(0));
     }
-    
+
     [TestCaseSource(nameof(ListTestData))]
     public void ItemNotFoundExceptionShouldBeRaisedInCaseOfChangingNonExistingItem(CommonList list)
     {
