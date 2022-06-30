@@ -18,22 +18,17 @@ public class ListBasedStack : IStack
     }
 
     private StackElement? _head = null;
-    public bool IsEmpty { get; private set; } = true;
+    public bool IsEmpty => _head == null;
 
     public void Push(double value)
     {
         _head = new StackElement(value, _head);
-        IsEmpty = false;
     }
 
     public double? Pop()
     {
         var value = _head?.Value ?? null;
         _head = _head?.Next;
-        if (_head == null)
-        {
-            IsEmpty = true;
-        }
         return value;
     }
 }

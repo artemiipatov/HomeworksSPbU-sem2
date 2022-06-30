@@ -8,7 +8,7 @@ public class ArrayBasedStack : IStack
     private int _size = 100;
     private double[] _mainArray = new double[100];
     private int _headPosition = 0;
-    public bool IsEmpty { get; private set; } = true;
+    public bool IsEmpty => _headPosition == 0;
 
     public void Push(double value)
     {
@@ -17,7 +17,6 @@ public class ArrayBasedStack : IStack
             Resize();
         }
 
-        IsEmpty = false;
         _mainArray[_headPosition] = value;
         ++_headPosition;
     }
@@ -40,10 +39,6 @@ public class ArrayBasedStack : IStack
         }
 
         --_headPosition;
-        if (_headPosition == 0)
-        {
-            IsEmpty = true;
-        }
         var value = _mainArray[_headPosition];
         return value;
     }
