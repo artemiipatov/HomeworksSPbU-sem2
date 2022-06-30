@@ -1,41 +1,46 @@
-﻿static void Main(string[] args)
+﻿namespace Lzw;
+
+class Program
 {
-    switch (args[0])
+    static void Main(string[] args)
     {
-        case "-ct":
+        switch (args[0])
         {
-            if (args.Length == 1 || args[1] == null)
+            case "-ct":
             {
-                Console.WriteLine("Wrong input data: null path");
+                if (args.Length == 1 || args[1] == null)
+                {
+                    Console.WriteLine("Wrong input data: null path");
+                    return;
+                }
+                Console.WriteLine(Lzw.Compress(args[1], true));
                 return;
             }
-            Console.WriteLine(Lzw.Lzw.Compress(args[1], true));
-            return;
-        }
-        case "-cf":
-        {
-            if (args.Length == 1 || args[1] == null)
+            case "-cf":
             {
-                Console.WriteLine("Wrong input data: null path");
+                if (args.Length == 1 || args[1] == null)
+                {
+                    Console.WriteLine("Wrong input data: null path");
+                    return;
+                }
+                Console.WriteLine(Lzw.Compress(args[1], false));
                 return;
             }
-            Console.WriteLine(Lzw.Lzw.Compress(args[1], false));
-            return;
-        }
-        case "-u":
-        {
-            if (args.Length == 1 || args[1] == null)
+            case "-u":
             {
-                Console.WriteLine("Wrong input data: null path");
+                if (args.Length == 1 || args[1] == null)
+                {
+                    Console.WriteLine("Wrong input data: null path");
+                    return;
+                }
+                Lzw.Decompress(args[1]);
                 return;
             }
-            Lzw.Lzw.Decompress(args[1]);
-            return;
-        }
-        default:
-        {
-            Console.WriteLine("Wrong input, read instructions carefully");
-            return;
+            default:
+            {
+                Console.WriteLine("Wrong input, read instructions carefully");
+                return;
+            }
         }
     }
 }

@@ -7,8 +7,6 @@ using System.Collections;
 /// </summary>
 public static class Lzw
 {
-
-
     /// <summary>
     /// Compressing method of lzw algorithm
     /// </summary>
