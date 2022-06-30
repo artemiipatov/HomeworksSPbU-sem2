@@ -1,4 +1,4 @@
-﻿namespace finalTest1;
+﻿namespace FinalTest1;
 
 /// <summary>
 /// Class with bubble sort method
