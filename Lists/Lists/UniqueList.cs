@@ -10,10 +10,27 @@ public class UniqueList : CommonList
     /// </summary>
     public override void Add(int value)
     {
-        if (Contains(value))
+        if (Find(value) != -1)
         {
             throw new AddingExistingItemException("Item already exists");
         }
         base.Add(value);
+    }
+
+    public override void ChangeValue(int position, int newValue)
+    {
+        int pos = Find(newValue);
+        if (pos == position)
+        {
+            return;
+        }
+        else if (pos == -1)
+        {
+            base.ChangeValue(position, newValue);
+        }
+        else
+        {
+            throw new AddingExistingItemException();
+        }
     }
 }

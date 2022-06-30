@@ -5,7 +5,7 @@ namespace Lists;
 /// </summary>
 public class CommonList
 {
-    private protected class ListElement
+    private class ListElement
     {
         /// <summary>
         /// Integer value of the list element
@@ -31,19 +31,19 @@ public class CommonList
     /// <summary>
     /// First element of the list
     /// </summary>
-    private protected ListElement? Head { get; private set; }
+    private ListElement? Head { get; set; }
 
     /// <summary>
     /// Last element of the list
     /// </summary>
-    private protected ListElement? Tail { get; private set; }
+    private ListElement? Tail { get; set; }
 
     /// <summary>
     /// Adds the element to the list
     /// </summary>
     public virtual void Add(int value)
     {
-        ListElement newElement = new ListElement(value);
+        var newElement = new ListElement(value);
 
         if (Tail == null)
         {
@@ -101,7 +101,7 @@ public class CommonList
     /// <summary>
     /// Changes the value of the list element with give index
     /// </summary>
-    public void ChangeValue(int position, int newValue)
+    virtual public void ChangeValue(int position, int newValue)
     {
         var currentElement = Head;
         if (currentElement == null)
@@ -143,18 +143,20 @@ public class CommonList
     /// <summary>
     /// Checks whether the value is in the list
     /// </summary>
-    public bool Contains(int value)
+    public int Find(int value)
     {
         var currentElement = Head;
+        int counter = 0;
         while (currentElement != null)
         {
             if (currentElement.Value == value)
             {
-                return true;
+                return counter;
             }
             currentElement = currentElement.Next;
+            counter++;
         }
 
-        return false;
+        return -1;
     }
 }

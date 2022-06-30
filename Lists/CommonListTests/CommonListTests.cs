@@ -7,16 +7,6 @@ namespace ListsTests;
 
 public class Tests
 {
-    private CommonList _commonList = new();
-    // private UniqueList _uniqueList = new();
-    //
-    // [SetUp]
-    // public void Setup()
-    // {
-    //     _commonList = new CommonList();
-    //     _uniqueList = new UniqueList();
-    // }
-
     private static IEnumerable<CommonList> ListTestData
     {
         get
@@ -110,15 +100,15 @@ public class Tests
     }
     
     [TestCaseSource(nameof(ListTestData))]
-    public void ItemNotFoundExceptionShouldBeRaisedInCaseOfGettingNonExistingItem()
+    public void ItemNotFoundExceptionShouldBeRaisedInCaseOfGettingNonExistingItem(CommonList list)
     {
-        _commonList.Add(1);
-        _commonList.Add(2);
-        _commonList.Add(3);
-        Assert.Throws<IndexOutOfRangeException>(() => _commonList.Get(10));
-        _commonList.Remove(2);
-        _commonList.Remove(1);
-        _commonList.Remove(0);
-        Assert.Throws<ItemNotFoundException>(() => _commonList.Get(0));
+        list.Add(1);
+        list.Add(2);
+        list.Add(3);
+        Assert.Throws<IndexOutOfRangeException>(() => list.Get(10));
+        list.Remove(2);
+        list.Remove(1);
+        list.Remove(0);
+        Assert.Throws<ItemNotFoundException>(() => list.Get(0));
     }
 }

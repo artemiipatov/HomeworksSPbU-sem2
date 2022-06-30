@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using Lists;
 
-namespace UniqueListTests;
+namespace ListsTests;
 
 public class UniqueListTests
 {
