@@ -2,21 +2,21 @@ namespace Bwt;
 
 using System;
 
-// class with two public methods for burrows-wheeler transformation
+/// <summary>
+/// class with two public methods for burrows-wheeler transformation
+/// </summary>
 static class Transformation
 {
-    private readonly static int unicodeSize = 65536;
+    private const int unicodeSize = 65536;
 
     /// <summary>
     /// forward burrows-wheeler transformation. Returns transformed string and index of the original string in the array of sorted rotations. 
     /// </summary>
-    /// <param name="str"></param>
-    /// <returns></returns>
     public static (string transformedString, int index) Bwt(string? str)
     {
         if (str == null)
         {
-            throw new NullReferenceException("Null argument has been given");
+            throw new ArgumentNullException("Null argument has been given");
         }
         
         string[] rotations = GetRotations(str);
@@ -42,9 +42,6 @@ static class Transformation
     /// <summary>
     /// Inverse Burrows-Wheeler transformation. Returns original string.
     /// </summary>
-    /// <param name="str"></param>
-    /// <param name="index"></param>
-    /// <returns></returns>
     public static string BwtInverse(string str, int index)
     {
         string sortedString = GetSortedString(str);
@@ -57,7 +54,7 @@ static class Transformation
         var assistantArray = new int[unicodeSize];
         foreach (var ch in str)
         {
-            ++assistantArray[((int)ch)];
+            ++assistantArray[(int)ch];
         }
         var sortedArray = new char[str.Length];
         int pos = 0;
@@ -78,8 +75,8 @@ static class Transformation
         var numbers = new int[str.Length];
         for (int i = 0; i < str.Length; ++i)
         {
-            numbers[i] = sortedString.IndexOf(str[i]) + frequencies[((int)str[i])];
-            ++frequencies[((int)str[i])]; 
+            numbers[i] = sortedString.IndexOf(str[i]) + frequencies[(int)str[i]];
+            ++frequencies[(int)str[i]]; 
         }
         return numbers;
     }
