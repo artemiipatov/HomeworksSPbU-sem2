@@ -2,6 +2,9 @@
 
 using System.Collections;
 
+/// <summary>
+/// implementation of a list with o(logn) complexity adding method
+/// </summary>
 public class SkipList<T> : IList<T> where T : IComparable<T>
 {
     private class SkipListElement
@@ -21,7 +24,6 @@ public class SkipList<T> : IList<T> where T : IComparable<T>
         }
     }
 
-    // private IComparer<T> Comparer;
     private int _numberOfLevels = 1;
     private SkipListElement? _minLevel;
     private SkipListElement? _maxLevel;
@@ -59,6 +61,7 @@ public class SkipList<T> : IList<T> where T : IComparable<T>
         return GetEnumerator();
     }
     
+    /// <inheritdoc/>
     public void Add(T item)
     {
         if (IsReadOnly)
@@ -73,9 +76,8 @@ public class SkipList<T> : IList<T> where T : IComparable<T>
             return;
         }
 
-        bool levelUp;
-        AddRecursive(item, _maxLevel!, out levelUp);
-        
+        AddRecursive(item, _maxLevel!, out bool levelUp);
+
         if (Math.Log2(Count) >= _numberOfLevels && _maxLevel!.Down is not {Next: null})
         {
             var newLevel = new SkipListElement(default, _currentKey) {Down = _maxLevel, Next = null};
@@ -91,7 +93,7 @@ public class SkipList<T> : IList<T> where T : IComparable<T>
             currentElement = currentElement.Next;
         }
 
-        Random rand = new Random();
+        Random rand = new();
         
         if (currentElement.Down == null)
         {
@@ -241,6 +243,7 @@ public class SkipList<T> : IList<T> where T : IComparable<T>
     private int _currentKey = 0;
     public int Count { get; private set; }
     public bool IsReadOnly { get; }
+
     public int IndexOf(T item)
     {
         int counter = 0;

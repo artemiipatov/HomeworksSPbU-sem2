@@ -37,8 +37,6 @@ public class Tests
             stringSkipList.Add("str8");
             stringSkipList.Add("str9");
             yield return new TestCaseData(stringSkipList, typeof(string), new[] {"str0", "str1", "str2", "str3", "str4", "str5", "str6", "str7", "str8", "str9"});
-            // var skipList = new SkipList.SkipList<string>();
-            // var skipList = new SkipList.SkipList<int>();
         }
     }
     
@@ -193,6 +191,8 @@ public class Tests
             Assert.AreEqual(array[counter], element);
             counter++;
         }
+
+        Assert.AreEqual(array.Length, counter);
     }
     
     [TestCaseSource(nameof(SkipListTestData))]
